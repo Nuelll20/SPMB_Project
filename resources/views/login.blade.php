@@ -233,7 +233,7 @@
                 </div>
 
                 <!-- Login Form -->
-                <form method="POST" action="{{ route('login') }}">
+                <form method="POST" action="#">
                     @csrf
 
                     <h2 class="form-title">Sign In To Your Account</h2>
@@ -278,7 +278,7 @@
                             <label for="remember" class="checkbox-label">Remember me</label>
                         </div>
                         <div class="forgot-password">
-                            <a href="{{ route('password.request') }}">Forgot Password?</a>
+                            <a href="#">Forgot Password?</a>
                         </div>
                     </div>
 
@@ -288,7 +288,7 @@
                     <!-- Register Link -->
                     <div class="register-section">
                         <span>Dont have an account ? </span>
-                        <a href="{{ route('register') }}">Register Here</a>
+                        <a href="#">Register Here</a>
                     </div>
                 </form>
             </div>
