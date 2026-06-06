@@ -219,8 +219,8 @@
     <div class="container">
         <!-- Left Section -->
         <div class="left-section">
-            <img src="{{ asset('images/logo.png') }}" alt="E-Kanisius Logo" class="logo-img">
-            <img src="{{ asset('images/side-image.png') }}" alt="E-Kanisius" style="width: 299px; height: 160px;">
+            <img src="{{ asset('img/image 1 (1).png') }}" alt="E-Kanisius Logo" class="logo-img">
+            <img src="{{ asset('img/Background 1.png') }}" alt="E-Kanisius" style="width: 299px; height: 160px;">
         </div>
 
         <!-- Right Section -->
@@ -228,7 +228,7 @@
             <div class="login-container">
                 <!-- Header with Logo and Title -->
                 <div class="header">
-                    <img src="{{ asset('images/logo-small.png') }}" alt="Logo" class="logo-img" style="width: 80px; height: 128px;">
+                    <img src="{{ asset('img/E-Kanisius 1.png') }}" alt="Logo" class="logo-img" style="width: 80px; height: 128px;">
                     <div class="logo-text">E-Kanisius</div>
                 </div>
 
