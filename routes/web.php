@@ -17,5 +17,5 @@ Route::get('/forgot-password', function () {
 })->name('password.request');
 
 Route::get('/register', function () {
-    return "Halaman Register sedang dalam pengembangan.";
+    return view('auth.register');
 })->name('register');

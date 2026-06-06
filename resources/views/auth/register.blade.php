@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-Kanisius - Login</title>
+    <title>E-Kanisius - Register</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -31,14 +31,6 @@
             height: 100%;
         }
 
-        /* Animated tiles */
-        .geo-canvas rect,
-        .geo-canvas circle,
-        .geo-canvas path {
-            transition: opacity 0.6s ease;
-        }
-
-        /* Floating overlay particles */
         .particles-overlay {
             position: absolute;
             inset: 0;
@@ -60,7 +52,6 @@
             100% { transform: translateY(-120px) scale(1.2); opacity: 0; }
         }
 
-        /* Shimmer scan line on left panel */
         .shimmer-line {
             position: absolute;
             left: 0; right: 0;
@@ -84,19 +75,18 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 40px 50px;
+            padding: 32px 50px;
             overflow-y: auto;
         }
 
-        .login-container {
+        .register-container {
             width: 100%;
             max-width: 480px;
-            /* Initial state for page-in animation */
             opacity: 0;
             transform: translateY(28px);
         }
 
-        .login-container.visible {
+        .register-container.visible {
             animation: slideInUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
 
@@ -104,7 +94,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Stagger children */
         .anim-child {
             opacity: 0;
             transform: translateY(20px);
@@ -115,77 +104,58 @@
             display: flex;
             align-items: center;
             gap: 24px;
-            margin-bottom: 48px;
+            margin-bottom: 36px;
             flex-wrap: wrap;
         }
 
-        .brand-ekanisius {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .brand-ekanisius img {
-            width: 45px;
-            height: auto;
-            transition: transform 0.3s ease;
-        }
-
+        .brand-ekanisius { display: flex; align-items: center; gap: 10px; }
+        .brand-ekanisius img { width: 48px; height: auto; transition: transform 0.3s ease; }
         .brand-ekanisius img:hover { transform: rotate(-6deg) scale(1.1); }
+        .brand-ekanisius .brand-name { color: #1a2a6c; font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
 
-        .brand-ekanisius .brand-name {
-            color: #1a2a6c;
-            font-size: 22px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-        }
-
-        .header-divider {
-            width: 1px;
-            height: 48px;
-            background-color: #ddd;
-        }
+        .header-divider { width: 1px; height: 48px; background-color: #ddd; }
 
         .brand-sakti { display: flex; align-items: center; gap: 10px; }
         .brand-sakti img { width: 150px; height: auto; transition: transform 0.3s ease; }
         .brand-sakti img:hover { transform: rotate(6deg) scale(1.1); }
-
         .sakti-text { display: flex; flex-direction: column; line-height: 1.1; }
         .sakti-title { color: #1a2a6c; font-size: 20px; font-weight: 800; letter-spacing: 1px; }
-        .sakti-subtitle { color: #1a2a6c; font-size: 8px; font-weight: 500; letter-spacing: 0.2px; }
+        .sakti-subtitle { color: #1a2a6c; font-size: 8px; font-weight: 500; }
 
         /* ===== FORM ===== */
         .form-title {
             color: #111;
             font-size: 20px;
             font-weight: 500;
-            margin-bottom: 32px;
+            margin-bottom: 28px;
         }
 
-        .form-group { margin-bottom: 22px; position: relative; }
+        .form-group { margin-bottom: 18px; position: relative; }
 
         .form-label {
             color: #111;
             font-size: 15px;
             font-weight: 500;
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 7px;
             transition: color 0.2s;
         }
 
         .form-group:focus-within .form-label { color: #004AAD; }
 
+        .input-wrapper { position: relative; }
+
         .form-input {
             width: 100%;
-            height: 52px;
+            height: 50px;
             background-color: #e8e8e8;
             border: 2px solid transparent;
             border-radius: 8px;
-            padding: 12px 48px 12px 18px;
+            padding: 12px 46px 12px 18px;
             font-size: 14px;
             font-family: 'Poppins', sans-serif;
             color: #333;
-            transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, transform 0.15s ease;
+            transition: background 0.25s, border-color 0.25s, box-shadow 0.25s, transform 0.15s;
         }
 
         .form-input:focus {
@@ -202,6 +172,11 @@
             animation: shake 0.4s ease;
         }
 
+        .form-input.is-valid {
+            border-color: #16a34a;
+            box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.12);
+        }
+
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             20%       { transform: translateX(-6px); }
@@ -209,6 +184,40 @@
             60%       { transform: translateX(-4px); }
             80%       { transform: translateX(4px); }
         }
+
+        /* Icon inside input */
+        .input-icon {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.25s;
+        }
+
+        .form-input.is-valid   ~ .input-icon.valid-icon   { opacity: 1; }
+        .form-input.is-invalid ~ .input-icon.invalid-icon { opacity: 1; }
+
+        /* Toggle password */
+        .toggle-password {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #888;
+            font-size: 17px;
+            background: none;
+            border: none;
+            padding: 4px;
+            transition: color 0.2s, transform 0.2s;
+            user-select: none;
+            line-height: 1;
+        }
+
+        .toggle-password:hover { color: #004AAD; transform: translateY(-50%) scale(1.15); }
 
         .error-msg {
             color: #dc2626;
@@ -218,93 +227,58 @@
             animation: fadeIn 0.3s ease;
         }
 
-        /* Password toggle eye */
-        .input-wrapper { position: relative; }
-
-        .toggle-password {
-            position: absolute;
-            right: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
+        .hint-msg {
             color: #888;
-            font-size: 18px;
-            line-height: 1;
-            transition: color 0.2s, transform 0.2s;
-            user-select: none;
-            background: none;
-            border: none;
-            padding: 4px;
+            font-size: 11px;
+            margin-top: 4px;
+            display: block;
         }
 
-        .toggle-password:hover { color: #004AAD; transform: translateY(-50%) scale(1.15); }
-
-        /* ===== Remember row ===== */
-        .remember-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 28px;
+        /* Password strength bar */
+        .strength-bar-wrap {
+            margin-top: 8px;
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 99px;
+            overflow: hidden;
+            display: none;
         }
 
-        .checkbox-container { display: flex; align-items: center; gap: 10px; }
-
-        .checkbox-input {
-            width: 20px;
-            height: 20px;
-            accent-color: #004AAD;
-            cursor: pointer;
-            transition: transform 0.2s;
+        .strength-bar {
+            height: 100%;
+            border-radius: 99px;
+            width: 0%;
+            transition: width 0.4s ease, background-color 0.4s ease;
         }
 
-        .checkbox-input:checked { transform: scale(1.1); }
-
-        .checkbox-label { color: #333; font-size: 14px; font-weight: 500; cursor: pointer; }
-
-        .forgot-password a {
-            color: #333;
-            font-size: 14px;
+        .strength-label {
+            font-size: 11px;
+            margin-top: 4px;
             font-weight: 500;
-            text-decoration: none;
-            position: relative;
-            transition: color 0.2s;
+            display: none;
         }
 
-        .forgot-password a::after {
-            content: '';
-            position: absolute;
-            left: 0; right: 0; bottom: -2px;
-            height: 1px;
-            background: #004AAD;
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.25s ease;
-        }
-
-        .forgot-password a:hover { color: #004AAD; }
-        .forgot-password a:hover::after { transform: scaleX(1); }
-
-        /* ===== Login Button ===== */
-        .login-button {
+        /* ===== Register Button ===== */
+        .register-button {
             width: 100%;
-            height: 56px;
+            height: 54px;
             background-color: #004AAD;
             border: none;
             border-radius: 8px;
             color: white;
-            font-size: 18px;
+            font-size: 17px;
             font-weight: 600;
             font-family: 'Poppins', sans-serif;
             cursor: pointer;
             transition: background-color 0.25s, transform 0.15s, box-shadow 0.25s;
-            margin-bottom: 24px;
+            margin-top: 8px;
+            margin-bottom: 22px;
             letter-spacing: 0.3px;
             position: relative;
             overflow: hidden;
         }
 
-        /* Ripple on button */
-        .login-button .ripple {
+        .register-button .ripple {
             position: absolute;
             border-radius: 50%;
             background: rgba(255,255,255,0.35);
@@ -313,21 +287,18 @@
             pointer-events: none;
         }
 
-        @keyframes rippleAnim {
-            to { transform: scale(4); opacity: 0; }
-        }
+        @keyframes rippleAnim { to { transform: scale(4); opacity: 0; } }
 
-        .login-button:hover {
+        .register-button:hover {
             background-color: #003a8c;
             box-shadow: 0 6px 24px rgba(0, 74, 173, 0.35);
             transform: translateY(-2px);
         }
 
-        .login-button:active { transform: scale(0.98) translateY(0); }
+        .register-button:active { transform: scale(0.98) translateY(0); }
 
-        /* Loading spinner inside button */
-        .login-button.loading .btn-text { opacity: 0; }
-        .login-button.loading::after {
+        .register-button.loading .btn-text { opacity: 0; }
+        .register-button.loading::after {
             content: '';
             position: absolute;
             inset: 0;
@@ -340,14 +311,13 @@
         }
 
         @keyframes spin { to { transform: rotate(360deg); } }
-
         .btn-text { transition: opacity 0.2s; }
 
-        /* ===== Register ===== */
-        .register-section { text-align: center; font-size: 14px; }
-        .register-section span { color: #444; }
+        /* ===== Login link ===== */
+        .login-section { text-align: center; font-size: 14px; }
+        .login-section span { color: #444; }
 
-        .register-section a {
+        .login-section a {
             color: #111;
             font-weight: 700;
             text-decoration: none;
@@ -355,7 +325,7 @@
             transition: color 0.2s;
         }
 
-        .register-section a::after {
+        .login-section a::after {
             content: '';
             position: absolute;
             left: 0; right: 0; bottom: -2px;
@@ -366,10 +336,10 @@
             transition: transform 0.25s ease;
         }
 
-        .register-section a:hover { color: #004AAD; }
-        .register-section a:hover::after { transform: scaleX(1); }
+        .login-section a:hover { color: #004AAD; }
+        .login-section a:hover::after { transform: scaleX(1); }
 
-        /* ===== Toast notification ===== */
+        /* ===== Toast ===== */
         #toast {
             position: fixed;
             bottom: 28px;
@@ -389,18 +359,34 @@
             box-shadow: 0 8px 32px rgba(0,0,0,0.2);
         }
 
-        #toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
+        #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
 
         /* ===== Responsive ===== */
+        @media (max-width: 1024px) {
+            .left-section { width: 38%; }
+            .right-section { padding: 28px 36px; }
+        }
+
         @media (max-width: 768px) {
-            body { flex-direction: column; height: auto; overflow: auto; }
-            .left-section { width: 100%; height: 180px; }
-            .right-section { padding: 32px 24px; }
+            body { flex-direction: column; height: auto; min-height: 100vh; overflow: auto; }
+            .left-section { width: 100%; height: 160px; }
+            .right-section { padding: 28px 24px; align-items: flex-start; }
+        }
+
+        @media (max-width: 480px) {
+            .header { gap: 14px; margin-bottom: 24px; }
+            .brand-ekanisius .brand-name { font-size: 18px; }
+            .sakti-title { font-size: 16px; }
+            .form-title { font-size: 17px; }
+            .form-input { height: 46px; font-size: 13px; }
+            .register-button { height: 50px; font-size: 15px; }
+        }
+
+        @media (orientation: landscape) and (max-height: 500px) {
+            body { height: auto; overflow: auto; }
+            .left-section { width: 30%; height: 100vh; position: sticky; top: 0; }
         }
     </style>
 </head>
@@ -474,18 +460,15 @@
             <rect x="210" y="630" width="105" height="70" fill="#2e4a78" class="tile"/>
             <rect x="315" y="630" width="105" height="70" fill="#c8b400" fill-opacity="0.2" class="tile"/>
         </svg>
-
-        <!-- Floating particles -->
         <div class="particles-overlay" id="particles"></div>
-
-        <!-- Scan line -->
         <div class="shimmer-line"></div>
     </div>
 
-    <!-- ===== RIGHT: Login Form ===== -->
+    <!-- ===== RIGHT: Register Form ===== -->
     <div class="right-section">
-        <div class="login-container" id="loginContainer">
+        <div class="register-container" id="registerContainer">
 
+            <!-- Header -->
             <div class="header anim-child">
                 <div class="brand-ekanisius">
                     <img src="{{ asset('img/image 1 (1).png') }}" alt="E-Kanisius Logo">
@@ -501,10 +484,32 @@
                 </div>
             </div>
 
-            <form method="POST" action="{{ route('login') }}" id="loginForm">
+            <!-- Form -->
+            <form method="POST" action="{{ route('register') }}" id="registerForm" novalidate>
                 @csrf
 
-                <h2 class="form-title anim-child">Sign In To Your Account</h2>
+                <h2 class="form-title anim-child">Register to your account</h2>
+
+                <!-- Full Name -->
+                <div class="form-group anim-child">
+                    <label for="name" class="form-label">Full Name</label>
+                    <div class="input-wrapper">
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            class="form-input @error('name') is-invalid @enderror"
+                            placeholder="Enter your full name"
+                            value="{{ old('name') }}"
+                            required autofocus autocomplete="name"
+                        >
+                        <span class="input-icon valid-icon">✅</span>
+                        <span class="input-icon invalid-icon">❌</span>
+                    </div>
+                    @error('name')
+                        <span class="error-msg">{{ $message }}</span>
+                    @enderror
+                </div>
 
                 <!-- Email -->
                 <div class="form-group anim-child">
@@ -517,8 +522,10 @@
                             class="form-input @error('email') is-invalid @enderror"
                             placeholder="Enter your email"
                             value="{{ old('email') }}"
-                            required autofocus
+                            required autocomplete="email"
                         >
+                        <span class="input-icon valid-icon">✅</span>
+                        <span class="input-icon invalid-icon">❌</span>
                     </div>
                     @error('email')
                         <span class="error-msg">{{ $message }}</span>
@@ -534,40 +541,50 @@
                             id="password"
                             name="password"
                             class="form-input @error('password') is-invalid @enderror"
-                            placeholder="Enter your password"
-                            required
+                            placeholder="Create a password"
+                            required autocomplete="new-password"
                         >
-                        <button type="button" class="toggle-password" id="togglePwd" title="Show/hide password">
-                            👁
-                        </button>
+                        <button type="button" class="toggle-password" id="togglePwd" title="Show/hide password">👁</button>
                     </div>
                     @error('password')
                         <span class="error-msg">{{ $message }}</span>
                     @enderror
+                    <!-- Strength bar -->
+                    <div class="strength-bar-wrap" id="strengthWrap">
+                        <div class="strength-bar" id="strengthBar"></div>
+                    </div>
+                    <span class="strength-label" id="strengthLabel"></span>
+                    <span class="hint-msg">Min. 8 karakter</span>
                 </div>
 
-                <!-- Remember & Forgot -->
-                <div class="remember-row anim-child">
-                    <div class="checkbox-container">
-                        <input type="checkbox" id="remember" name="remember" class="checkbox-input"
-                            {{ old('remember') ? 'checked' : '' }}>
-                        <label for="remember" class="checkbox-label">Remember me</label>
+                <!-- Confirm Password -->
+                <div class="form-group anim-child">
+                    <label for="password_confirmation" class="form-label">Confirm Password</label>
+                    <div class="input-wrapper">
+                        <input
+                            type="password"
+                            id="password_confirmation"
+                            name="password_confirmation"
+                            class="form-input"
+                            placeholder="Repeat your password"
+                            required autocomplete="new-password"
+                        >
+                        <button type="button" class="toggle-password" id="togglePwdConfirm" title="Show/hide password">👁</button>
                     </div>
-                    <div class="forgot-password">
-                        <a href="{{ route('password.request') }}">Forgot Password?</a>
-                    </div>
+                    <span class="error-msg" id="confirmError" style="display:none;">Password tidak cocok</span>
                 </div>
 
-                <!-- Login Button -->
-                <button type="submit" class="login-button anim-child" id="loginBtn">
-                    <span class="btn-text">Login</span>
+                <!-- Register Button -->
+                <button type="submit" class="register-button anim-child" id="registerBtn">
+                    <span class="btn-text">Register</span>
                 </button>
 
-                <!-- Register -->
-                <div class="register-section anim-child">
-                    <span>Dont have an account ? </span>
-                    <a href="{{ route('register') }}">Register Here</a>
+                <!-- Login Link -->
+                <div class="login-section anim-child">
+                    <span>have an account ? </span>
+                    <a href="{{ route('login') }}">Login Here</a>
                 </div>
+
             </form>
         </div>
     </div>
@@ -577,141 +594,257 @@
 
     <script>
         /* ============================================================
-           1. PAGE-IN: staggered slide-up for each child element
+           1. PAGE-IN: staggered slide-up
         ============================================================ */
-        const container = document.getElementById('loginContainer');
+        const container = document.getElementById('registerContainer');
         const children  = document.querySelectorAll('.anim-child');
 
-        // Trigger container animation
-        requestAnimationFrame(() => {
-            container.classList.add('visible');
-        });
+        requestAnimationFrame(() => container.classList.add('visible'));
 
-        // Stagger children
         children.forEach((el, i) => {
-            el.style.animation = `slideInUp 0.55s cubic-bezier(0.22,1,0.36,1) ${0.15 + i * 0.08}s forwards`;
+            el.style.animation = `slideInUp 0.55s cubic-bezier(0.22,1,0.36,1) ${0.1 + i * 0.07}s forwards`;
         });
 
         /* ============================================================
-           2. FLOATING PARTICLES on left panel
+           2. FLOATING PARTICLES
         ============================================================ */
         const particleContainer = document.getElementById('particles');
 
         function createParticle() {
-            const p = document.createElement('div');
+            const p    = document.createElement('div');
             p.className = 'particle';
-
-            const size  = Math.random() * 14 + 6;
-            const left  = Math.random() * 100;
-            const delay = Math.random() * 5;
-            const dur   = Math.random() * 8 + 7;
-
-            p.style.cssText = `
-                width:${size}px; height:${size}px;
-                left:${left}%; bottom:-20px;
-                animation-duration:${dur}s;
-                animation-delay:${delay}s;
-                opacity:0;
-            `;
+            const size = Math.random() * 14 + 6;
+            const left = Math.random() * 100;
+            const dur  = Math.random() * 8 + 7;
+            const del  = Math.random() * 5;
+            p.style.cssText = `width:${size}px;height:${size}px;left:${left}%;bottom:-20px;animation-duration:${dur}s;animation-delay:${del}s;opacity:0;`;
             particleContainer.appendChild(p);
-
-            // Remove after a few cycles to keep DOM clean
-            setTimeout(() => p.remove(), (dur + delay + 2) * 1000);
+            setTimeout(() => p.remove(), (dur + del + 2) * 1000);
         }
 
-        // Create initial batch
         for (let i = 0; i < 14; i++) createParticle();
-        // Keep spawning
         setInterval(createParticle, 1200);
 
         /* ============================================================
-           3. SVG TILE PULSE — random tiles glow periodically
+           3. SVG TILE PULSE
         ============================================================ */
         const tiles = document.querySelectorAll('.tile');
 
         function pulseTile() {
             const tile = tiles[Math.floor(Math.random() * tiles.length)];
-            const orig = tile.getAttribute('fill-opacity') || '1';
-
             tile.style.transition = 'opacity 0.4s ease';
             tile.style.opacity    = '0.4';
-
-            setTimeout(() => {
-                tile.style.opacity = '1';
-            }, 400);
+            setTimeout(() => tile.style.opacity = '1', 400);
         }
 
         setInterval(pulseTile, 600);
 
         /* ============================================================
-           4. PASSWORD TOGGLE
+           4. PASSWORD TOGGLE (main)
         ============================================================ */
-        const toggleBtn = document.getElementById('togglePwd');
-        const pwdInput  = document.getElementById('password');
+        const togglePwd  = document.getElementById('togglePwd');
+        const pwdInput   = document.getElementById('password');
 
-        toggleBtn.addEventListener('click', () => {
-            const isPass = pwdInput.type === 'password';
-            pwdInput.type      = isPass ? 'text' : 'password';
-            toggleBtn.textContent = isPass ? '🙈' : '👁';
-            toggleBtn.style.transform = 'translateY(-50%) scale(1.3)';
-            setTimeout(() => toggleBtn.style.transform = 'translateY(-50%) scale(1)', 200);
+        togglePwd.addEventListener('click', () => {
+            const show = pwdInput.type === 'password';
+            pwdInput.type         = show ? 'text' : 'password';
+            togglePwd.textContent = show ? '🙈' : '👁';
+            togglePwd.style.transform = 'translateY(-50%) scale(1.3)';
+            setTimeout(() => togglePwd.style.transform = 'translateY(-50%) scale(1)', 200);
         });
 
         /* ============================================================
-           5. RIPPLE EFFECT on Login button
+           5. PASSWORD TOGGLE (confirm)
         ============================================================ */
-        const loginBtn = document.getElementById('loginBtn');
+        const togglePwdConfirm  = document.getElementById('togglePwdConfirm');
+        const pwdConfirmInput   = document.getElementById('password_confirmation');
 
-        loginBtn.addEventListener('click', function(e) {
+        togglePwdConfirm.addEventListener('click', () => {
+            const show = pwdConfirmInput.type === 'password';
+            pwdConfirmInput.type         = show ? 'text' : 'password';
+            togglePwdConfirm.textContent = show ? '🙈' : '👁';
+            togglePwdConfirm.style.transform = 'translateY(-50%) scale(1.3)';
+            setTimeout(() => togglePwdConfirm.style.transform = 'translateY(-50%) scale(1)', 200);
+        });
+
+        /* ============================================================
+           6. PASSWORD STRENGTH METER
+        ============================================================ */
+        const strengthWrap  = document.getElementById('strengthWrap');
+        const strengthBar   = document.getElementById('strengthBar');
+        const strengthLabel = document.getElementById('strengthLabel');
+
+        const levels = [
+            { label: 'Sangat Lemah', color: '#ef4444', width: '20%' },
+            { label: 'Lemah',        color: '#f97316', width: '40%' },
+            { label: 'Cukup',        color: '#eab308', width: '60%' },
+            { label: 'Kuat',         color: '#22c55e', width: '80%' },
+            { label: 'Sangat Kuat',  color: '#16a34a', width: '100%' },
+        ];
+
+        function getStrength(pwd) {
+            let score = 0;
+            if (pwd.length >= 8)  score++;
+            if (pwd.length >= 12) score++;
+            if (/[A-Z]/.test(pwd)) score++;
+            if (/[0-9]/.test(pwd)) score++;
+            if (/[^A-Za-z0-9]/.test(pwd)) score++;
+            return Math.min(score, 4);
+        }
+
+        pwdInput.addEventListener('input', () => {
+            const val = pwdInput.value;
+
+            if (val.length === 0) {
+                strengthWrap.style.display  = 'none';
+                strengthLabel.style.display = 'none';
+                return;
+            }
+
+            strengthWrap.style.display  = 'block';
+            strengthLabel.style.display = 'block';
+
+            const idx  = getStrength(val);
+            const lvl  = levels[idx];
+            strengthBar.style.width           = lvl.width;
+            strengthBar.style.backgroundColor = lvl.color;
+            strengthLabel.textContent          = lvl.label;
+            strengthLabel.style.color          = lvl.color;
+        });
+
+        /* ============================================================
+           7. CONFIRM PASSWORD MATCH CHECK
+        ============================================================ */
+        const confirmError = document.getElementById('confirmError');
+
+        function checkMatch() {
+            if (pwdConfirmInput.value.length === 0) {
+                confirmError.style.display = 'none';
+                pwdConfirmInput.classList.remove('is-invalid', 'is-valid');
+                return;
+            }
+            const match = pwdInput.value === pwdConfirmInput.value;
+            confirmError.style.display = match ? 'none' : 'block';
+            pwdConfirmInput.classList.toggle('is-valid', match);
+            pwdConfirmInput.classList.toggle('is-invalid', !match);
+        }
+
+        pwdConfirmInput.addEventListener('input', checkMatch);
+        pwdInput.addEventListener('input', checkMatch);
+
+        /* ============================================================
+           8. REAL-TIME VALIDATION (name & email)
+        ============================================================ */
+        const nameInput  = document.getElementById('name');
+        const emailInput = document.getElementById('email');
+
+        function validateName() {
+            const ok = nameInput.value.trim().length >= 2;
+            nameInput.classList.toggle('is-valid',   ok && nameInput.value.length > 0);
+            nameInput.classList.toggle('is-invalid', !ok && nameInput.value.length > 0);
+        }
+
+        function validateEmail() {
+            const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value);
+            emailInput.classList.toggle('is-valid',   ok);
+            emailInput.classList.toggle('is-invalid', !ok && emailInput.value.length > 0);
+        }
+
+        nameInput.addEventListener('input',  validateName);
+        emailInput.addEventListener('input', validateEmail);
+
+        /* Remove invalid on focus */
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('focus', () => input.classList.remove('is-invalid'));
+        });
+
+        /* ============================================================
+           9. RIPPLE on Register button
+        ============================================================ */
+        const registerBtn = document.getElementById('registerBtn');
+
+        registerBtn.addEventListener('click', function(e) {
             const rect   = this.getBoundingClientRect();
             const x      = e.clientX - rect.left;
             const y      = e.clientY - rect.top;
             const ripple = document.createElement('span');
             ripple.className = 'ripple';
-            ripple.style.cssText = `left:${x}px; top:${y}px; width:${rect.width}px; height:${rect.width}px; margin-left:-${rect.width/2}px; margin-top:-${rect.width/2}px;`;
+            ripple.style.cssText = `left:${x}px;top:${y}px;width:${rect.width}px;height:${rect.width}px;margin-left:-${rect.width/2}px;margin-top:-${rect.width/2}px;`;
             this.appendChild(ripple);
             setTimeout(() => ripple.remove(), 600);
         });
 
         /* ============================================================
-           6. LOADING STATE on form submit
+           10. LOADING STATE + CLIENT VALIDATION on submit
         ============================================================ */
-        document.getElementById('loginForm').addEventListener('submit', function() {
-            loginBtn.classList.add('loading');
-            loginBtn.disabled = true;
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            const fields  = [nameInput, emailInput, pwdInput, pwdConfirmInput];
+            let   hasErr  = false;
 
-            // Safety: re-enable after 6s (in case of server error / no redirect)
+            fields.forEach(f => {
+                if (!f.value.trim()) {
+                    f.classList.add('is-invalid');
+                    f.style.animation = 'none';
+                    requestAnimationFrame(() => { f.style.animation = ''; });
+                    hasErr = true;
+                }
+            });
+
+            // Check password match
+            if (pwdInput.value !== pwdConfirmInput.value) {
+                pwdConfirmInput.classList.add('is-invalid');
+                confirmError.style.display = 'block';
+                hasErr = true;
+            }
+
+            // Check strength min
+            if (pwdInput.value.length > 0 && getStrength(pwdInput.value) < 1) {
+                pwdInput.classList.add('is-invalid');
+                hasErr = true;
+            }
+
+            if (hasErr) {
+                e.preventDefault();
+                showToast('⚠️ Lengkapi semua field dengan benar.');
+                return;
+            }
+
+            // Show loading
+            registerBtn.classList.add('loading');
+            registerBtn.disabled = true;
             setTimeout(() => {
-                loginBtn.classList.remove('loading');
-                loginBtn.disabled = false;
+                registerBtn.classList.remove('loading');
+                registerBtn.disabled = false;
             }, 6000);
         });
 
         /* ============================================================
-           7. INPUT SHAKE on empty submit attempt
+           11. CURSOR TRAIL on left panel
         ============================================================ */
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            const email = document.getElementById('email');
-            const pass  = document.getElementById('password');
-            let invalid = false;
+        const leftPanel = document.querySelector('.left-section');
 
-            [email, pass].forEach(input => {
-                if (!input.value.trim()) {
-                    input.classList.add('is-invalid');
-                    input.style.animation = 'none';
-                    requestAnimationFrame(() => {
-                        input.style.animation = '';
-                        input.classList.add('is-invalid');
-                    });
-                    invalid = true;
-                } else {
-                    input.classList.remove('is-invalid');
-                }
+        leftPanel.addEventListener('mousemove', (e) => {
+            const dot = document.createElement('div');
+            dot.style.cssText = `
+                position:absolute;
+                left:${e.offsetX}px;top:${e.offsetY}px;
+                width:6px;height:6px;
+                border-radius:50%;
+                background:rgba(200,180,0,0.7);
+                pointer-events:none;
+                transform:translate(-50%,-50%) scale(1);
+                transition:transform 0.4s ease, opacity 0.4s ease;
+            `;
+            leftPanel.appendChild(dot);
+            requestAnimationFrame(() => {
+                dot.style.transform = 'translate(-50%,-50%) scale(3)';
+                dot.style.opacity   = '0';
             });
+            setTimeout(() => dot.remove(), 450);
         });
 
         /* ============================================================
-           8. TOAST helper — called from Blade if needed
+           12. TOAST
         ============================================================ */
         function showToast(msg, duration = 3000) {
             const toast = document.getElementById('toast');
@@ -720,44 +853,9 @@
             setTimeout(() => toast.classList.remove('show'), duration);
         }
 
-        // Show toast for Laravel validation errors (optional)
         @if ($errors->any())
-            showToast('⚠️ Periksa kembali email atau password kamu.');
+            showToast('⚠️ Periksa kembali data registrasi kamu.');
         @endif
-
-        /* ============================================================
-           9. INPUT FOCUS: remove invalid class when user starts typing
-        ============================================================ */
-        document.querySelectorAll('.form-input').forEach(input => {
-            input.addEventListener('input', () => input.classList.remove('is-invalid'));
-        });
-
-        /* ============================================================
-           10. CURSOR TRAIL on left panel (subtle sparkle)
-        ============================================================ */
-        const leftPanel = document.querySelector('.left-section');
-
-        leftPanel.addEventListener('mousemove', (e) => {
-            const dot = document.createElement('div');
-            dot.style.cssText = `
-                position:absolute;
-                left:${e.offsetX}px; top:${e.offsetY}px;
-                width:6px; height:6px;
-                border-radius:50%;
-                background:rgba(200,180,0,0.7);
-                pointer-events:none;
-                transform:translate(-50%,-50%) scale(1);
-                transition: transform 0.4s ease, opacity 0.4s ease;
-            `;
-            leftPanel.appendChild(dot);
-
-            requestAnimationFrame(() => {
-                dot.style.transform = 'translate(-50%,-50%) scale(3)';
-                dot.style.opacity   = '0';
-            });
-
-            setTimeout(() => dot.remove(), 450);
-        });
     </script>
 
 </body>

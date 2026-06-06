@@ -9,7 +9,7 @@ class LoginController extends Controller
 {
     public function showLoginForm()
     {
-        // Pastikan nama file blade login kamu ditaruh di folder: resources/views/auth/login.blade.php
+       
         return view('auth.login'); 
     }
 
