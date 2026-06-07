@@ -699,10 +699,11 @@
             <!-- Logo kapal E-Kanisius -->
             <img src="{{ asset('img/E-Kanisius 1.png') }}"
                  alt="E-Kanisius Logo"
-                 style="width:40px; height:auto; object-fit:contain; flex-shrink:0;"
+                 style="width:85px; height:auto; object-fit:contain; flex-shrink:0;"
                  onerror="this.style.display='none'; document.getElementById('fallback-logo').style.display='flex';">
             <!-- Fallback jika gambar belum ada -->
             <div id="fallback-logo" class="brand-logo" style="display:none;">⛵</div>
+
 
             <div class="brand-text">
                 <div class="brand-name">PORTAL SAKTI</div>
@@ -751,9 +752,9 @@
                 <button class="btn btn-outline" id="btnTambahAnak" onclick="tambahAnak(this, event)">
                     ＋ TAMBAH ANAK
                 </button>
-                <button class="btn btn-gold" id="btnOCR" onclick="fillOCR(this, event)">
+                <!-- <button class="btn btn-gold" id="btnOCR" onclick="fillOCR(this, event)">
                     ✨ FILL WITH AI (OCR)
-                </button>
+                </button> -->
             </div>
         </div>
 

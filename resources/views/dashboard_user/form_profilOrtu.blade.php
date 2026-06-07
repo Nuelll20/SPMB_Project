@@ -134,7 +134,7 @@
 
                 <div class="space-y-2">
                     <label class="text-[11px] font-bold text-gray-400 uppercase tracking-wider block">Alamat Domisili Sesuai KTP</label>
-                    <textarea name="alamat" rows="3" class="w-full bg-white border border-gray-200 rounded-2xl px-4 py-3.5 text-sm font-semibold text-sakti-blue focus:outline-none focus:border-sakti-blue shadow-sm resize-none" placeholder="Masukkan alamat lengkap...">Jl. Kaliurang KM 5, Wirobrajan, Yogyakarta</textarea>
+                    <textarea name="alamat" rows="3" class="w-full bg-white border border-gray-200 rounded-2xl px-4 py-3.5 text-sm font-semibold text-sakti-blue focus:outline-none focus:border-sakti-blue shadow-sm resize-none" placeholder="Masukkan alamat lengkap..."> </textarea>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
