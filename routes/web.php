@@ -2,9 +2,9 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('dashboard_user.form_daftar');
@@ -17,7 +17,6 @@ Route::get('/login', function () {
 Route::post('/login', [LoginController::class, 'login']);
 
 Route::get('/register', [RegisterController::class, 'index'])->name('register');
-
 Route::post('/register', [RegisterController::class, 'store'])->name('register.store');
 
 Route::get('/forgot-password', function () {
