@@ -2,8 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\FormOrtuController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -27,20 +26,11 @@ Route::post('/forgot-password', function () {
     return "Fitur send email/proses reset password belum didefinisikan.";
 })->name('password.email');
 
-Route::get('/profil-ortu', function () {
-    return view('dashboard_user.form_profilOrtu');
-})->name('profil.ortu');
+Route::get('/profil-ortu', [FormOrtuController::class, 'index'])
+    ->name('profil.ortu');
 
-Route::post('/profil-ortu', function (Request $request) {
-    DB::table('orang_tua')->insert([
-        'nama' => $request->nama ?? 'Orang Tua',
-        'no_telp' => $request->no_telp ?? '-',
-        'alamat' => $request->alamat,
-        'gaji' => $request->penghasilan,
-    ]);
-
-    return redirect()->route('form.daftar');
-})->name('profil.ortu.store');
+Route::post('/profil-ortu', [FormOrtuController::class, 'store'])
+    ->name('profil.ortu.store');
 
 Route::get('/form-daftar', function () {
     return view('dashboard_user.form_daftar');
