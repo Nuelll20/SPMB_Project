@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SPMB - Login</title>
+    <title>E-Kanisius - Login</title>
     <style>
         * {
             margin: 0;
@@ -229,7 +229,7 @@
                 <!-- Header with Logo and Title -->
                 <div class="header">
                     <img src="{{ asset('images/logo-small.png') }}" alt="Logo" class="logo-img" style="width: 80px; height: 128px;">
-                    <div class="logo-text">Sistem Penerimaan Murid Baru</div>
+                    <div class="logo-text">E-Kanisius</div>
                 </div>
 
                 <!-- Login Form -->

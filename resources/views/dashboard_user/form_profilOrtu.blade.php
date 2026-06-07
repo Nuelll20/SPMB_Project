@@ -54,7 +54,6 @@
                         <span class="bg-[#FFF8E7] text-sakti-orange text-[10px] font-bold px-2 py-0.5 rounded-full border border-[#FCE8BD] flex items-center space-x-1">
                             <i class="fa-solid fa-shield-halved text-[9px]"></i> <span>PARENT</span>
                         </span>
-                        <span class="text-gray-400 text-[11px] font-medium tracking-wide">UID-MOCK-parent-001</span>
                     </div>
                 </div>
             </div>
@@ -97,7 +96,8 @@
                 Lengkapi data pribadi Ayah/Bunda sebelum melanjutkan pendaftaran anak.
             </p>
 
-            <form action="" method="POST" class="text-left space-y-6">
+            <form action="{{ route('profil.ortu.store') }}" method="POST">
+                @csrf
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="space-y-2">
                         <label class="text-[11px] font-bold text-gray-400 uppercase tracking-wider block">Pendidikan Terakhir</label>
@@ -134,7 +134,11 @@
 
                 <div class="space-y-2">
                     <label class="text-[11px] font-bold text-gray-400 uppercase tracking-wider block">Alamat Domisili Sesuai KTP</label>
+<<<<<<< HEAD
                     <textarea name="alamat" rows="3" class="w-full bg-white border border-gray-200 rounded-2xl px-4 py-3.5 text-sm font-semibold text-sakti-blue focus:outline-none focus:border-sakti-blue shadow-sm resize-none" placeholder="Masukkan alamat lengkap..."> </textarea>
+=======
+                    <textarea name="alamat" rows="3" class="w-full bg-white border border-gray-200 rounded-2xl px-4 py-3.5 text-sm font-semibold text-sakti-blue focus:outline-none focus:border-sakti-blue shadow-sm resize-none" placeholder="Masukkan alamat lengkap..."></textarea>
+>>>>>>> 7eb49654f98222510327f95abf3ba09f0176b191
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -158,7 +162,7 @@
                             <select name="unit_sekolah" class="w-full bg-white border border-gray-200 rounded-2xl px-4 py-3.5 text-sm font-semibold text-sakti-blue focus:outline-none focus:border-sakti-blue appearance-none cursor-pointer shadow-sm">
                                 <option value="TK Wirobrajan" selected>TK Wirobrajan</option>
                                 <option value="SD Kanisius">SD Kanisius Hati Kudus</option>
-                                <option value="SMP Kanisius">SMP Kanisius</option>
+                           
                             </select>
                             <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-sakti-blue text-xs">
                                 <i class="fa-solid fa-chevron-down"></i>
@@ -177,13 +181,13 @@
                      <button type="button" class="anak-btn">5</button>
                     </div>
                 </div>
-
-                <div class="pt-6 text-center">
-                    <button type="submit" class="bg-[#002B5B] hover:bg-[#001F42] text-white font-bold text-sm px-8 py-4 rounded-3xl inline-flex items-center space-x-3 shadow-lg transition cursor-pointer">
-                        <span>Simpan Profil & Mulai Form Siswa</span>
-                        <i class="fa-solid fa-chevron-right text-xs"></i>
-                    </button>
-                </div>
+<div class="pt-6 flex justify-center">
+    <a href="{{ route('form.daftar') }}"
+       class="bg-[#002B5B] hover:bg-[#001F42] text-white font-bold text-sm px-8 py-4 rounded-3xl inline-flex items-center space-x-3 shadow-lg transition">
+        <span>Simpan Profil & Mulai Form Siswa</span>
+        <i class="fa-solid fa-chevron-right text-xs"></i>
+    </a>
+</div>
             </form>
         </main>
     </div>
