@@ -160,20 +160,12 @@
                 </div>
 
                 <div class="space-y-2">
-<<<<<<< HEAD
-                    <label class="text-[11px] font-bold text-gray-400 uppercase tracking-wider block">Alamat Domisili Sesuai KTP</label>
-<<<<<<< HEAD
-                    <textarea name="alamat" rows="3" class="w-full bg-white border border-gray-200 rounded-2xl px-4 py-3.5 text-sm font-semibold text-sakti-blue focus:outline-none focus:border-sakti-blue shadow-sm resize-none" placeholder="Masukkan alamat lengkap..."> </textarea>
-=======
-                    <textarea name="alamat" rows="3" class="w-full bg-white border border-gray-200 rounded-2xl px-4 py-3.5 text-sm font-semibold text-sakti-blue focus:outline-none focus:border-sakti-blue shadow-sm resize-none" placeholder="Masukkan alamat lengkap..."></textarea>
->>>>>>> 7eb49654f98222510327f95abf3ba09f0176b191
-=======
+
                     <label class="text-[11px] font-bold text-gray-400 uppercase tracking-wider block">Alamat Domisili
                         Sesuai KTP</label>
                     <textarea name="alamat" rows="3"
                         class="w-full bg-white border border-gray-200 rounded-2xl px-4 py-3.5 text-sm font-semibold text-sakti-blue focus:outline-none focus:border-sakti-blue shadow-sm resize-none"
                         placeholder="Masukkan alamat lengkap..."></textarea>
->>>>>>> 314ed720deb3eb9f5fef9c807418b1a0485a1815
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
