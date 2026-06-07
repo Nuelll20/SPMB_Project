@@ -25,3 +25,7 @@ Route::get('/forgot-password', function () {
 Route::post('/forgot-password', function () {
     return "Fitur send email/proses reset password belum didefinisikan.";
 })->name('password.email');
+
+Route::get('/form-daftar', function () {
+    return view('dashboard_user.form_daftar');
+})->name('form.daftar');
