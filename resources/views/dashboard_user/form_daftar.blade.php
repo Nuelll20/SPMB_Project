@@ -8,24 +8,21 @@
     <style>
         :root {
             --navy:    #1a2a6c;
-            --navy-light: #2e4a96;
             --blue:    #004AAD;
             --gold:    #f5c400;
             --gold-dark: #c9a200;
-            --bg:      #eef1f7;
+            --bg:      #f0f2f8;
             --surface: #ffffff;
             --surface2:#f4f6fb;
-            --border:  #dde3f0;
+            --border:  #e0e4ef;
             --text:    #1a1f36;
-            --muted:   #6b7399;
+            --muted:   #7b82a0;
             --green:   #16a34a;
             --red:     #dc2626;
-            --sidebar-w: 260px;
-            --topbar-h:  68px;
-            --radius:  12px;
+            --radius:  14px;
         }
 
-        * { margin:0; padding:0; box-sizing:border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -33,379 +30,209 @@
             color: var(--text);
             min-height: 100vh;
             display: flex;
-            overflow-x: hidden;
+            flex-direction: column;
         }
 
-        /* ===================== SIDEBAR ===================== */
-        .sidebar {
-            width: var(--sidebar-w);
-            background: var(--navy);
-            min-height: 100vh;
+        /* ===================== TOPBAR / NAVBAR ===================== */
+        .topbar {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 0 32px;
+            height: 64px;
             display: flex;
-            flex-direction: column;
-            position: fixed;
-            left: 0; top: 0; bottom: 0;
+            align-items: center;
+            gap: 0;
+            position: sticky;
+            top: 0;
             z-index: 100;
-            transition: transform 0.35s cubic-bezier(0.22,1,0.36,1);
-            box-shadow: 4px 0 24px rgba(26,42,108,0.18);
+            box-shadow: 0 2px 16px rgba(26,42,108,0.07);
         }
 
-        .sidebar-brand {
-            padding: 24px 20px 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .sidebar-logos {
+        /* Brand */
+        .topbar-brand {
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 6px;
+            margin-right: 40px;
         }
 
-        .logo-circle {
-            width: 44px; height: 44px;
-            background: var(--gold);
+        .brand-logo {
+            width: 40px; height: 40px;
+            background: var(--navy);
             border-radius: 10px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 22px;
+            font-size: 20px;
             flex-shrink: 0;
-            box-shadow: 0 4px 12px rgba(245,196,0,0.35);
-            transition: transform 0.3s ease;
         }
 
-        .logo-circle:hover { transform: rotate(-8deg) scale(1.05); }
-
-        .logo-kanisius {
-            width: 36px; height: 36px;
-            background: rgba(255,255,255,0.12);
-            border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 18px;
-            flex-shrink: 0;
-            border: 1px solid rgba(255,255,255,0.15);
-            transition: transform 0.3s ease;
-        }
-
-        .logo-kanisius:hover { transform: rotate(8deg) scale(1.05); }
-
-        .brand-info { flex: 1; }
+        .brand-text { display: flex; flex-direction: column; line-height: 1.1; }
 
         .brand-name {
-            color: #fff;
-            font-size: 16px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-            line-height: 1;
-        }
-
-        .brand-sub {
-            color: rgba(255,255,255,0.45);
-            font-size: 10px;
-            font-weight: 500;
-            margin-top: 3px;
-            letter-spacing: 0.8px;
-            text-transform: uppercase;
-        }
-
-        /* User badge */
-        .sidebar-user {
-            padding: 16px 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-        }
-
-        .user-badge {
-            background: rgba(255,255,255,0.07);
-            border-radius: 10px;
-            padding: 10px 12px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .user-avatar {
-            width: 36px; height: 36px;
-            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-            border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
             font-size: 15px;
             font-weight: 800;
             color: var(--navy);
-            flex-shrink: 0;
+            letter-spacing: 0.3px;
         }
 
-        .user-info { flex: 1; min-width: 0; }
-
-        .user-name {
-            color: #fff;
-            font-size: 13px;
-            font-weight: 700;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        .brand-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .user-role {
-            color: rgba(255,255,255,0.45);
+        .brand-role {
             font-size: 10px;
-            font-weight: 500;
+            font-weight: 700;
+            color: var(--muted);
             text-transform: uppercase;
             letter-spacing: 0.6px;
         }
 
-        .user-dot {
-            width: 8px; height: 8px;
-            background: #22c55e;
-            border-radius: 50%;
-            flex-shrink: 0;
-            box-shadow: 0 0 0 2px rgba(34,197,94,0.25);
-            animation: pulse-dot 2s ease infinite;
+        .brand-uid {
+            font-family: 'DM Mono', monospace;
+            font-size: 9px;
+            color: var(--muted);
+            letter-spacing: 0.3px;
         }
 
-        @keyframes pulse-dot {
-            0%, 100% { box-shadow: 0 0 0 2px rgba(34,197,94,0.25); }
-            50%       { box-shadow: 0 0 0 5px rgba(34,197,94,0.1); }
-        }
-
-        /* Nav */
-        .sidebar-nav { flex: 1; padding: 12px 12px; overflow-y: auto; }
-
-        .nav-section-label {
-            color: rgba(255,255,255,0.3);
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: 1.2px;
-            text-transform: uppercase;
-            padding: 12px 8px 6px;
-        }
-
-        .nav-item {
+        /* Nav links */
+        .topbar-nav {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 10px 12px;
+            gap: 4px;
+            flex: 1;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 16px;
             border-radius: 8px;
-            color: rgba(255,255,255,0.55);
             font-size: 13.5px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-decoration: none;
-            margin-bottom: 2px;
-            position: relative;
-        }
-
-        .nav-item:hover {
-            background: rgba(255,255,255,0.07);
-            color: rgba(255,255,255,0.9);
-        }
-
-        .nav-item.active {
-            background: var(--blue);
-            color: #fff;
             font-weight: 600;
-            box-shadow: 0 4px 12px rgba(0,74,173,0.35);
-        }
-
-        .nav-item.active::before {
-            content: '';
-            position: absolute;
-            left: -12px; top: 50%;
-            transform: translateY(-50%);
-            width: 3px; height: 60%;
-            background: var(--gold);
-            border-radius: 0 2px 2px 0;
-        }
-
-        .nav-icon { font-size: 16px; width: 20px; text-align: center; flex-shrink: 0; }
-
-        .nav-badge {
-            margin-left: auto;
-            background: var(--gold);
-            color: var(--navy);
-            font-size: 10px;
-            font-weight: 800;
-            padding: 2px 7px;
-            border-radius: 99px;
-        }
-
-        /* Sidebar footer */
-        .sidebar-footer {
-            padding: 16px 12px;
-            border-top: 1px solid rgba(255,255,255,0.08);
-        }
-
-        .logout-btn {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 12px;
-            border-radius: 8px;
-            color: rgba(255,255,255,0.45);
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
+            color: var(--muted);
+            text-decoration: none;
             transition: all 0.2s;
-            background: none;
+            cursor: pointer;
             border: none;
-            width: 100%;
+            background: none;
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
-        .logout-btn:hover {
-            background: rgba(220,38,38,0.12);
-            color: #fca5a5;
+        .nav-link:hover { background: var(--surface2); color: var(--text); }
+
+        .nav-link.active {
+            color: var(--blue);
+            background: rgba(0,74,173,0.07);
+            font-weight: 700;
         }
 
-        /* ===================== MAIN ===================== */
-        .main {
-            margin-left: var(--sidebar-w);
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
+        .nav-icon { font-size: 15px; opacity: 0.8; }
 
-        /* TOPBAR */
-        .topbar {
-            height: var(--topbar-h);
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            padding: 0 32px;
-            gap: 16px;
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            box-shadow: 0 1px 12px rgba(26,42,108,0.06);
-        }
-
-        .topbar-toggle {
-            display: none;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 20px;
-            color: var(--muted);
-            padding: 6px;
-            border-radius: 8px;
-            transition: background 0.2s;
-        }
-
-        .topbar-toggle:hover { background: var(--bg); }
-
-        .topbar-breadcrumb {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-        }
-
-        .breadcrumb-item { color: var(--muted); font-weight: 500; }
-        .breadcrumb-sep { color: var(--border); }
-        .breadcrumb-item.current { color: var(--text); font-weight: 700; }
-
-        .topbar-spacer { flex: 1; }
-
-        .topbar-actions { display: flex; align-items: center; gap: 10px; }
-
-        .topbar-icon-btn {
-            width: 38px; height: 38px;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            background: var(--surface);
-            cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 16px;
-            transition: all 0.2s;
-            position: relative;
-        }
-
-        .topbar-icon-btn:hover { background: var(--bg); border-color: var(--blue); }
-
-        .notif-dot {
-            position: absolute;
-            top: 7px; right: 7px;
-            width: 7px; height: 7px;
-            background: var(--red);
+        .nav-dot {
+            width: 5px; height: 5px;
+            background: var(--blue);
             border-radius: 50%;
-            border: 1.5px solid #fff;
+            margin-left: 2px;
         }
 
-        .topbar-user {
+        /* Topbar right */
+        .topbar-right {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 6px 12px;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            cursor: pointer;
-            transition: all 0.2s;
+            gap: 14px;
         }
 
-        .topbar-user:hover { background: var(--bg); }
-
-        .topbar-avatar {
-            width: 30px; height: 30px;
-            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-            border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 12px;
-            font-weight: 800;
-            color: var(--navy);
+        .topbar-username {
+            text-align: right;
+            line-height: 1.2;
         }
 
         .topbar-uname {
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 700;
             color: var(--text);
         }
 
         .topbar-urole {
-            font-size: 11px;
+            font-size: 10px;
+            font-weight: 600;
             color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
         }
 
-        /* ===================== PAGE CONTENT ===================== */
-        .page-content {
+        .topbar-logout {
+            width: 36px; height: 36px;
+            background: rgba(220,38,38,0.07);
+            border: 1.5px solid rgba(220,38,38,0.15);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .topbar-logout:hover {
+            background: rgba(220,38,38,0.12);
+            border-color: rgba(220,38,38,0.3);
+        }
+
+        /* ===================== PAGE BODY ===================== */
+        .page-body {
             flex: 1;
-            padding: 32px;
-            max-width: 1100px;
+            padding: 36px 32px;
+            max-width: 940px;
             width: 100%;
             margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
         }
 
-        /* PAGE HEADER */
+        /* ===================== PAGE HEADER ===================== */
         .page-header {
             display: flex;
             align-items: flex-start;
             justify-content: space-between;
-            margin-bottom: 28px;
-            gap: 20px;
+            gap: 16px;
             flex-wrap: wrap;
             opacity: 0;
-            animation: fadeUp 0.5s ease 0.1s forwards;
+            animation: fadeUp 0.5s ease 0.05s forwards;
         }
 
         @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(16px); }
+            from { opacity: 0; transform: translateY(14px); }
             to   { opacity: 1; transform: translateY(0); }
         }
 
-        .page-title { font-size: 26px; font-weight: 800; color: var(--navy); }
-        .page-subtitle { color: var(--muted); font-size: 14px; margin-top: 4px; }
+        .page-title {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--navy);
+            letter-spacing: -0.3px;
+        }
 
-        .header-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .page-subtitle {
+            color: var(--muted);
+            font-size: 13.5px;
+            margin-top: 3px;
+        }
 
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        /* Buttons */
         .btn {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 10px 20px;
+            padding: 10px 22px;
             border-radius: 10px;
             font-size: 13.5px;
             font-weight: 700;
@@ -416,6 +243,7 @@
             position: relative;
             overflow: hidden;
             letter-spacing: 0.2px;
+            white-space: nowrap;
         }
 
         .btn .ripple {
@@ -438,209 +266,92 @@
         .btn-outline:hover {
             border-color: var(--blue);
             color: var(--blue);
-            background: #eef4ff;
-        }
-
-        .btn-primary {
-            background: var(--blue);
-            color: #fff;
-            box-shadow: 0 4px 16px rgba(0,74,173,0.3);
-        }
-
-        .btn-primary:hover {
-            background: #003a8c;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0,74,173,0.4);
+            background: rgba(0,74,173,0.04);
         }
 
         .btn-gold {
             background: var(--gold);
             color: var(--navy);
-            box-shadow: 0 4px 16px rgba(245,196,0,0.35);
+            box-shadow: 0 4px 14px rgba(245,196,0,0.35);
         }
 
         .btn-gold:hover {
             background: var(--gold-dark);
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(245,196,0,0.45);
+            box-shadow: 0 8px 22px rgba(245,196,0,0.4);
         }
 
-        /* PROGRESS BAR */
-        .progress-wrap {
-            background: var(--surface);
-            border-radius: var(--radius);
-            border: 1px solid var(--border);
-            padding: 16px 20px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            opacity: 0;
-            animation: fadeUp 0.5s ease 0.2s forwards;
-        }
-
-        .progress-steps {
-            display: flex;
-            align-items: center;
-            gap: 0;
-            flex: 1;
-        }
-
-        .step {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex: 1;
-            position: relative;
-        }
-
-        .step:not(:last-child)::after {
-            content: '';
-            flex: 1;
-            height: 2px;
-            background: var(--border);
-            margin: 0 8px;
-            border-radius: 99px;
-            transition: background 0.4s;
-        }
-
-        .step.done:not(:last-child)::after { background: var(--green); }
-        .step.active:not(:last-child)::after { background: var(--border); }
-
-        .step-num {
-            width: 28px; height: 28px;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 12px;
-            font-weight: 800;
-            flex-shrink: 0;
-            transition: all 0.3s;
-        }
-
-        .step.done .step-num { background: var(--green); color: #fff; }
-        .step.active .step-num { background: var(--blue); color: #fff; box-shadow: 0 0 0 4px rgba(0,74,173,0.15); }
-        .step.pending .step-num { background: var(--border); color: var(--muted); }
-
-        .step-label { font-size: 12px; font-weight: 600; color: var(--muted); white-space: nowrap; }
-        .step.active .step-label { color: var(--blue); }
-        .step.done .step-label { color: var(--green); }
-
-        /* TABS */
-        .tabs-wrap {
-            display: flex;
-            gap: 6px;
-            margin-bottom: 20px;
-            background: var(--surface);
-            border-radius: var(--radius);
-            padding: 6px;
-            border: 1px solid var(--border);
-            opacity: 0;
-            animation: fadeUp 0.5s ease 0.25s forwards;
-            width: fit-content;
-        }
-
-        .tab-btn {
-            padding: 8px 18px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            border: none;
-            background: none;
-            color: var(--muted);
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .tab-btn.active {
-            background: var(--blue);
-            color: #fff;
-            box-shadow: 0 2px 8px rgba(0,74,173,0.25);
-        }
-
-        .tab-tag {
-            background: var(--gold);
-            color: var(--navy);
-            font-size: 10px;
-            font-weight: 800;
-            padding: 1px 7px;
-            border-radius: 99px;
-        }
-
-        /* FORM CARD */
+        /* ===================== FORM CARD ===================== */
         .form-card {
             background: var(--surface);
-            border-radius: 16px;
+            border-radius: 18px;
             border: 1px solid var(--border);
-            padding: 28px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 16px rgba(26,42,108,0.05);
-            opacity: 0;
-            animation: fadeUp 0.5s ease 0.3s forwards;
+            padding: 32px;
+            box-shadow: 0 4px 32px rgba(26,42,108,0.06);
             position: relative;
+            opacity: 0;
+            animation: fadeUp 0.5s ease 0.15s forwards;
         }
 
         /* Data Anak badge */
         .data-anak-badge {
             position: absolute;
             top: -1px;
-            right: 24px;
+            right: 28px;
             background: var(--gold);
             color: var(--navy);
             font-size: 12px;
             font-weight: 800;
-            padding: 7px 18px;
-            border-radius: 0 0 10px 10px;
-            letter-spacing: 0.3px;
-            box-shadow: 0 4px 12px rgba(245,196,0,0.3);
+            padding: 8px 20px;
+            border-radius: 0 0 12px 12px;
+            letter-spacing: 0.4px;
+            box-shadow: 0 4px 14px rgba(245,196,0,0.3);
         }
 
+        /* 2-col grid */
         .form-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 28px;
+            gap: 32px;
         }
 
         .form-col { display: flex; flex-direction: column; gap: 20px; }
 
+        /* Section header */
         .col-header {
             display: flex;
             align-items: center;
             gap: 8px;
             padding-bottom: 12px;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 4px;
+            border-bottom: 1.5px solid var(--border);
         }
 
-        .col-header-icon { font-size: 16px; }
+        .col-header-icon { font-size: 15px; }
 
         .col-header-title {
             font-size: 11px;
             font-weight: 800;
-            letter-spacing: 1.2px;
+            letter-spacing: 1.4px;
             text-transform: uppercase;
             color: var(--muted);
         }
 
-        /* Field group */
+        /* Field */
         .field-group { display: flex; flex-direction: column; gap: 6px; }
 
-        .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
         .field-label {
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 0.6px;
+            font-size: 10.5px;
+            font-weight: 800;
+            letter-spacing: 0.8px;
             text-transform: uppercase;
             color: var(--muted);
         }
 
         .field-input {
-            height: 44px;
-            background: var(--surface2);
+            height: 46px;
+            background: var(--surface);
             border: 1.5px solid var(--border);
             border-radius: 9px;
             padding: 0 14px;
@@ -652,14 +363,16 @@
             width: 100%;
         }
 
+        .field-input::placeholder { color: #b0b7d0; font-weight: 400; }
+
         .field-input:focus {
             outline: none;
             border-color: var(--blue);
-            background: #eef4ff;
-            box-shadow: 0 0 0 3px rgba(0,74,173,0.1);
+            background: #f5f8ff;
+            box-shadow: 0 0 0 3px rgba(0,74,173,0.09);
         }
 
-        .field-input.is-valid { border-color: var(--green); background: #f0fdf4; }
+        .field-input.is-valid   { border-color: var(--green); background: #f0fdf4; }
         .field-input.is-invalid { border-color: var(--red); background: #fff5f5; animation: shake 0.35s ease; }
 
         @keyframes shake {
@@ -669,11 +382,11 @@
         }
 
         .field-select {
-            height: 44px;
-            background: var(--surface2);
+            height: 46px;
+            background: var(--surface);
             border: 1.5px solid var(--border);
             border-radius: 9px;
-            padding: 0 14px;
+            padding: 0 40px 0 14px;
             font-size: 14px;
             font-family: 'Plus Jakarta Sans', sans-serif;
             color: var(--text);
@@ -681,27 +394,31 @@
             transition: all 0.2s;
             width: 100%;
             appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7399' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237b82a0' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 14px center;
-            cursor: pointer;
         }
 
         .field-select:focus {
             outline: none;
             border-color: var(--blue);
-            background-color: #eef4ff;
-            box-shadow: 0 0 0 3px rgba(0,74,173,0.1);
+            background-color: #f5f8ff;
+            box-shadow: 0 0 0 3px rgba(0,74,173,0.09);
         }
 
+        .field-select.empty { color: #b0b7d0; font-weight: 400; }
+
         .field-input[type="date"] {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236b7399' stroke-width='2'%3E%3Crect x='3' y='4' width='18' height='18' rx='2' ry='2'/%3E%3Cline x1='16' y1='2' x2='16' y2='6'/%3E%3Cline x1='8' y1='2' x2='8' y2='6'/%3E%3Cline x1='3' y1='10' x2='21' y2='10'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 12px center;
+            color: var(--text);
+        }
+
+        .field-input[type="date"]:not([value]):not(:focus) {
+            color: #b0b7d0;
         }
 
         .field-textarea {
-            background: var(--surface2);
+            background: var(--surface);
             border: 1.5px solid var(--border);
             border-radius: 9px;
             padding: 12px 14px;
@@ -712,14 +429,16 @@
             transition: all 0.2s;
             width: 100%;
             resize: none;
-            height: 90px;
+            height: 96px;
         }
+
+        .field-textarea::placeholder { color: #b0b7d0; font-weight: 400; }
 
         .field-textarea:focus {
             outline: none;
             border-color: var(--blue);
-            background: #eef4ff;
-            box-shadow: 0 0 0 3px rgba(0,74,173,0.1);
+            background: #f5f8ff;
+            box-shadow: 0 0 0 3px rgba(0,74,173,0.09);
         }
 
         /* Alamat header row */
@@ -730,108 +449,130 @@
         }
 
         .samakan-btn {
-            font-size: 11px;
-            font-weight: 700;
+            font-size: 10px;
+            font-weight: 800;
             color: var(--blue);
             background: none;
             border: none;
             cursor: pointer;
             font-family: 'Plus Jakarta Sans', sans-serif;
-            padding: 4px 8px;
+            padding: 3px 8px;
             border-radius: 6px;
             transition: background 0.2s;
-            text-transform: uppercase;
             letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
 
-        .samakan-btn:hover { background: #eef4ff; }
+        .samakan-btn:hover { background: rgba(0,74,173,0.07); }
 
-        /* Upload berkas */
-        .upload-section { margin-top: 4px; }
-
+        /* ===== UPLOAD BERKAS ===== */
         .upload-label {
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 0.6px;
+            font-size: 10.5px;
+            font-weight: 800;
+            letter-spacing: 0.8px;
             text-transform: uppercase;
             color: var(--muted);
             margin-bottom: 10px;
             display: block;
         }
 
-        .upload-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .upload-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
 
         .upload-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: var(--surface2);
+            background: var(--surface);
             border: 1.5px solid var(--border);
             border-radius: 9px;
-            padding: 10px 14px;
+            padding: 10px 12px;
             transition: all 0.2s;
             cursor: pointer;
+            gap: 6px;
         }
 
-        .upload-item:hover { border-color: var(--blue); background: #eef4ff; }
+        .upload-item:hover { border-color: var(--blue); background: #f5f8ff; }
 
         .upload-item.uploaded {
             border-color: rgba(22,163,74,0.35);
-            background: #f0fdf4;
+            background: #f6fff9;
         }
 
-        .upload-left { display: flex; align-items: center; gap: 8px; }
-
-        .upload-icon { font-size: 16px; }
-
-        .upload-name { font-size: 13px; font-weight: 600; color: var(--text); }
-
-        .upload-actions { display: flex; align-items: center; gap: 6px; }
-
-        .upload-view-btn {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--blue);
-            background: rgba(0,74,173,0.08);
-            border: none;
-            border-radius: 6px;
-            padding: 3px 9px;
-            cursor: pointer;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            transition: background 0.2s;
+        .upload-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
         }
 
-        .upload-view-btn:hover { background: rgba(0,74,173,0.15); }
-
-        .upload-del-btn {
-            font-size: 14px;
-            background: none;
-            border: none;
-            cursor: pointer;
+        .upload-doc-icon {
             color: var(--muted);
-            transition: color 0.2s;
-            padding: 2px;
+            font-size: 15px;
+            flex-shrink: 0;
         }
 
-        .upload-del-btn:hover { color: var(--red); }
+        .upload-item.uploaded .upload-doc-icon { color: var(--green); }
 
-        /* Hidden file input */
+        .upload-name {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .upload-wajib {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--red);
+            background: rgba(220,38,38,0.08);
+            border-radius: 4px;
+            padding: 1px 5px;
+            flex-shrink: 0;
+        }
+
+        .upload-actions {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        .upload-action-btn {
+            width: 28px; height: 28px;
+            border-radius: 7px;
+            border: 1.5px solid var(--border);
+            background: var(--surface2);
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px;
+            transition: all 0.18s;
+            color: var(--muted);
+        }
+
+        .upload-action-btn:hover {
+            border-color: var(--blue);
+            color: var(--blue);
+            background: rgba(0,74,173,0.06);
+        }
+
         .upload-file-input { display: none; }
 
         /* ===================== BOTTOM BAR ===================== */
         .bottom-bar {
-            background: var(--surface);
-            border-top: 1px solid var(--border);
-            padding: 16px 32px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 16px;
             flex-wrap: wrap;
             opacity: 0;
-            animation: fadeUp 0.5s ease 0.4s forwards;
-            position: sticky;
-            bottom: 0;
+            animation: fadeUp 0.5s ease 0.25s forwards;
+            padding-bottom: 12px;
         }
 
         .back-link {
@@ -854,29 +595,31 @@
             border: 1.5px solid var(--border);
             color: var(--text);
             display: flex; align-items: center; gap: 8px;
-            padding: 11px 22px;
+            padding: 12px 24px;
             border-radius: 10px;
             font-size: 14px;
             font-weight: 700;
             cursor: pointer;
             font-family: 'Plus Jakarta Sans', sans-serif;
             transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
         }
 
-        .btn-draft:hover { border-color: var(--blue); color: var(--blue); background: #eef4ff; }
+        .btn-draft:hover { border-color: var(--blue); color: var(--blue); background: rgba(0,74,173,0.04); }
 
         .btn-submit {
             background: var(--navy);
             color: #fff;
             display: flex; align-items: center; gap: 10px;
-            padding: 12px 28px;
+            padding: 13px 32px;
             border-radius: 10px;
             font-size: 14px;
             font-weight: 800;
             cursor: pointer;
             font-family: 'Plus Jakarta Sans', sans-serif;
             border: none;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.6px;
             transition: all 0.2s;
             position: relative;
             overflow: hidden;
@@ -885,25 +628,34 @@
         .btn-submit:hover {
             background: #111c50;
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(26,42,108,0.35);
+            box-shadow: 0 8px 24px rgba(26,42,108,0.32);
         }
 
-        .btn-submit .arrow {
-            font-size: 18px;
-            transition: transform 0.25s;
+        .btn-submit .arrow { transition: transform 0.25s; font-size: 18px; }
+        .btn-submit:hover .arrow { transform: translateX(5px); }
+
+        /* ===================== FOOTER ===================== */
+        .page-footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--muted);
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            opacity: 0;
+            animation: fadeUp 0.5s ease 0.35s forwards;
         }
 
-        .btn-submit:hover .arrow { transform: translateX(4px); }
-
-        /* TOAST */
+        /* ===================== TOAST ===================== */
         #toast {
             position: fixed;
-            bottom: 90px;
+            bottom: 28px;
             left: 50%;
-            transform: translateX(-50%) translateY(60px);
+            transform: translateX(-50%) translateY(70px);
             background: var(--navy);
             color: white;
-            padding: 12px 24px;
+            padding: 12px 26px;
             border-radius: 40px;
             font-size: 13.5px;
             font-weight: 600;
@@ -912,152 +664,82 @@
             transition: transform 0.4s cubic-bezier(0.22,1,0.36,1), opacity 0.4s;
             z-index: 9999;
             white-space: nowrap;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.18);
         }
 
         #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-        /* OVERLAY for mobile sidebar */
-        .sidebar-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.4);
-            z-index: 99;
-            backdrop-filter: blur(2px);
-        }
-
-        .sidebar-overlay.show { display: block; }
-
         /* ===================== RESPONSIVE ===================== */
-        @media (max-width: 1024px) {
-            :root { --sidebar-w: 230px; }
-            .page-content { padding: 24px; }
+        @media (max-width: 900px) {
+            .form-grid { grid-template-columns: 1fr; gap: 24px; }
+            .page-body  { padding: 24px 20px; }
+            .topbar     { padding: 0 20px; }
+            .brand-uid  { display: none; }
         }
 
-        @media (max-width: 768px) {
-            .sidebar { transform: translateX(-100%); }
-            .sidebar.open { transform: translateX(0); }
-            .main { margin-left: 0; }
-            .topbar-toggle { display: flex; }
-            .form-grid { grid-template-columns: 1fr; }
-            .page-content { padding: 20px 16px; }
+        @media (max-width: 640px) {
+            .topbar-nav { display: none; }
+            .page-title { font-size: 21px; }
             .upload-grid { grid-template-columns: 1fr; }
-            .field-row { grid-template-columns: 1fr; }
-            .bottom-bar { padding: 14px 16px; }
-            .progress-wrap { display: none; }
-            .page-title { font-size: 20px; }
-        }
-
-        @media (max-width: 480px) {
-            .header-actions { width: 100%; }
-            .btn { font-size: 12px; padding: 9px 14px; }
-            .tabs-wrap { width: 100%; overflow-x: auto; }
+            .field-row   { grid-template-columns: 1fr; }
+            .btn { font-size: 12.5px; padding: 9px 16px; }
+            .bottom-bar { flex-direction: column; align-items: stretch; }
+            .bottom-actions { flex-direction: column; }
+            .btn-draft, .btn-submit { width: 100%; justify-content: center; }
         }
     </style>
 </head>
 <body>
 
-<!-- Sidebar overlay (mobile) -->
-<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
-
-<!-- ===================== SIDEBAR ===================== -->
-<aside class="sidebar" id="sidebar">
-
-    <!-- Brand -->
-    <div class="sidebar-brand">
-        <div class="sidebar-logos">
-            <!-- Logo SAKTI (topi wisuda) -->
-            <div class="logo-circle" title="SAKTI">🎓</div>
-            <!-- Logo Kapal Kanisius -->
-            <div class="logo-kanisius" title="E-Kanisius">⛵</div>
-            <div class="brand-info">
-                <div class="brand-name">SAKTI PORTAL</div>
-                <div class="brand-sub">E-Kanisius</div>
-            </div>
-        </div>
-        <div style="font-family:'DM Mono',monospace; font-size:9px; color:rgba(255,255,255,0.25); letter-spacing:0.5px; padding-left:2px;">
-            UID-jzp4Z3bwwoNY7IhFuiPNdTs83
-        </div>
-    </div>
-
-    <!-- User badge -->
-    <div class="sidebar-user">
-        <div class="user-badge">
-            <div class="user-avatar">IA</div>
-            <div class="user-info">
-                <div class="user-name">Ignatius Arya</div>
-                <div class="user-role">Cabang Global · Parent</div>
-            </div>
-            <div class="user-dot"></div>
-        </div>
-    </div>
-
-    <!-- Nav -->
-    <nav class="sidebar-nav">
-        <div class="nav-section-label">Menu Utama</div>
-
-        <a class="nav-item" href="#" onclick="setActive(this)">
-            <span class="nav-icon">📊</span> Dashboard
-        </a>
-        <a class="nav-item active" href="#" onclick="setActive(this)">
-            <span class="nav-icon">📋</span> Formulir Peserta Didik
-            <span class="nav-badge">1</span>
-        </a>
-        <a class="nav-item" href="#" onclick="setActive(this)">
-            <span class="nav-icon">🕐</span> Riwayat
-        </a>
-        <a class="nav-item" href="#" onclick="setActive(this)">
-            <span class="nav-icon">📁</span> Dokumen Saya
-        </a>
-
-        <div class="nav-section-label" style="margin-top:8px;">Lainnya</div>
-
-        <a class="nav-item" href="#" onclick="setActive(this)">
-            <span class="nav-icon">💬</span> Pusat Bantuan
-        </a>
-        <a class="nav-item" href="#" onclick="setActive(this)">
-            <span class="nav-icon">⚙️</span> Pengaturan
-        </a>
-    </nav>
-
-    <div class="sidebar-footer">
-        <button class="logout-btn">
-            <span>🚪</span> Keluar
-        </button>
-    </div>
-</aside>
-
-<!-- ===================== MAIN ===================== -->
-<div class="main">
-
-    <!-- TOPBAR -->
+    <!-- ===================== TOPBAR ===================== -->
     <header class="topbar">
-        <button class="topbar-toggle" onclick="toggleSidebar()">☰</button>
-        <div class="topbar-breadcrumb">
-            <span class="breadcrumb-item">Dashboard</span>
-            <span class="breadcrumb-sep">›</span>
-            <span class="breadcrumb-item current">Formulir Peserta Didik</span>
-        </div>
-        <div class="topbar-spacer"></div>
-        <div class="topbar-actions">
-            <button class="topbar-icon-btn" title="Notifikasi" onclick="showToast('🔔 Tidak ada notifikasi baru')">
-                🔔
-                <span class="notif-dot"></span>
-            </button>
-            <button class="topbar-icon-btn" title="Bantuan" onclick="showToast('💬 Menghubungkan ke pusat bantuan...')">❓</button>
-            <div class="topbar-user">
-                <div class="topbar-avatar">IA</div>
-                <div>
-                    <div class="topbar-uname">Ignatius Arya</div>
-                    <div class="topbar-urole">Parent · Cabang Global</div>
+
+        <!-- Brand -->
+        <div class="topbar-brand">
+            <!-- Logo kapal E-Kanisius -->
+            <img src="{{ asset('img/E-Kanisius 1.png') }}"
+                 alt="E-Kanisius Logo"
+                 style="width:40px; height:auto; object-fit:contain; flex-shrink:0;"
+                 onerror="this.style.display='none'; document.getElementById('fallback-logo').style.display='flex';">
+            <!-- Fallback jika gambar belum ada -->
+            <div id="fallback-logo" class="brand-logo" style="display:none;">⛵</div>
+
+            <div class="brand-text">
+                <div class="brand-name">PORTAL SAKTI</div>
+                <div class="brand-meta">
+                    <span class="brand-role">Parent</span>
+                    <span class="brand-uid">UID-Jzp4Z3bwwoNY7IhFuiPNdTsN9w63</span>
                 </div>
             </div>
         </div>
+
+        <!-- Nav links -->
+        <nav class="topbar-nav">
+            <a class="nav-link active" href="#">
+                <span class="nav-icon">⊞</span> Dashboard <span class="nav-dot"></span>
+            </a>
+            <a class="nav-link" href="#" onclick="showToast('🕐 Membuka Riwayat...')">
+                <span class="nav-icon">🕐</span> Riwayat
+            </a>
+            <a class="nav-link" href="#" onclick="showToast('💬 Membuka Pusat Bantuan...')">
+                <span class="nav-icon">ⓘ</span> Pusat Bantuan
+            </a>
+        </nav>
+
+        <!-- Right: user + logout -->
+        <div class="topbar-right">
+            <div class="topbar-username">
+                <div class="topbar-uname">Ignatius Arya</div>
+                <div class="topbar-urole">Cabang Global</div>
+            </div>
+            <button class="topbar-logout" title="Keluar" onclick="showToast('🚪 Sedang keluar...')">
+                🚪
+            </button>
+        </div>
     </header>
 
-    <!-- PAGE CONTENT -->
-    <div class="page-content">
+    <!-- ===================== PAGE BODY ===================== -->
+    <main class="page-body">
 
         <!-- PAGE HEADER -->
         <div class="page-header">
@@ -1066,86 +748,79 @@
                 <p class="page-subtitle">Unit Tujuan: <strong>• 1 Calon Murid</strong></p>
             </div>
             <div class="header-actions">
-                <button class="btn btn-outline" onclick="addAnak(); addRipple(this, event)">
+                <button class="btn btn-outline" id="btnTambahAnak" onclick="tambahAnak(this, event)">
                     ＋ TAMBAH ANAK
                 </button>
-                <button class="btn btn-gold" onclick="fillWithOCR(); addRipple(this, event)">
+                <button class="btn btn-gold" id="btnOCR" onclick="fillOCR(this, event)">
                     ✨ FILL WITH AI (OCR)
                 </button>
             </div>
         </div>
 
-        <!-- PROGRESS STEPS -->
-        <div class="progress-wrap">
-            <div class="progress-steps">
-                <div class="step done">
-                    <div class="step-num">✓</div>
-                    <span class="step-label">Profil Ortu</span>
-                </div>
-                <div class="step active">
-                    <div class="step-num">2</div>
-                    <span class="step-label">Data Peserta</span>
-                </div>
-                <div class="step pending">
-                    <div class="step-num">3</div>
-                    <span class="step-label">Dokumen</span>
-                </div>
-                <div class="step pending">
-                    <div class="step-num">4</div>
-                    <span class="step-label">Review</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- TABS -->
-        <div class="tabs-wrap">
-            <button class="tab-btn active" onclick="switchTab(this, 0)">
-                Data Anak 1 <span class="tab-tag">AKTIF</span>
-            </button>
-        </div>
-
         <!-- FORM CARD -->
-        <div class="form-card" id="formCard">
-            <div class="data-anak-badge">DATA ANAK 1</div>
+        <div class="form-card">
+            <div class="data-anak-badge" id="anakBadge">DATA ANAK 1</div>
 
             <div class="form-grid">
 
-                <!-- LEFT: IDENTITAS DASAR -->
+                <!-- ===== LEFT: IDENTITAS DASAR ===== -->
                 <div class="form-col">
                     <div class="col-header">
                         <span class="col-header-icon">👤</span>
                         <span class="col-header-title">Identitas Dasar</span>
                     </div>
 
+                    <!-- Nama Lengkap -->
                     <div class="field-group">
-                        <label class="field-label">Nama Lengkap</label>
-                        <input type="text" class="field-input" id="namaLengkap"
-                            placeholder="Masukkan nama lengkap"
-                            value="Benedictus Kanisius"
-                            oninput="validateField(this, v => v.trim().length >= 3)">
+                        <label class="field-label" for="namaLengkap">Nama Lengkap</label>
+                        <input
+                            type="text"
+                            id="namaLengkap"
+                            name="nama_lengkap"
+                            class="field-input"
+                            placeholder="Nama Lengkap"
+                            autocomplete="off"
+                            oninput="validateField(this, v => v.trim().length >= 3)"
+                        >
                     </div>
 
+                    <!-- NIK -->
                     <div class="field-group">
-                        <label class="field-label">NIK (Nomor Induk Kependudukan)</label>
-                        <input type="text" class="field-input" id="nik"
-                            placeholder="16 digit NIK"
-                            value="3374012305180001"
+                        <label class="field-label" for="nik">NIK (Nomor Induk Kependudukan)</label>
+                        <input
+                            type="text"
+                            id="nik"
+                            name="nik"
+                            class="field-input"
+                            placeholder="16 Digit NIK"
                             maxlength="16"
-                            oninput="validateField(this, v => /^\d{16}$/.test(v)); formatNIK(this)">
+                            autocomplete="off"
+                            oninput="onlyDigits(this); validateField(this, v => /^\d{16}$/.test(v))"
+                        >
                     </div>
 
+                    <!-- Tanggal Lahir + Gol Darah -->
                     <div class="field-row">
                         <div class="field-group">
-                            <label class="field-label">Tanggal Lahir</label>
-                            <input type="date" class="field-input" id="tanggalLahir"
-                                value="2018-05-12"
-                                onchange="validateField(this, v => v !== '')">
+                            <label class="field-label" for="tanggalLahir">Tanggal Lahir</label>
+                            <input
+                                type="date"
+                                id="tanggalLahir"
+                                name="tanggal_lahir"
+                                class="field-input"
+                                onchange="validateField(this, v => v !== '')"
+                            >
                         </div>
                         <div class="field-group">
-                            <label class="field-label">Gol. Darah</label>
-                            <select class="field-select" id="golDarah" onchange="validateField(this, v => v !== '')">
-                                <option value="">Pilih</option>
-                                <option value="A" selected>A</option>
+                            <label class="field-label" for="golDarah">Gol. Darah</label>
+                            <select
+                                id="golDarah"
+                                name="gol_darah"
+                                class="field-select empty"
+                                onchange="onSelectChange(this); validateField(this, v => v !== '')"
+                            >
+                                <option value="">O</option>
+                                <option value="A">A</option>
                                 <option value="B">B</option>
                                 <option value="AB">AB</option>
                                 <option value="O">O</option>
@@ -1154,18 +829,24 @@
                     </div>
                 </div>
 
-                <!-- RIGHT: INFORMASI LANJUTAN -->
+                <!-- ===== RIGHT: INFORMASI LANJUTAN ===== -->
                 <div class="form-col">
                     <div class="col-header">
                         <span class="col-header-icon">📋</span>
                         <span class="col-header-title">Informasi Lanjutan</span>
                     </div>
 
+                    <!-- Agama -->
                     <div class="field-group">
-                        <label class="field-label">Agama</label>
-                        <select class="field-select" id="agama" onchange="validateField(this, v => v !== '')">
-                            <option value="">Pilih Agama</option>
-                            <option value="kristen" selected>Kristen</option>
+                        <label class="field-label" for="agama">Agama</label>
+                        <select
+                            id="agama"
+                            name="agama"
+                            class="field-select"
+                            onchange="onSelectChange(this); validateField(this, v => v !== ''); toggleSuratBaptis(this.value)"
+                        >
+                            <option value="" selected>Katolik</option>
+                            <option value="kristen">Kristen</option>
                             <option value="katolik">Katolik</option>
                             <option value="islam">Islam</option>
                             <option value="buddha">Buddha</option>
@@ -1174,67 +855,92 @@
                         </select>
                     </div>
 
+                    <!-- Alamat -->
                     <div class="field-group">
                         <div class="alamat-header">
-                            <label class="field-label">Alamat Domisili Anak</label>
-                            <button class="samakan-btn" onclick="samakan()">SAMAKAN DENGAN ALAMAT ORTU</button>
+                            <label class="field-label" for="alamat">Alamat Domisili Anak</label>
+                            <button type="button" class="samakan-btn" onclick="samakanAlamat()">
+                                Samakan dengan Alamat Ortu
+                            </button>
                         </div>
-                        <textarea class="field-textarea" id="alamat"
-                            placeholder="Masukkan alamat lengkap...">Jl. Purbayan No. 1, Surakarta</textarea>
+                        <textarea
+                            id="alamat"
+                            name="alamat"
+                            class="field-textarea"
+                            placeholder="Masukkan alamat lengkap tempat tinggal anak..."
+                        ></textarea>
                     </div>
 
                     <!-- Upload Berkas -->
-                    <div class="upload-section">
-                        <span class="upload-label">📎 Upload Berkas Fisik</span>
+                    <div class="field-group">
+                        <span class="upload-label">Upload Berkas Fisik</span>
                         <div class="upload-grid">
 
-                            <label class="upload-item uploaded" id="upload-kk">
+                            <!-- Kartu Keluarga -->
+                            <div class="upload-item" id="item-kk" onclick="triggerUpload('file-kk')">
                                 <div class="upload-left">
-                                    <span class="upload-icon">✅</span>
+                                    <span class="upload-doc-icon">📄</span>
                                     <span class="upload-name">Kartu Keluarga</span>
                                 </div>
                                 <div class="upload-actions">
-                                    <button class="upload-view-btn" onclick="viewDoc(event,'Kartu Keluarga')">LIHAT</button>
-                                    <button class="upload-del-btn" onclick="deleteDoc(event,'upload-kk')">🔄</button>
+                                    <button type="button" class="upload-action-btn" title="Preview" onclick="previewDoc(event,'Kartu Keluarga')">👁</button>
+                                    <button type="button" class="upload-action-btn" title="Upload" onclick="triggerUpload('file-kk', event)">↑</button>
                                 </div>
-                                <input type="file" class="upload-file-input" accept="image/*,.pdf" onchange="uploadFile(this,'upload-kk')">
-                            </label>
+                                <input type="file" id="file-kk" class="upload-file-input" accept="image/*,.pdf" onchange="onUpload(this,'item-kk')">
+                            </div>
 
-                            <label class="upload-item uploaded" id="upload-akte">
+                            <!-- Akte Kelahiran -->
+                            <div class="upload-item" id="item-akte" onclick="triggerUpload('file-akte')">
                                 <div class="upload-left">
-                                    <span class="upload-icon">✅</span>
+                                    <span class="upload-doc-icon">📄</span>
                                     <span class="upload-name">Akte Kelahiran</span>
                                 </div>
                                 <div class="upload-actions">
-                                    <button class="upload-view-btn" onclick="viewDoc(event,'Akte Kelahiran')">LIHAT</button>
-                                    <button class="upload-del-btn" onclick="deleteDoc(event,'upload-akte')">🔄</button>
+                                    <button type="button" class="upload-action-btn" title="Preview" onclick="previewDoc(event,'Akte Kelahiran')">👁</button>
+                                    <button type="button" class="upload-action-btn" title="Upload" onclick="triggerUpload('file-akte', event)">↑</button>
                                 </div>
-                                <input type="file" class="upload-file-input" accept="image/*,.pdf" onchange="uploadFile(this,'upload-akte')">
-                            </label>
+                                <input type="file" id="file-akte" class="upload-file-input" accept="image/*,.pdf" onchange="onUpload(this,'item-akte')">
+                            </div>
 
-                            <label class="upload-item uploaded" id="upload-ktp">
+                            <!-- E-KTP Orang Tua -->
+                            <div class="upload-item" id="item-ktp" onclick="triggerUpload('file-ktp')">
                                 <div class="upload-left">
-                                    <span class="upload-icon">✅</span>
+                                    <span class="upload-doc-icon">📄</span>
                                     <span class="upload-name">E-KTP Orang Tua</span>
                                 </div>
                                 <div class="upload-actions">
-                                    <button class="upload-view-btn" onclick="viewDoc(event,'E-KTP Orang Tua')">LIHAT</button>
-                                    <button class="upload-del-btn" onclick="deleteDoc(event,'upload-ktp')">🔄</button>
+                                    <button type="button" class="upload-action-btn" title="Preview" onclick="previewDoc(event,'E-KTP Orang Tua')">👁</button>
+                                    <button type="button" class="upload-action-btn" title="Upload" onclick="triggerUpload('file-ktp', event)">↑</button>
                                 </div>
-                                <input type="file" class="upload-file-input" accept="image/*,.pdf" onchange="uploadFile(this,'upload-ktp')">
-                            </label>
+                                <input type="file" id="file-ktp" class="upload-file-input" accept="image/*,.pdf" onchange="onUpload(this,'item-ktp')">
+                            </div>
 
-                            <label class="upload-item uploaded" id="upload-foto">
+                            <!-- Pas Foto -->
+                            <div class="upload-item" id="item-foto" onclick="triggerUpload('file-foto')">
                                 <div class="upload-left">
-                                    <span class="upload-icon">✅</span>
+                                    <span class="upload-doc-icon">📄</span>
                                     <span class="upload-name">Pas Foto (3x4)</span>
                                 </div>
                                 <div class="upload-actions">
-                                    <button class="upload-view-btn" onclick="viewDoc(event,'Pas Foto 3x4')">LIHAT</button>
-                                    <button class="upload-del-btn" onclick="deleteDoc(event,'upload-foto')">🔄</button>
+                                    <button type="button" class="upload-action-btn" title="Preview" onclick="previewDoc(event,'Pas Foto 3x4')">👁</button>
+                                    <button type="button" class="upload-action-btn" title="Upload" onclick="triggerUpload('file-foto', event)">↑</button>
                                 </div>
-                                <input type="file" class="upload-file-input" accept="image/*" onchange="uploadFile(this,'upload-foto')">
-                            </label>
+                                <input type="file" id="file-foto" class="upload-file-input" accept="image/*" onchange="onUpload(this,'item-foto')">
+                            </div>
+
+                            <!-- Surat Baptis (Wajib) — hanya muncul jika agama Katolik -->
+                            <div class="upload-item" id="item-baptis" style="grid-column: span 2; display: none; transition: all 0.3s ease;" onclick="triggerUpload('file-baptis')">
+                                <div class="upload-left">
+                                    <span class="upload-doc-icon">📄</span>
+                                    <span class="upload-name">Surat Baptis</span>
+                                    <span class="upload-wajib">Wajib</span>
+                                </div>
+                                <div class="upload-actions">
+                                    <button type="button" class="upload-action-btn" title="Preview" onclick="previewDoc(event,'Surat Baptis')">👁</button>
+                                    <button type="button" class="upload-action-btn" title="Upload" onclick="triggerUpload('file-baptis', event)">↑</button>
+                                </div>
+                                <input type="file" id="file-baptis" class="upload-file-input" accept="image/*,.pdf" onchange="onUpload(this,'item-baptis')">
+                            </div>
 
                         </div>
                     </div>
@@ -1243,292 +949,306 @@
             </div>
         </div>
 
-    </div><!-- /page-content -->
-
-    <!-- BOTTOM BAR -->
-    <div class="bottom-bar">
-        <a href="#" class="back-link" onclick="showToast('↩ Kembali ke Profil Ortu')">← Kembali ke Profil Ortu</a>
-        <div class="bottom-actions">
-            <button class="btn-draft" onclick="saveDraft(); addRipple(this, event)">
-                💾 SIMPAN DRAFT
-            </button>
-            <button class="btn-submit" id="submitBtn" onclick="submitForm(); addRipple(this, event)">
-                SUBMIT SEKARANG <span class="arrow">›</span>
-            </button>
+        <!-- BOTTOM BAR -->
+        <div class="bottom-bar">
+            <a href="#" class="back-link" onclick="showToast('↩ Kembali ke Profil Ortu'); return false;">
+                ← Kembali ke Profil Ortu
+            </a>
+            <div class="bottom-actions">
+                <button class="btn-draft" id="btnDraft" onclick="saveDraft(this, event)">
+                    💾 SIMPAN DRAFT
+                </button>
+                <button class="btn-submit" id="btnSubmit" onclick="submitForm(this, event)">
+                    SUBMIT SEKARANG <span class="arrow">›</span>
+                </button>
+            </div>
         </div>
-    </div>
 
-</div><!-- /main -->
+    </main>
 
-<!-- Toast -->
-<div id="toast"></div>
+    <!-- FOOTER -->
+    <footer class="page-footer">
+        Yayasan Kanisius © 2026 – Admisi Terintegrasi
+    </footer>
 
-<script>
-/* ============================================================
-   SIDEBAR TOGGLE
-============================================================ */
-function toggleSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebarOverlay');
-    sidebar.classList.toggle('open');
-    overlay.classList.toggle('show');
-}
+    <!-- Toast -->
+    <div id="toast"></div>
 
-function closeSidebar() {
-    document.getElementById('sidebar').classList.remove('open');
-    document.getElementById('sidebarOverlay').classList.remove('show');
-}
+    <script>
+    /* ============================================================
+       TOAST
+    ============================================================ */
+    function showToast(msg, dur = 3000) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        clearTimeout(t._timer);
+        t._timer = setTimeout(() => t.classList.remove('show'), dur);
+    }
 
-/* ============================================================
-   NAV ACTIVE STATE
-============================================================ */
-function setActive(el) {
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    el.classList.add('active');
-}
+    /* ============================================================
+       RIPPLE
+    ============================================================ */
+    function addRipple(btn, e) {
+        if (!e) return;
+        const rect   = btn.getBoundingClientRect();
+        const x      = e.clientX - rect.left;
+        const y      = e.clientY - rect.top;
+        const r      = document.createElement('span');
+        r.className  = 'ripple';
+        r.style.cssText = `left:${x}px;top:${y}px;width:${rect.width}px;height:${rect.width}px;margin-left:-${rect.width/2}px;margin-top:-${rect.width/2}px;`;
+        btn.appendChild(r);
+        setTimeout(() => r.remove(), 600);
+    }
 
-/* ============================================================
-   RIPPLE EFFECT
-============================================================ */
-function addRipple(btn, e) {
-    if (!e) return;
-    const rect   = btn.getBoundingClientRect();
-    const x      = e.clientX - rect.left;
-    const y      = e.clientY - rect.top;
-    const ripple = document.createElement('span');
-    ripple.className = 'ripple';
-    ripple.style.cssText = `left:${x}px;top:${y}px;width:${rect.width}px;height:${rect.width}px;margin-left:-${rect.width/2}px;margin-top:-${rect.width/2}px;`;
-    btn.appendChild(ripple);
-    setTimeout(() => ripple.remove(), 600);
-}
+    /* ============================================================
+       FIELD VALIDATION
+    ============================================================ */
+    function validateField(el, rule) {
+        if (el.value === '' || el.value === null) {
+            el.classList.remove('is-valid','is-invalid');
+            return;
+        }
+        const ok = rule(el.value);
+        el.classList.toggle('is-valid',   ok);
+        el.classList.toggle('is-invalid', !ok);
+    }
 
-/* ============================================================
-   TOAST
-============================================================ */
-function showToast(msg, dur = 3000) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), dur);
-}
+    function onlyDigits(el) {
+        el.value = el.value.replace(/\D/g,'').slice(0,16);
+    }
 
-/* ============================================================
-   FIELD VALIDATION
-============================================================ */
-function validateField(el, rule) {
-    const ok = rule(el.value);
-    el.classList.toggle('is-valid',   ok);
-    el.classList.toggle('is-invalid', !ok && el.value.length > 0);
-}
+    function onSelectChange(el) {
+        el.classList.remove('empty');
+    }
 
-/* ============================================================
-   NIK FORMAT (digit only)
-============================================================ */
-function formatNIK(el) {
-    el.value = el.value.replace(/\D/g, '').slice(0, 16);
-}
-
-/* ============================================================
-   SAMAKAN ALAMAT
-============================================================ */
-function samakan() {
-    const textarea = document.getElementById('alamat');
-    const ortuAddr = 'Jl. Purbayan No. 1, Surakarta';
-    textarea.style.transition = 'background 0.3s';
-    textarea.style.background = '#dde4f0';
-    textarea.value = ortuAddr;
-    setTimeout(() => textarea.style.background = '', 600);
-    showToast('✅ Alamat disalin dari data orang tua');
-}
-
-/* ============================================================
-   TAMBAH ANAK (add tab)
-============================================================ */
-let anakCount = 1;
-
-function addAnak() {
-    anakCount++;
-    const tabs = document.querySelector('.tabs-wrap');
-
-    // Remove old active tag
-    document.querySelectorAll('.tab-btn .tab-tag').forEach(t => t.remove());
-
-    const btn = document.createElement('button');
-    btn.className = 'tab-btn';
-    btn.innerHTML = `Data Anak ${anakCount} <span class="tab-tag">AKTIF</span>`;
-    btn.onclick = function() { switchTab(this, anakCount - 1); };
-    tabs.appendChild(btn);
-
-    switchTab(btn, anakCount - 1);
-    document.getElementById('formCard').querySelector('.data-anak-badge').textContent = `DATA ANAK ${anakCount}`;
-    showToast(`✅ Data Anak ${anakCount} ditambahkan`);
-}
-
-function switchTab(btn, idx) {
-    document.querySelectorAll('.tab-btn').forEach(b => {
-        b.classList.remove('active');
-        const tag = b.querySelector('.tab-tag');
-        if (tag) tag.remove();
-    });
-    btn.classList.add('active');
-    const tag = document.createElement('span');
-    tag.className = 'tab-tag';
-    tag.textContent = 'AKTIF';
-    btn.appendChild(tag);
-    document.getElementById('formCard').querySelector('.data-anak-badge').textContent = `DATA ANAK ${idx + 1}`;
-}
-
-/* ============================================================
-   FILL WITH AI (OCR)
-============================================================ */
-function fillWithOCR() {
-    showToast('🤖 AI sedang membaca dokumen...');
-    const btn = document.querySelector('.btn-gold');
-    btn.disabled = true;
-    btn.textContent = '⏳ Memproses...';
-
-    const fields = [
-        { id: 'namaLengkap', val: 'Benedictus Kanisius' },
-        { id: 'nik',         val: '3374012305180001' },
-        { id: 'tanggalLahir',val: '2018-05-12' },
-    ];
-
-    fields.forEach((f, i) => {
-        setTimeout(() => {
-            const el = document.getElementById(f.id);
-            el.style.transition = 'background 0.3s, border-color 0.3s';
-            el.style.background = '#fff9db';
-            el.style.borderColor = 'var(--gold)';
-            el.value = f.val;
+    /* ============================================================
+       TOGGLE SURAT BAPTIS — hanya tampil jika agama = Katolik
+    ============================================================ */
+    function toggleSuratBaptis(val) {
+        const item = document.getElementById('item-baptis');
+        if (val === 'katolik') {
+            item.style.display = 'flex';
+            // Animasi muncul
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(-6px)';
+            requestAnimationFrame(() => {
+                item.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
+                item.style.opacity    = '1';
+                item.style.transform  = 'translateY(0)';
+            });
+            showToast('⛪ Surat Baptis wajib dilampirkan untuk agama Katolik');
+        } else {
+            // Animasi hilang
+            item.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+            item.style.opacity    = '0';
+            item.style.transform  = 'translateY(-6px)';
             setTimeout(() => {
-                el.style.background = '';
-                el.style.borderColor = '';
-                el.classList.add('is-valid');
-            }, 700);
-        }, i * 400);
+                item.style.display = 'none';
+                // Reset file jika sudah diupload
+                const fileInput = document.getElementById('file-baptis');
+                if (fileInput) fileInput.value = '';
+                item.classList.remove('uploaded');
+                item.querySelector('.upload-doc-icon').textContent = '📄';
+            }, 260);
+        }
+    }
+
+    /* ============================================================
+       NAV ACTIVE
+    ============================================================ */
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', function() {
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.querySelectorAll('.nav-dot').forEach(d => d.remove());
+            this.classList.add('active');
+            const dot = document.createElement('span');
+            dot.className = 'nav-dot';
+            this.appendChild(dot);
+        });
     });
 
-    setTimeout(() => {
-        btn.disabled = false;
-        btn.innerHTML = '✨ FILL WITH AI (OCR)';
-        showToast('✅ Data berhasil diisi oleh AI OCR!');
-    }, fields.length * 400 + 800);
-}
-
-/* ============================================================
-   UPLOAD FILE
-============================================================ */
-function uploadFile(input, itemId) {
-    const item = document.getElementById(itemId);
-    if (input.files && input.files[0]) {
-        const name = input.files[0].name.slice(0, 18) + (input.files[0].name.length > 18 ? '…' : '');
-        item.classList.add('uploaded');
-        item.querySelector('.upload-icon').textContent = '✅';
-        showToast(`📎 "${name}" berhasil diupload`);
-    }
-}
-
-function viewDoc(e, name) {
-    e.preventDefault();
-    showToast(`👁 Membuka ${name}...`);
-}
-
-function deleteDoc(e, itemId) {
-    e.preventDefault();
-    const item = document.getElementById(itemId);
-    item.classList.remove('uploaded');
-    item.querySelector('.upload-icon').textContent = '📄';
-    showToast('🗑 File dihapus');
-}
-
-/* ============================================================
-   SAVE DRAFT
-============================================================ */
-function saveDraft() {
-    const btn = document.querySelector('.btn-draft');
-    btn.textContent = '⏳ Menyimpan...';
-    btn.disabled = true;
-
-    setTimeout(() => {
-        btn.innerHTML = '✅ Draft Tersimpan';
-        showToast('💾 Draft berhasil disimpan!');
+    /* ============================================================
+       SAMAKAN ALAMAT
+    ============================================================ */
+    function samakanAlamat() {
+        const ta = document.getElementById('alamat');
+        ta.style.transition = 'background 0.3s, border-color 0.3s';
+        ta.style.background = '#fffbe6';
+        ta.style.borderColor = 'var(--gold)';
+        // Di produksi: ambil dari data ortu yang sudah tersimpan
+        ta.value = 'Jl. Purbayan No. 1, Surakarta';
         setTimeout(() => {
-            btn.innerHTML = '💾 SIMPAN DRAFT';
+            ta.style.background = '';
+            ta.style.borderColor = '';
+        }, 700);
+        showToast('✅ Alamat disalin dari data orang tua');
+    }
+
+    /* ============================================================
+       TAMBAH ANAK
+    ============================================================ */
+    let anakCount = 1;
+
+    function tambahAnak(btn, e) {
+        addRipple(btn, e);
+        anakCount++;
+        document.getElementById('anakBadge').textContent = `DATA ANAK ${anakCount}`;
+        document.querySelector('.page-subtitle strong').textContent = `• ${anakCount} Calon Murid`;
+        // Reset form fields
+        ['namaLengkap','nik','tanggalLahir','alamat'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) { el.value = ''; el.classList.remove('is-valid','is-invalid'); }
+        });
+        document.getElementById('golDarah').value = '';
+        document.getElementById('agama').value = '';
+        // Sembunyikan surat baptis saat reset
+        toggleSuratBaptis('');
+        // Reset uploads
+        ['item-kk','item-akte','item-ktp','item-foto','item-baptis'].forEach(id => {
+            const item = document.getElementById(id);
+            item.classList.remove('uploaded');
+            item.querySelector('.upload-doc-icon').textContent = '📄';
+        });
+        showToast(`➕ Data Anak ${anakCount} siap diisi`);
+
+        // Animate card
+        const card = document.querySelector('.form-card');
+        card.style.transition = 'opacity 0.2s, transform 0.2s';
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(8px)';
+        setTimeout(() => {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, 220);
+    }
+
+    /* ============================================================
+       FILL WITH AI / OCR
+    ============================================================ */
+    function fillOCR(btn, e) {
+        addRipple(btn, e);
+        btn.disabled = true;
+        btn.textContent = '⏳ Memproses...';
+        showToast('🤖 AI sedang membaca dokumen...');
+
+        // Simulasi AI mengisi satu per satu
+        const fills = [
+            { id: 'namaLengkap', val: 'Benedictus Kanisius' },
+            { id: 'nik',         val: '3374012305180001' },
+            { id: 'tanggalLahir',val: '2018-05-12' },
+            { id: 'alamat',      val: 'Jl. Purbayan No. 1, Surakarta' },
+        ];
+
+        fills.forEach((f, i) => {
+            setTimeout(() => {
+                const el = document.getElementById(f.id);
+                el.style.transition = 'background 0.3s, border-color 0.3s';
+                el.style.background = '#fffbe6';
+                el.style.borderColor = 'var(--gold-dark)';
+                el.value = f.val;
+                setTimeout(() => {
+                    el.style.background = '';
+                    el.style.borderColor = '';
+                    el.classList.add('is-valid');
+                }, 500);
+            }, i * 350);
+        });
+
+        setTimeout(() => {
             btn.disabled = false;
-        }, 2000);
-    }, 1200);
-}
-
-/* ============================================================
-   SUBMIT FORM
-============================================================ */
-function submitForm() {
-    const required = ['namaLengkap', 'nik', 'tanggalLahir'];
-    let hasError = false;
-
-    required.forEach(id => {
-        const el = document.getElementById(id);
-        if (!el.value.trim()) {
-            el.classList.add('is-invalid');
-            el.style.animation = 'none';
-            requestAnimationFrame(() => el.style.animation = '');
-            hasError = true;
-        }
-    });
-
-    if (hasError) {
-        showToast('⚠️ Lengkapi semua field wajib terlebih dahulu.');
-        return;
+            btn.innerHTML = '✨ FILL WITH AI (OCR)';
+            showToast('✅ Data berhasil diisi oleh AI OCR!', 3500);
+        }, fills.length * 350 + 700);
     }
 
-    const btn = document.getElementById('submitBtn');
-    btn.innerHTML = '⏳ Memproses... <span class="arrow">›</span>';
-    btn.disabled = true;
-
-    setTimeout(() => {
-        btn.innerHTML = '✅ Berhasil Disubmit! <span class="arrow">›</span>';
-        showToast('🎉 Formulir berhasil disubmit! Menunggu verifikasi.', 4000);
-
-        // Progress step update
-        const steps = document.querySelectorAll('.step');
-        if (steps[1]) {
-            steps[1].classList.remove('active');
-            steps[1].classList.add('done');
-            steps[1].querySelector('.step-num').textContent = '✓';
-        }
-        if (steps[2]) {
-            steps[2].classList.remove('pending');
-            steps[2].classList.add('active');
-        }
-    }, 1800);
-}
-
-/* ============================================================
-   KEYBOARD SHORTCUT: Ctrl+S → save draft
-============================================================ */
-document.addEventListener('keydown', (e) => {
-    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-        e.preventDefault();
-        saveDraft();
+    /* ============================================================
+       UPLOAD FILE
+    ============================================================ */
+    function triggerUpload(inputId, e) {
+        if (e) e.stopPropagation();
+        document.getElementById(inputId).click();
     }
-});
 
-/* ============================================================
-   ANIMATE FORM ITEMS on scroll
-============================================================ */
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
+    function onUpload(input, itemId) {
+        if (!input.files || !input.files[0]) return;
+        const item = document.getElementById(itemId);
+        const name = input.files[0].name;
+        item.classList.add('uploaded');
+        item.querySelector('.upload-doc-icon').textContent = '✅';
+        showToast(`📎 "${name.slice(0,24)}${name.length > 24 ? '…' : ''}" berhasil diupload`);
+    }
+
+    function previewDoc(e, name) {
+        e.stopPropagation();
+        showToast(`👁 Membuka preview: ${name}`);
+    }
+
+    /* ============================================================
+       SAVE DRAFT
+    ============================================================ */
+    function saveDraft(btn, e) {
+        addRipple(btn, e);
+        btn.disabled = true;
+        btn.textContent = '⏳ Menyimpan...';
+
+        setTimeout(() => {
+            btn.innerHTML = '✅ Draft Tersimpan';
+            showToast('💾 Draft berhasil disimpan!');
+            setTimeout(() => {
+                btn.innerHTML = '💾 SIMPAN DRAFT';
+                btn.disabled = false;
+            }, 2200);
+        }, 1200);
+    }
+
+    /* ============================================================
+       SUBMIT FORM
+    ============================================================ */
+    function submitForm(btn, e) {
+        addRipple(btn, e);
+        const required = [
+            { id: 'namaLengkap', rule: v => v.trim().length >= 3 },
+            { id: 'nik',         rule: v => /^\d{16}$/.test(v) },
+            { id: 'tanggalLahir',rule: v => v !== '' },
+        ];
+        let hasErr = false;
+
+        required.forEach(({ id, rule }) => {
+            const el = document.getElementById(id);
+            if (!rule(el.value)) {
+                el.classList.add('is-invalid');
+                el.style.animation = 'none';
+                requestAnimationFrame(() => el.style.animation = '');
+                hasErr = true;
+            }
+        });
+
+        if (hasErr) {
+            showToast('⚠️ Lengkapi semua field yang wajib diisi.');
+            return;
+        }
+
+        btn.innerHTML = '⏳ Memproses... <span class="arrow">›</span>';
+        btn.disabled = true;
+
+        setTimeout(() => {
+            btn.innerHTML = '✅ Berhasil Disubmit <span class="arrow">›</span>';
+            showToast('🎉 Formulir berhasil disubmit! Menunggu verifikasi.', 4500);
+        }, 1800);
+    }
+
+    /* ============================================================
+       Ctrl+S → Save Draft
+    ============================================================ */
+    document.addEventListener('keydown', e => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+            e.preventDefault();
+            const btn = document.getElementById('btnDraft');
+            saveDraft(btn, null);
         }
     });
-}, { threshold: 0.1 });
-
-document.querySelectorAll('.form-card, .progress-wrap, .tabs-wrap').forEach(el => {
-    observer.observe(el);
-});
-</script>
+    </script>
 
 </body>
 </html>
