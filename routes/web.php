@@ -29,3 +29,8 @@ Route::post('/forgot-password', function () {
 Route::get('/profil-ortu', function () {
     return view('dashboard_user.form_profilOrtu');
 })->name('profil.ortu');
+
+
+Route::get('/form-daftar', function () {
+    return view('dashboard_user.form_daftar');
+})->name('form.daftar');
