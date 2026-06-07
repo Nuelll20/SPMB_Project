@@ -7,7 +7,6 @@ Route::get('/', function () {
 });
 
 Route::get('/login', function () {
-<<<<<<< HEAD
     return view('auth.login');
 })->name('login');
 
@@ -24,7 +23,3 @@ Route::get('/register', function () {
 Route::post('/forgot-password', function () {
     return "Fitur send email/proses reset password belum didefinisikan.";
 })->name('password.email');
-=======
-    return view('login');
-});
->>>>>>> c60fe8f909ced44a5765e6addc1bfacba2f0ce41
