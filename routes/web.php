@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\FormOrtuController;
+use App\Http\Controllers\Auth\FormOrtuController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -35,3 +35,4 @@ Route::post('/profil-ortu', [FormOrtuController::class, 'store'])
 Route::get('/form-daftar', function () {
     return view('dashboard_user.form_daftar');
 })->name('form.daftar');
+
