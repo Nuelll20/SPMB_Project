@@ -17,10 +17,13 @@ class FormOrtuController extends Controller
     public function store(Request $request)
     {
         $uidOrangTua = DB::table('orang_tua')->insertGetId([
-            'nama' => $request->nama ?? Auth::user()->name,
-            'no_telp' => $request->no_telp ?? '-',
+            'nama' => Auth::user()->name,
+            'no_telp' => $request->nomor_telepon,
             'alamat' => $request->alamat,
             'gaji' => $request->penghasilan,
+            'pendidikan' => $request->pendidikan,
+            'unit_sekolah' => $request->unit_sekolah,
+            'jumlah_anak' => $request->jumlah_anak ?? 1,
         ]);
 
         session(['uid_orangtua' => $uidOrangTua]);

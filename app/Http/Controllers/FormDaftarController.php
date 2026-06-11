@@ -21,11 +21,7 @@ class FormDaftarController extends Controller
             'alamat' => $request->alamat,
             'agama' => $request->agama,
             'golongan_darah' => $request->gol_darah,
-
-            // sementara belum ada input
-            'tempat_lahir' => '-',
-
-            // ambil dari session yang dibuat saat simpan profil ortu
+            'tempat_lahir' => $request->tempat_lahir,
             'uid_orangtua' => session('uid_orangtua'),
         ]);
 
