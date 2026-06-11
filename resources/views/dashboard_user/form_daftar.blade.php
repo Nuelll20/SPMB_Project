@@ -896,7 +896,8 @@
         </div>
     </header>
 
-    <form id="formPesertaDidik" action="{{ route('form.daftar.store') }}" method="POST" class="page-body" novalidate>
+    <form id="formPesertaDidik" action="{{ route('form.daftar.store') }}" method="POST" enctype="multipart/form-data"
+        class="page-body" novalidate>
         @csrf
         <div class="page-header">
             <div>
@@ -918,18 +919,18 @@
                     <div class="col-header">
                         <span class="col-header-title">Identitas Dasar</span>
                     </div>
-
                     <div class="field-group required">
                         <label class="field-label" for="namaLengkap">Nama Lengkap</label>
+
                         <input type="text" id="namaLengkap" name="nama_lengkap" class="field-input"
-                            placeholder="Nama Lengkap" autocomplete="off"
+                            value="{{ $draft->nama ?? '' }}" placeholder="Nama Lengkap" autocomplete="off"
                             oninput="validateField(this, v => v.trim().length >= 3)">
                     </div>
 
                     <div class="field-group required">
                         <label class="field-label" for="nik">NIK (Nomor Induk Kependudukan)</label>
-                        <input type="text" id="nik" name="nik" class="field-input" placeholder="16 Digit NIK"
-                            maxlength="16" autocomplete="off"
+                        <input type="text" id="nik" name="nik" class="field-input" value="{{ $draft->nik ?? '' }}"
+                            placeholder="16 Digit NIK" maxlength="16" autocomplete="off"
                             oninput="onlyDigits(this); validateField(this, v => /^\d{16}$/.test(v))">
                     </div>
 
@@ -937,15 +938,26 @@
                         <div class="field-group">
                             <label class="field-label" for="tanggalLahir">Tanggal Lahir</label>
                             <input type="date" id="tanggalLahir" name="tanggal_lahir" class="field-input"
-                                onchange="validateField(this, v => v !== '')">
+                                value="{{ $draft->tanggal_lahir ?? '' }}" onchange="validateField(this, v => v !== '')">
                         </div>
                         <div class="field-group">
                             <label class="field-label" for="golDarah">Gol. Darah</label>
                             <select id="golDarah" name="gol_darah" class="field-select" onchange="onSelectChange(this)">
-                                <option value="O" selected>O</option>
-                                <option value="A">A</option>
-                                <option value="B">B</option>
-                                <option value="AB">AB</option>
+                                <option value="" {{ empty($draft->golongan_darah) ? 'selected' : '' }}>
+                                    Pilih Golongan Darah
+                                </option>
+                                <option value="A" {{ ($draft->golongan_darah ?? '') == 'A' ? 'selected' : '' }}>
+                                    A
+                                </option>
+                                <option value="B" {{ ($draft->golongan_darah ?? '') == 'B' ? 'selected' : '' }}>
+                                    B
+                                </option>
+                                <option value="AB" {{ ($draft->golongan_darah ?? '') == 'AB' ? 'selected' : '' }}>
+                                    AB
+                                </option>
+                                <option value="O" {{ ($draft->golongan_darah ?? '') == 'O' ? 'selected' : '' }}>
+                                    O
+                                </option>
                             </select>
                         </div>
                     </div>
@@ -960,13 +972,27 @@
                         <label class="field-label" for="agama">Agama</label>
                         <select id="agama" name="agama" class="field-select"
                             onchange="onSelectChange(this); toggleSuratBaptis(this.value)">
-                            <option value="" selected disabled>Pilih Agama</option>
-                            <option value="kristen">Kristen</option>
-                            <option value="katolik">Katolik</option>
-                            <option value="islam">Islam</option>
-                            <option value="buddha">Buddha</option>
-                            <option value="hindu">Hindu</option>
-                            <option value="konghucu">Konghucu</option>
+                            <option value="" disabled {{ empty($draft->agama) ? 'selected' : '' }}>
+                                Pilih Agama
+                            </option>
+                            <option value="kristen" {{ ($draft->agama ?? '') == 'kristen' ? 'selected' : '' }}>
+                                Kristen
+                            </option>
+                            <option value="katolik" {{ ($draft->agama ?? '') == 'katolik' ? 'selected' : '' }}>
+                                Katolik
+                            </option>
+                            <option value="islam" {{ ($draft->agama ?? '') == 'islam' ? 'selected' : '' }}>
+                                Islam
+                            </option>
+                            <option value="buddha" {{ ($draft->agama ?? '') == 'buddha' ? 'selected' : '' }}>
+                                Buddha
+                            </option>
+                            <option value="hindu" {{ ($draft->agama ?? '') == 'hindu' ? 'selected' : '' }}>
+                                Hindu
+                            </option>
+                            <option value="konghucu" {{ ($draft->agama ?? '') == 'konghucu' ? 'selected' : '' }}>
+                                Konghucu
+                            </option>
                         </select>
                     </div>
 
@@ -979,30 +1005,35 @@
                         </div>
                         <textarea id="alamat" name="alamat" class="field-textarea"
                             placeholder="Masukkan alamat lengkap tempat tinggal anak..."
-                            oninput="validateField(this, v => v.trim().length >= 5)"></textarea>
+                            oninput="validateField(this, v => v.trim().length >= 5)">{{ $draft->alamat ?? '' }}</textarea>
                     </div>
-                            <div class="field-group required">
+                    <div class="field-group required">
                         <div class="alamat-header">
                             <label class="field-label" for="alamat">Tempat Lahir Anak</label>
-                            
+
                         </div>
                         <textarea id="tempat-lahir" name="tempat_lahir" class="field-textarea"
                             placeholder="Masukkan tempat lahir anak..."
-                            oninput="validateField(this, v => v.trim().length >= 5)"></textarea>
+                            oninput="validateField(this, v => v.trim().length >= 5)">{{ $draft->tempat_lahir ?? '' }}</textarea>
                     </div>
                     <div class="field-group">
                         <span class="upload-label">Upload Berkas Fisik</span>
                         <div class="upload-grid">
                             <div class="upload-item required" id="item-kk" onclick="triggerUpload('file-kk')">
                                 <div class="upload-left"><span class="upload-name">Kartu Keluarga</span></div>
+                                @if(isset($berkas['Kartu Keluarga']))
+                                    <small style="color:green;">
+                                        ✓ Sudah diupload
+                                    </small>
+                                @endif
                                 <div class="upload-actions">
                                     <button type="button" class="upload-action-btn"
                                         onclick="previewDoc(event,'Kartu Keluarga')">👁</button>
                                     <button type="button" class="upload-action-btn"
                                         onclick="triggerUpload('file-kk', event)">↑</button>
                                 </div>
-                                <input type="file" id="file-kk" class="upload-file-input" accept="image/*,.pdf"
-                                    onchange="onUpload(this,'item-kk')">
+                                <input type="file" id="file-kk" name="kartu_keluarga" class="upload-file-input"
+                                    accept="image/*,.pdf" onchange="onUpload(this,'item-kk')">
                             </div>
 
                             <div class="upload-item required" id="item-akte" onclick="triggerUpload('file-akte')">
@@ -1013,8 +1044,8 @@
                                     <button type="button" class="upload-action-btn"
                                         onclick="triggerUpload('file-akte', event)">↑</button>
                                 </div>
-                                <input type="file" id="file-akte" class="upload-file-input" accept="image/*,.pdf"
-                                    onchange="onUpload(this,'item-akte')">
+                                <input type="file" id="file-akte" name="akte_kelahiran" class="upload-file-input"
+                                    accept="image/*,.pdf" onchange="onUpload(this,'item-akte')">
                             </div>
 
                             <div class="upload-item required" id="item-ktp" onclick="triggerUpload('file-ktp')">
@@ -1025,8 +1056,8 @@
                                     <button type="button" class="upload-action-btn"
                                         onclick="triggerUpload('file-ktp', event)">↑</button>
                                 </div>
-                                <input type="file" id="file-ktp" class="upload-file-input" accept="image/*,.pdf"
-                                    onchange="onUpload(this,'item-ktp')">
+                                <input type="file" id="file-ktp" name="ktp_ortu" class="upload-file-input"
+                                    accept="image/*,.pdf" onchange="onUpload(this,'item-ktp')">
                             </div>
 
                             <div class="upload-item required" id="item-foto" onclick="triggerUpload('file-foto')">
@@ -1037,8 +1068,8 @@
                                     <button type="button" class="upload-action-btn"
                                         onclick="triggerUpload('file-foto', event)">↑</button>
                                 </div>
-                                <input type="file" id="file-foto" class="upload-file-input" accept="image/*"
-                                    onchange="onUpload(this,'item-foto')">
+                                <input type="file" id="file-foto" name="pas_foto" class="upload-file-input"
+                                    accept="image/*" onchange="onUpload(this,'item-foto')">
                             </div>
 
                             <div class="upload-item" id="item-baptis" style="grid-column: span 2; display: none;"
@@ -1054,8 +1085,8 @@
                                     <button type="button" class="upload-action-btn"
                                         onclick="triggerUpload('file-baptis', event)">↑</button>
                                 </div>
-                                <input type="file" id="file-baptis" class="upload-file-input" accept="image/*,.pdf"
-                                    onchange="onUpload(this,'item-baptis')">
+                                <input type="file" id="file-baptis" name="surat_baptis" class="upload-file-input"
+                                    accept="image/*,.pdf" onchange="onUpload(this,'item-baptis')">
                             </div>
                         </div>
                     </div>
@@ -1180,10 +1211,17 @@
         ============================================================ */
         function samakanAlamat() {
             const ta = document.getElementById('alamat');
-            ta.value = "Jl. Jend. Sudirman No. 45, Yogyakarta"; // Contoh dummy alamat terisi
+            const alamatOrtu = @json($orangTua->alamat ?? '');
+
+            if (!alamatOrtu) {
+                showToast('Alamat orang tua belum ditemukan');
+                return;
+            }
+
+            ta.value = alamatOrtu;
             ta.classList.remove('is-invalid');
             ta.classList.add('is-valid');
-            showToast('🏠 Alamat disalin dari data orang tua');
+            showToast('Alamat disalin dari data orang tua');
         }
 
         /* ============================================================
@@ -1239,17 +1277,37 @@
            SAVE DRAFT MECHANISM
         ============================================================ */
         function saveDraft(btn, e) {
-            addRipple(btn, e);
+            e.preventDefault();
+
+            const form = document.getElementById("formPesertaDidik");
+            const formData = new FormData(form);
+
             btn.disabled = true;
-            btn.textContent = 'Menyimpan...';
-            setTimeout(() => {
-                btn.innerHTML = 'Draft Tersimpan';
-                showToast('💾 Draft formulir anak berhasil disimpan!');
-                setTimeout(() => {
-                    btn.innerHTML = 'SIMPAN DRAFT';
+            btn.textContent = "Menyimpan...";
+
+            fetch("{{ route('form.daftar.draft') }}", {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "X-CSRF-TOKEN": document.querySelector('input[name="_token"]').value
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    btn.innerHTML = "Draft Tersimpan";
+                    showToast("Draft berhasil disimpan ke database");
+
+                    setTimeout(() => {
+                        btn.innerHTML = "SIMPAN DRAFT";
+                        btn.disabled = false;
+                    }, 2000);
+                })
+                .catch(error => {
+                    btn.innerHTML = "SIMPAN DRAFT";
                     btn.disabled = false;
-                }, 2000);
-            }, 1000);
+                    showToast("Gagal menyimpan draft");
+                    console.error(error);
+                });
         }
 
         /* ============================================================

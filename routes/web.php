@@ -48,6 +48,10 @@ Route::get('/form-daftar', [FormDaftarController::class, 'index'])
 Route::post('/form-daftar', [FormDaftarController::class, 'store'])
     ->name('form.daftar.store');
 
+Route::post('/form-daftar/draft',
+    [FormDaftarController::class, 'saveDraft'])
+    ->name('form.daftar.draft');
+
 Route::get('/riwayat', function () {
     return view('dashboard_user.riwayat');
 })->name('riwayat');
