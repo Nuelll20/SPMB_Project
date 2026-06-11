@@ -43,7 +43,6 @@
 
         .container {
             max-width: 1152px;
-            /* Setara max-w-6xl */
             width: 100%;
             margin: 24px auto 0 auto;
             padding: 0 16px;
@@ -222,7 +221,6 @@
             border: 1px solid #f3f4f6;
             padding: 48px 24px;
             max-width: 896px;
-            /* Setara max-w-4xl */
             width: 100%;
             margin: 0 auto;
             text-align: center;
@@ -281,6 +279,12 @@
             gap: 8px;
         }
 
+        /* Indikator Tanda Bintang Merah untuk Required Field */
+        .form-group.required .form-label::after {
+            content: " *";
+            color: var(--red);
+        }
+
         .form-label {
             font-size: 11px;
             font-weight: 700;
@@ -307,6 +311,12 @@
             outline: none;
             transition: border-color 0.2s;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* State jika input divalidasi kosong saat submit */
+        .form-control.input-error {
+            border-color: var(--red);
+            background: #fff5f5;
         }
 
         .form-control:focus {
@@ -387,6 +397,7 @@
             justify-content: center;
         }
 
+        /* Mengganti tag <a> menjadi <button type="submit"> murni */
         .btn-submit {
             background: var(--navy);
             color: var(--surface);
@@ -394,12 +405,13 @@
             font-size: 14px;
             padding: 16px 32px;
             border-radius: 24px;
-            text-decoration: none;
+            border: none;
             display: inline-flex;
             align-items: center;
             gap: 12px;
             box-shadow: 0 10px 15px -3px rgba(26, 42, 108, 0.3);
             transition: all 0.2s;
+            cursor: pointer;
         }
 
         .btn-submit:hover {
@@ -409,6 +421,89 @@
 
         .btn-submit i {
             font-size: 12px;
+        }
+
+        /* ===================== CUSTOM POP-UP MODAL OVERLAY ===================== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(26, 42, 108, 0.4);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-box {
+            background: var(--surface);
+            padding: 32px;
+            border-radius: 24px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.show .modal-box {
+            transform: scale(1);
+        }
+
+        .modal-icon {
+            width: 56px;
+            height: 56px;
+            background: #fff5f5;
+            color: var(--red);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin: 0 auto 16px auto;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--navy);
+            margin-bottom: 8px;
+        }
+
+        .modal-desc {
+            font-size: 14px;
+            color: var(--muted);
+            line-height: 1.5;
+            margin-bottom: 24px;
+        }
+
+        .modal-btn-close {
+            background: var(--navy);
+            color: var(--surface);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+        }
+
+        .modal-btn-close:hover {
+            background: #111c44;
         }
 
         /* ===================== RESPONSIVE (MEDIA QUERIES) ===================== */
@@ -459,27 +554,23 @@
                     <div id="fallback-logo" class="brand-logo-fallback" style="display: none;">⛵</div>
                 </div>
 
-                <div class="brand-text">
-                    <div class="brand-name">PORTAL SAKTI</div>
-                    <div class="brand-meta">
-                        <span class="brand-role">Parent</span>
-                        <span class="brand-uid">UID-Jzp4Z3bwwoNY7IhFuiPNdTsN9w63</span>
-                    </div>
+                 <div class="brand-text">
+                <div class="brand-name">PORTAL SAKTI</div>
+                <div class="brand-meta">
+                    <span class="brand-role">Parent</span>
+                    <span class="brand-uid">UID-Jzp4Z3bwwoNY7IhFuiPNdTsN9w63</span>
                 </div>
             </div>
-
+        </div>
             <nav class="topbar-nav">
                 <a class="nav-link active" href="#">
-                    <i class="fa-solid fa-table-cells-large"></i>
                     <span>Dashboard</span>
                     <span class="nav-dot"></span>
                 </a>
-                <a class="nav-link" href="#" onclick="showToast('🕐 Membuka Riwayat...')">
-                    <i class="fa-solid fa-clock-rotate-left"></i>
+                <a class="nav-link" href="#">
                     <span>Riwayat</span>
                 </a>
-                <a class="nav-link" href="#" onclick="showToast('💬 Membuka Pusat Bantuan...')">
-                    <i class="fa-solid fa-circle-info"></i>
+                <a class="nav-link" href="#">
                     <span>Pusat Bantuan</span>
                 </a>
             </nav>
@@ -506,13 +597,15 @@
                 Lengkapi data pribadi Ayah/Bunda sebelum melanjutkan pendaftaran anak.
             </p>
 
-            <form action="{{ route('profil.ortu.store') }}" method="POST" class="form-container">
+            <!-- FORM VALIDATION MURNI -->
+            <form id="formProfilOrtu" action="{{ route('profil.ortu.store') }}" method="POST" class="form-container" novalidate>
                 @csrf
                 <div class="form-grid">
-                    <div class="form-group">
+                    <!-- Ditambahkan class required pada form-group untuk indikator CSS bintang -->
+                    <div class="form-group required">
                         <label class="form-label">Pendidikan Terakhir</label>
                         <div class="select-wrapper">
-                            <select name="pendidikan" class="form-control">
+                            <select name="pendidikan" class="form-control" required>
                                 <option value="SMA">SMA / Sederajat</option>
                                 <option value="SMA">D3 / Diploma</option>
                                 <option value="S1" selected>S1 / Sarjana</option>
@@ -525,10 +618,10 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group required">
                         <label class="form-label">Rentang Penghasilan</label>
                         <div class="select-wrapper">
-                            <select name="penghasilan" class="form-control">
+                            <select name="penghasilan" class="form-control" required>
                                 <option value="" selected disabled>Pilih Rentang Gaji</option>
                                 <option value="1">&lt; Rp 5.000.000</option>
                                 <option value="2">Rp 5.000.000 - Rp 10.000.000</option>
@@ -541,30 +634,16 @@
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group required">
                     <label class="form-label">Alamat Domisili Sesuai KTP</label>
-                    <textarea name="alamat" class="form-control" placeholder="Masukkan alamat lengkap..."></textarea>
+                    <textarea name="alamat" class="form-control" placeholder="Masukkan alamat lengkap..." required></textarea>
                 </div>
 
                 <div class="form-grid">
-                    <div class="form-group">
-                        <label class="form-label">Wilayah Pendaftaran</label>
-                        <div class="select-wrapper">
-                            <select name="wilayah" class="form-control">
-                                <option value="Yogyakarta" selected>Yogyakarta</option>
-                                <option value="Jakarta">Jakarta</option>
-                                <option value="Jawa Tengah">Jawa Tengah</option>
-                            </select>
-                            <div class="select-icon">
-                                <i class="fa-solid fa-chevron-down"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
+                    <div class="form-group required">
                         <label class="form-label">Unit Sekolah Tujuan</label>
                         <div class="select-wrapper">
-                            <select name="unit_sekolah" class="form-control">
+                            <select name="unit_sekolah" class="form-control" required>
                                 <option value="TK Wirobrajan" selected>TK Wirobrajan</option>
                                 <option value="SD Kanisius">SD Kanisius Hati Kudus</option>
                             </select>
@@ -586,26 +665,84 @@
                     </div>
                 </div>
 
+                <!-- PERBAIKAN: Berubah menjadi Button type="submit" asli -->
                 <div class="submit-container">
-                    <a href="{{ route('form.daftar') }}" class="btn-submit">
+                    <button type="submit" class="btn-submit">
                         <span>Simpan Profil & Mulai Form Siswa</span>
                         <i class="fa-solid fa-chevron-right"></i>
-                    </a>
+                    </button>
                 </div>
             </form>
         </main>
     </div>
 
+    <!-- STRUCTURE CUSTOM POP-UP MODAL -->
+    <div id="errorModal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-icon">
+                <i class="fa-solid fa-circle-exclamation"></i>
+            </div>
+            <h3 class="modal-title">Data Belum Lengkap</h3>
+            <p class="modal-desc">Mohon periksa kembali. Seluruh bidang data bertanda bintang (*) wajib diisi sebelum melanjutkan.</p>
+            <button type="button" id="closeModalBtn" class="modal-btn-close">Mengerti</button>
+        </div>
+    </div>
+
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+            // Logika Seleksi Tombol Jumlah Anak
             const buttons = document.querySelectorAll(".anak-btn");
-
             buttons.forEach(btn => {
                 btn.addEventListener("click", function () {
-                    buttons.forEach(b => {
-                        b.classList.remove("active");
-                    });
+                    buttons.forEach(b => b.classList.remove("active"));
                     this.classList.add("active");
+                });
+            });
+
+            // ELEMEN VALIDASI CUSTOM POP-UP
+            const form = document.getElementById("formProfilOrtu");
+            const modal = document.getElementById("errorModal");
+            const closeModalBtn = document.getElementById("closeModalBtn");
+
+            form.addEventListener("submit", function (event) {
+                let isFormValid = true;
+                
+                // Ambil seluruh elemen input/select/textarea yang memiliki atribut required
+                const requiredFields = form.querySelectorAll("[required]");
+
+                requiredFields.forEach(field => {
+                    // Validasi jika value kosong atau belum memilih opsi valid
+                    if (!field.value || field.value.trim() === "") {
+                        isFormValid = false;
+                        field.classList.add("input-error"); // Tambah border merah murni CSS
+                    } else {
+                        field.classList.remove("input-error");
+                    }
+                });
+
+                // Jika ada data yang kosong, gagalkan pemindahan halaman dan munculkan Pop-up
+                if (!isFormValid) {
+                    event.preventDefault(); // Menghentikan redirect/action form
+                    modal.classList.add("show"); // Menampilkan pop-up modal di tengah
+                }
+            });
+
+            // Menutup pop-up ketika tombol 'Mengerti' diklik
+            closeModalBtn.addEventListener("click", function () {
+                modal.classList.remove("show");
+            });
+
+            // Menghilangkan highlight merah secara realtime saat user mulai mengisi input kembali
+            form.querySelectorAll("[required]").forEach(field => {
+                field.addEventListener("input", function() {
+                    if (this.value && this.value.trim() !== "") {
+                        this.classList.remove("input-error");
+                    }
+                });
+                field.addEventListener("change", function() {
+                    if (this.value) {
+                        this.classList.remove("input-error");
+                    }
                 });
             });
         });
