@@ -36,3 +36,4 @@ Route::get('/form-daftar', function () {
     return view('dashboard_user.form_daftar');
 })->name('form.daftar');
 
+
