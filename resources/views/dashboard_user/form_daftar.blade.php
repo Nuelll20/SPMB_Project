@@ -101,9 +101,12 @@
         .brand-role {
             font-size: 10px;
             font-weight: 700;
-            color: var(--muted);
+            color: var(--gold-dark);
+            background: #fff8e7;
+            padding: 2px 8px;
+            border-radius: 99px;
+            border: 1px solid #fce8bd;
             text-transform: uppercase;
-            letter-spacing: 0.6px;
         }
 
         .topbar-nav {
@@ -586,41 +589,6 @@
         .btn-submit .arrow { transition: transform 0.25s; font-size: 18px; }
         .btn-submit:hover .arrow { transform: translateX(5px); }
 
-        /* Counter Section */
-        .counter-section {
-            text-align: center;
-            padding-top: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .btn-group {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .anak-btn {
-            width: 48px;
-            height: 48px;
-            border-radius: 16px;
-            font-weight: bold;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            color: var(--muted);
-        }
-
-        .anak-btn.active {
-            background: var(--navy);
-            color: var(--gold);
-            border: none;
-        }
-
         /* ===================== MODAL WINDOW POP-UP SYSTEM ===================== */
         .modal-overlay {
             position: fixed;
@@ -680,7 +648,6 @@
             margin: 0 auto 16px auto;
         }
 
-        /* Varian warna oranye untuk modal konfirmasi kembali */
         .modal-icon-warn {
             background: #fffbeb;
             color: var(--gold-dark);
@@ -717,7 +684,6 @@
             width: 100%;
         }
 
-        /* Grid tombol pilihan untuk modal konfirmasi */
         .modal-btn-group {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -736,7 +702,7 @@
         #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
         @media (max-width: 900px) { .form-grid { grid-template-columns: 1fr; gap: 24px; } .page-body { padding: 24px 20px; } }
-        @media (max-width: 640px) { .topbar-nav { display: none; } .bottom-bar { flex-direction: column; align-items: stretch; } .bottom-actions { flex-direction: column; } .btn-draft, .btn-submit { width: 100%; justify-content: center; } }
+        @media (max-width: 640px) { .bottom-bar { flex-direction: column; align-items: stretch; } .bottom-actions { flex-direction: column; } .btn-draft, .btn-submit { width: 100%; justify-content: center; } }
     </style>
 </head>
 
@@ -762,8 +728,8 @@
             </div>
             
             <nav class="topbar-nav">
-                <a class="nav-link active" href="#" id="navDashboard">Dashboard</a><span class="nav-dot"></span></a>
-                <a class="nav-link"  href="#" id="navRiwayat">Riwayat 
+                <a class="nav-link" href="#" id="navDashboard">Dashboard</a>
+                <a class="nav-link active" href="#" id="navRiwayat">Riwayat <span class="nav-dot"></span></a>
                 <a class="nav-link" href="#" id="navBantuan">Pusat Bantuan</a>
             </nav>
 
@@ -956,13 +922,15 @@
         <div class="modal-box">
             <div class="modal-icon modal-icon-warn"><i class="fa-solid fa-triangle-exclamation"></i></div>
             <h3 class="modal-title">Tinggalkan Halaman?</h3>
-            <p class="modal-desc">Data yang baru Anda masukkan belum disimpan ke sistem. Apakah Anda yakin ingin kembali ke halaman profil?</p>
+            <p class="modal-desc">Data pendaftaran calon murid belum disimpan ke sistem. Apakah Anda yakin ingin keluar dan membuang perubahan?</p>
             <div class="modal-btn-group">
                 <button type="button" id="btnCancelLeave" class="modal-btn-close modal-btn-cancel">Batal</button>
                 <button type="button" id="btnConfirmLeave" class="modal-btn-close" style="background: var(--red);">Ya, Keluar</button>
             </div>
         </div>
     </div>
+
+    <div id="toast"></div>
 
     <script>
         /* ============================================================
@@ -1063,19 +1031,20 @@
 
             item.classList.add('uploaded');
             item.classList.remove('is-invalid');
-            prevBtn.classList.remove('btn-preview-disabled');
+            prevBtn.classList.remove('btn-preview-disabled'); // Aktifkan tombol mata pratinjau berkas
             showToast(`📎 Berkas "${name.slice(0, 15)}..." berhasil dipilih`);
         }
 
         /* ============================================================
-           LOCAL MULTIMEDIA RENDERER PREVIEW
+           PERBAIKAN: CORE LOGIC RENDERER PREVIEW DOKUMEN & GAMBAR LOKAL
         ============================================================ */
         const previewModal = document.getElementById('previewModal');
         const previewViewport = document.getElementById('previewViewport');
         const previewModalTitle = document.getElementById('previewModalTitle');
 
         function previewDoc(e, inputId, labelName) {
-            e.stopPropagation();
+            e.stopPropagation(); // Matikan bubbling klik agar dialog upload tidak terbuka ganda
+            
             const fileInput = document.getElementById(inputId);
             if (!fileInput.files || !fileInput.files[0]) return;
 
@@ -1083,16 +1052,19 @@
             const fileType = file.type;
             
             previewModalTitle.textContent = `Pratinjau Berkas: ${labelName}`;
-            previewViewport.innerHTML = '';
+            previewViewport.innerHTML = ''; // Reset DOM viewport render
 
             const reader = new FileReader();
 
+            // Skenario 1: Jika berkas bertipe PDF, buat Blob URL lokal untuk Iframe render
             if (fileType === "application/pdf") {
                 const blobURL = URL.createObjectURL(file);
                 const iframe = document.createElement('iframe');
                 iframe.src = blobURL;
                 previewViewport.appendChild(iframe);
-            } else if (fileType.startsWith("image/")) {
+            } 
+            // Skenario 2: Jika berkas berupa gambar/citra biner murni
+            else if (fileType.startsWith("image/")) {
                 reader.onload = function (event) {
                     const img = document.createElement('img');
                     img.src = event.target.result;
@@ -1109,19 +1081,18 @@
 
         document.getElementById('closePreviewModalBtn').addEventListener('click', () => {
             previewModal.classList.remove('show');
-            previewViewport.innerHTML = '';
+            previewViewport.innerHTML = ''; // Flush DOM render object
         });
 
         /* ============================================================
-           VALIDASI SPESIFIK & REALTIME FEEDBACK SAVE DRAFT
+           PERBAIKAN: LOGIKA VALIDASI ALASAN GAGAL SIMPAN DRAFT
         ============================================================ */
         function saveDraft(btn, e) {
             addRipple(btn, e);
             
             const namaField = document.getElementById('namaLengkap');
-            const nikField = document.getElementById('nik');
 
-            // Cek kondisi minimal penyimpanan draf (Harus ada identitas dasar)
+            // Proteksi alasan kegagalan: Berikan keterangan field minimal pendaftaran draf
             if (!namaField.value || namaField.value.trim().length < 3) {
                 showToast('⚠️ Gagal menyimpan draf: Nama Lengkap wajib diisi minimal 3 karakter.');
                 namaField.classList.add('is-invalid');
@@ -1133,14 +1104,14 @@
             
             setTimeout(() => {
                 btn.innerHTML = 'Draft Tersimpan';
-                showToast('💾 Draft formulir anak berhasil disimpan ke sistem cloud!');
+                showToast('💾 Draft data formulir anak berhasil diamankan!');
                 namaField.classList.remove('is-invalid');
                 setTimeout(() => { btn.innerHTML = 'SIMPAN DRAFT'; btn.disabled = false; }, 2000);
             }, 1000);
         }
 
         /* ============================================================
-           INTERSEPSI HALAMAN / POP-UP AKSI KEMBALI
+           PERBAIKAN: DETEKSI INTERSEPSI UNSAVED CHANGES GUARD (KEMBALI)
         ============================================================ */
         const leaveModal = document.getElementById('confirmLeaveModal');
         const btnLinkKembali = document.getElementById('btnLinkKembali');
@@ -1149,30 +1120,27 @@
         
         let targetLeaveUrl = "";
 
-        // Fungsi interseptor mendeteksi apakah form sudah mulai disentuh/diisi
         function checkUnsavedChanges(e, targetUrl) {
             const namaLengkap = document.getElementById('namaLengkap').value;
             const nik = document.getElementById('nik').value;
             const alamat = document.getElementById('alamat').value;
 
-            // Jika ada satu saja kolom yang sudah mulai diketik, cegah perpindahan langsung
+            // Jika form sudah mulai diotak-atik isinya oleh pengguna, nyalakan popup filter pencegatan
             if (namaLengkap.trim() !== "" || nik.trim() !== "" || alamat.trim() !== "") {
                 e.preventDefault();
                 targetLeaveUrl = targetUrl;
-                leaveModal.classList.add('show'); // Munculkan custom pop-up konfirmasi tinggalkan halaman
+                leaveModal.classList.add('show'); // Munculkan modal peringatan data belum di-save
             }
         }
 
-        // Jalankan intersepsi pada link kembali di bottom-bar
         btnLinkKembali.addEventListener('click', function(e) {
             checkUnsavedChanges(e, this.getAttribute('href'));
         });
 
-        // Jalankan intersepsi pada link topbar menu jika diklik saat sedang mengisi form
-        document.querySelectorAll('.topbar-nav .nav-link, .topbar-logout').forEach(link => {
+        // Pantau juga interaksi klik pada menu bar atas topbar
+        document.querySelectorAll('.topbar-nav .nav-link, #btnTopbarLogout').forEach(link => {
             link.addEventListener('click', function(e) {
-                // Kecuali tombol logout form, abaikan
-                if(this.id === 'btnTopbarLogout') return;
+                if(this.id === 'btnTopbarLogout') return; // Bypass form submit logout
                 checkUnsavedChanges(e, this.getAttribute('href') || '#');
             });
         });
