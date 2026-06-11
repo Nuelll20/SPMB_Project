@@ -633,7 +633,10 @@
                         </div>
                     </div>
                 </div>
-
+   <div class="form-group required">
+                    <label class="form-label">Nomor Telepon</label>
+                    <textarea name="nomor_telepon" class="form-control" placeholder="Masukkan nomor telepon..." required></textarea>
+                </div>
                 <div class="form-group required">
                     <label class="form-label">Alamat Domisili Sesuai KTP</label>
                     <textarea name="alamat" class="form-control" placeholder="Masukkan alamat lengkap..." required></textarea>
