@@ -5,245 +5,372 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Remix: SAKTI - Sistem Admisi Kanisius Terintegrasi</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* Custom Colors berdasarkan Gambar */
-        background-color: #F4F7FA;
-
-        .bg-sakti-blue {
-            background-color: #002B5B;
+        :root {
+            --navy:      #1a2a6c;
+            --blue:      #004AAD;
+            --gold:      #f5c400;
+            --gold-dark: #c9a200;
+            --bg:        #f0f2f8;
+            --surface:   #ffffff;
+            --surface2:  #f4f6fb;
+            --border:    #e0e4ef;
+            --text:      #1a1f36;
+            --muted:     #7b82a0;
+            --green:     #16a34a;
+            --red:       #dc2626;
+            --radius:    14px;
         }
 
-        .text-sakti-blue {
-            color: #002B5B;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 48px;
         }
 
-        .border-sakti-blue {
-            border-color: #002B5B;
+        .container {
+            max-width: 1152px; /* Setara max-w-6xl */
+            width: 100%;
+            margin: 24px auto 0 auto;
+            padding: 0 16px;
         }
 
-        .bg-sakti-light {
-            background-color: #E8F0FE;
+        /* ===================== TOPBAR / NAVBAR ===================== */
+        .topbar {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            border-radius: 18px;
+            box-shadow: 0 2px 16px rgba(26,42,108,0.07);
+            margin-bottom: 24px;
         }
 
-        .text-sakti-orange {
-            color: #E5A93C;
+        .topbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 16px;
         }
 
+        .brand-logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .brand-logo-fallback {
+            width: 40px; height: 40px;
+            background: var(--navy);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px;
+        }
+
+        .brand-text { display: flex; flex-direction: column; line-height: 1.2; }
+        .brand-name { font-size: 16px; font-weight: 900; color: var(--navy); letter-spacing: 0.5px; }
+        .brand-meta { display: flex; align-items: center; gap: 8px; margin-top: 2px; }
+        
+        .brand-role {
+            font-size: 10px; font-weight: 700;
+            color: var(--gold-dark); background: #fff8e7;
+            padding: 2px 8px; border-radius: 99px;
+            border: 1px solid #fce8bd; text-transform: uppercase;
+        }
+        .brand-uid { font-family: monospace; font-size: 10px; color: var(--muted); }
+
+        /* Nav links */
+        .topbar-nav { display: flex; align-items: center; gap: 32px; }
+        
+        .nav-link {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 14px; font-weight: 600; color: var(--muted);
+            text-decoration: none; transition: color 0.2s;
+            position: relative; padding: 4px 0;
+        }
+        .nav-link:hover { color: var(--navy); }
+        .nav-link.active { color: var(--navy); font-weight: 800; }
+        
+        .nav-dot {
+            position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%);
+            width: 6px; height: 6px; background: var(--gold); border-radius: 50%;
+        }
+
+        /* Topbar right */
+        .topbar-right { display: flex; align-items: center; gap: 16px; }
+        .topbar-username { text-align: right; line-height: 1.2; }
+        .topbar-uname { font-size: 14px; font-weight: 700; color: var(--navy); }
+        .topbar-urole { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .topbar-logout {
+            width: 42px; height: 42px;
+            background: #fff0f0; border: none; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .topbar-logout:hover { background: #ffe0e0; }
+        .topbar-logout i { color: var(--red); font-size: 16px; }
+
+        /* ===================== MAIN CARD CONTENT ===================== */
+        .main-card {
+            background: var(--surface);
+            border-radius: 40px;
+            border: 1px solid #f3f4f6;
+            padding: 48px 24px;
+            max-width: 896px; /* Setara max-w-4xl */
+            width: 100%;
+            margin: 0 auto;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .avatar-container {
+            background: #f0f5fa; width: 64px; height: 64px;
+            border-radius: 20px; margin: 0 auto 16px auto;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .avatar-container i { color: var(--navy); font-size: 24px; }
+
+        .main-title { color: var(--navy); font-size: 30px; font-weight: 900; letter-spacing: 0.5px; margin-bottom: 8px; }
+        .main-subtitle { color: var(--muted); font-size: 14px; max-width: 448px; margin: 0 auto 40px auto; line-height: 1.6; }
+
+        /* Form & Grid CSS Manual */
+        .form-container { text-align: left; display: flex; flex-direction: column; gap: 24px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+        .form-label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        .select-wrapper { position: relative; width: 100%; }
+        
+        .form-control {
+            width: 100%; bg: var(--surface); border: 1px solid var(--border);
+            border-radius: 16px; padding: 14px 16px; font-size: 14px;
+            font-weight: 600; color: var(--navy); outline: none;
+            transition: border-color 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .form-control:focus { border-color: var(--navy); }
+        
+        select.form-control { appearance: none; cursor: pointer; padding-right: 40px; }
+        .select-icon { position: absolute; inset-y: 0; right: 16px; display: flex; align-items: center; pointer-events: none; color: var(--navy); font-size: 12px; }
+
+        textarea.form-control { resize: none; height: 96px; font-family: inherit; }
+
+        /* Counter Section */
+        .counter-section { text-align: center; padding-top: 16px; display: flex; flex-direction: column; gap: 16px; }
+        .btn-group { display: flex; justify-content: center; align-items: center; gap: 8px; }
+        
         .anak-btn {
-            width: 48px;
-            height: 48px;
-            border-radius: 16px;
-            background: white;
-            border: 1px solid #e5e7eb;
-            color: #9ca3af;
-            font-weight: bold;
-            cursor: pointer;
+            width: 48px; height: 48px; border-radius: 16px;
+            font-weight: bold; font-size: 14px; cursor: pointer; transition: all 0.2s;
+            background: var(--surface); border: 1px solid var(--border); color: var(--muted);
         }
+        .anak-btn:hover { border-color: var(--navy); color: var(--navy); }
+        .anak-btn.active { background: var(--navy); color: var(--gold); border: none; }
 
-        .anak-btn.active {
-            background: #002B5B;
-            color: #E5A93C;
-            border: none;
+        /* Submit Action */
+        .submit-container { padding-top: 24px; display: flex; justify-content: center; }
+        
+        .btn-submit {
+            background: var(--navy); color: var(--surface);
+            font-weight: bold; font-size: 14px; padding: 16px 32px;
+            border-radius: 24px; text-decoration: none;
+            display: inline-flex; align-items: center; gap: 12px;
+            box-shadow: 0 10px 15px -3px rgba(26, 42, 108, 0.3);
+            transition: all 0.2s;
+        }
+        .btn-submit:hover { background: #111c44; transform: translateY(-1px); }
+        .btn-submit i { font-size: 12px; }
+
+        /* ===================== RESPONSIVE (MEDIA QUERIES) ===================== */
+        @media (max-width: 768px) {
+            .topbar { flex-direction: column; padding: 20px; text-align: center; }
+            .topbar-brand { flex-direction: column; gap: 8px; }
+            .topbar-username { text-align: center; }
+            .topbar-right { width: 100%; justify-content: center; }
+            .form-grid { grid-template-columns: 1fr; gap: 20px; }
+            .main-card { padding: 32px 16px; }
         }
     </style>
 </head>
 
+<body>
 
-<body class="bg-[#F4F7FA] font-sans antialiased text-gray-700 min-h-screen pb-12">
-
-
-
-    <div class="max-w-6xl mx-auto px-4 mt-6">
-        <header
-            class="bg-white rounded-3xl p-4 shadow-sm flex flex-col md:flex-row justify-between items-center border border-gray-100 mb-8">
-
-            <div class="flex items-center space-x-4">
-                <div class="bg-sakti-blue text-white p-3 rounded-2xl flex items-center justify-center shadow-md">
-                    <i class="fa-solid fa-building-columns text-xl"></i>
+    <div class="container">
+        
+        <header class="topbar">
+            <div class="topbar-brand">
+                <div class="brand-logo-container">
+                    <img src="{{ asset('img/E-Kanisius 1.png') }}"
+                         alt="E-Kanisius Logo"
+                         style="width: 85px; height: auto; object-fit: contain; flex-shrink: 0;"
+                         onerror="this.style.display='none'; document.getElementById('fallback-logo').style.display='flex';">
+                    
+                    <div id="fallback-logo" class="brand-logo-fallback" style="display: none;">⛵</div>
                 </div>
-                <div>
-                    <h1 class="text-sakti-blue font-black text-lg tracking-wider">SAKTI PORTAL</h1>
-                    <div class="flex items-center space-x-2 mt-0.5">
-                        <span
-                            class="bg-[#FFF8E7] text-sakti-orange text-[10px] font-bold px-2 py-0.5 rounded-full border border-[#FCE8BD] flex items-center space-x-1">
-                            <i class="fa-solid fa-shield-halved text-[9px]"></i> <span>PARENT</span>
-                        </span>
+
+                <div class="brand-text">
+                    <div class="brand-name">PORTAL SAKTI</div>
+                    <div class="brand-meta">
+                        <span class="brand-role">Parent</span>
+                        <span class="brand-uid">UID-Jzp4Z3bwwoNY7IhFuiPNdTsN9w63</span>
                     </div>
                 </div>
             </div>
 
-            <nav class="flex items-center space-x-8 my-4 md:my-0 font-semibold text-sm">
-                <a href="#" class="text-sakti-blue flex items-center space-x-2 relative py-1">
+            <nav class="topbar-nav">
+                <a class="nav-link active" href="#">
                     <i class="fa-solid fa-table-cells-large"></i>
-                    <span>Dashboard</span>
-                    <span
-                        class="absolute bottom-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-sakti-orange rounded-full"></span>
+                    <span>Dashboard</span> 
+                    <span class="nav-dot"></span> 
                 </a>
-                <a href="#" class="text-gray-400 hover:text-sakti-blue flex items-center space-x-2 transition">
+                <a class="nav-link" href="#" onclick="showToast('🕐 Membuka Riwayat...')">
                     <i class="fa-solid fa-clock-rotate-left"></i>
                     <span>Riwayat</span>
                 </a>
-                <a href="#" class="text-gray-400 hover:text-sakti-blue flex items-center space-x-2 transition">
+                <a class="nav-link" href="#" onclick="showToast('💬 Membuka Pusat Bantuan...')">
                     <i class="fa-solid fa-circle-info"></i>
                     <span>Pusat Bantuan</span>
                 </a>
             </nav>
 
-            <div class="flex items-center space-x-4">
-                <div class="text-right">
-                    <p class="font-bold text-sakti-blue text-sm">Profil Orang Tua+</p>
-                    <p class="text-[11px] text-gray-400 font-medium tracking-wider">CABANG GLOBAL</p>
+            <div class="topbar-right">
+                <div class="topbar-username">
+                    <div class="topbar-uname">Ignatius Arya</div>
+                    <div class="topbar-urole">Cabang Global</div>
                 </div>
-                <button
-                    class="bg-[#FFF0F0] text-[#FF4D4D] p-3 rounded-2xl hover:bg-[#FFE0E0] transition flex items-center justify-center">
-                    <i class="fa-solid fa-arrow-right-from-bracket text-md"></i>
+                
+                <button class="topbar-logout" title="Keluar" onclick="showToast('🚪 Sedang keluar...')">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
                 </button>
             </div>
         </header>
 
-        <main
-            class="bg-white rounded-[40px] shadow-sm border border-gray-50 px-6 py-12 md:px-20 text-center max-w-4xl mx-auto">
-
-            <div class="bg-[#F0F5FA] w-16 h-16 rounded-3xl mx-auto flex items-center justify-center mb-4">
-                <i class="fa-regular fa-user text-sakti-blue text-2xl"></i>
+        <main class="main-card">
+            <div class="avatar-container">
+                <i class="fa-regular fa-user"></i>
             </div>
 
-            <h2 class="text-sakti-blue text-3xl font-black tracking-wide mb-2">Profil Orang Tua</h2>
-            <p class="text-gray-400 text-sm max-w-md mx-auto leading-relaxed mb-10">
+            <h2 class="main-title">Profil Orang Tua</h2>
+            <p class="main-subtitle">
                 Lengkapi data pribadi Ayah/Bunda sebelum melanjutkan pendaftaran anak.
             </p>
 
-            <form action="{{ route('profil.ortu.store') }}" method="POST" class="text-left space-y-6">
+            <form action="{{ route('profil.ortu.store') }}" method="POST" class="form-container">
                 @csrf
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="space-y-2">
-                        <label class="text-[11px] font-bold text-gray-400 uppercase tracking-wider block">Pendidikan
-                            Terakhir</label>
-                        <div class="relative">
-                            <select name="pendidikan"
-                                class="w-full bg-white border border-gray-200 rounded-2xl px-4 py-3.5 text-sm font-semibold text-sakti-blue focus:outline-none focus:border-sakti-blue appearance-none cursor-pointer shadow-sm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Pendidikan Terakhir</label>
+                        <div class="select-wrapper">
+                            <select name="pendidikan" class="form-control">
                                 <option value="SMA">SMA / Sederajat</option>
                                 <option value="SMA">D3 / Diploma</option>
                                 <option value="S1" selected>S1 / Sarjana</option>
                                 <option value="S2">S2 / Magister</option>
                                 <option value="S2">S3 / Doktor</option>
-
                             </select>
-                            <div
-                                class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-sakti-blue text-xs">
+                            <div class="select-icon">
                                 <i class="fa-solid fa-chevron-down"></i>
                             </div>
                         </div>
                     </div>
 
-                    <div class="space-y-2">
-                        <label class="text-[11px] font-bold text-gray-400 uppercase tracking-wider block">Rentang
-                            Penghasilan</label>
-                        <div class="relative">
-                            <select name="penghasilan"
-                                class="w-full bg-white border border-gray-200 rounded-2xl px-4 py-3.5 text-sm font-semibold text-sakti-blue focus:outline-none focus:border-sakti-blue appearance-none cursor-pointer shadow-sm">
+                    <div class="form-group">
+                        <label class="form-label">Rentang Penghasilan</label>
+                        <div class="select-wrapper">
+                            <select name="penghasilan" class="form-control">
                                 <option value="" selected disabled>Pilih Rentang Gaji</option>
-                                <option value="1">
-                                    < Rp 5.000.000</option>
+                                <option value="1">&lt; Rp 5.000.000</option>
                                 <option value="2">Rp 5.000.000 - Rp 10.000.000</option>
-                                <option value="3">> Rp 10.000.000</option>
+                                <option value="3">&gt; Rp 10.000.000</option>
                             </select>
-                            <div
-                                class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-sakti-blue text-xs">
+                            <div class="select-icon">
                                 <i class="fa-solid fa-chevron-down"></i>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="space-y-2">
-
-                    <label class="text-[11px] font-bold text-gray-400 uppercase tracking-wider block">Alamat Domisili
-                        Sesuai KTP</label>
-                    <textarea name="alamat" rows="3"
-                        class="w-full bg-white border border-gray-200 rounded-2xl px-4 py-3.5 text-sm font-semibold text-sakti-blue focus:outline-none focus:border-sakti-blue shadow-sm resize-none"
-                        placeholder="Masukkan alamat lengkap..."></textarea>
+                <div class="form-group">
+                    <label class="form-label">Alamat Domisili Sesuai KTP</label>
+                    <textarea name="alamat" class="form-control" placeholder="Masukkan alamat lengkap..."></textarea>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="space-y-2">
-                        <label class="text-[11px] font-bold text-gray-400 uppercase tracking-wider block">Wilayah
-                            Pendaftaran</label>
-                        <div class="relative">
-                            <select name="wilayah"
-                                class="w-full bg-white border border-gray-200 rounded-2xl px-4 py-3.5 text-sm font-semibold text-sakti-blue focus:outline-none focus:border-sakti-blue appearance-none cursor-pointer shadow-sm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Wilayah Pendaftaran</label>
+                        <div class="select-wrapper">
+                            <select name="wilayah" class="form-control">
                                 <option value="Yogyakarta" selected>Yogyakarta</option>
                                 <option value="Jakarta">Jakarta</option>
                                 <option value="Jawa Tengah">Jawa Tengah</option>
                             </select>
-                            <div
-                                class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-sakti-blue text-xs">
+                            <div class="select-icon">
                                 <i class="fa-solid fa-chevron-down"></i>
                             </div>
                         </div>
                     </div>
 
-                    <div class="space-y-2">
-                        <label class="text-[11px] font-bold text-gray-400 uppercase tracking-wider block">Unit Sekolah
-                            Tujuan</label>
-                        <div class="relative">
-                            <select name="unit_sekolah"
-                                class="w-full bg-white border border-gray-200 rounded-2xl px-4 py-3.5 text-sm font-semibold text-sakti-blue focus:outline-none focus:border-sakti-blue appearance-none cursor-pointer shadow-sm">
+                    <div class="form-group">
+                        <label class="form-label">Unit Sekolah Tujuan</label>
+                        <div class="select-wrapper">
+                            <select name="unit_sekolah" class="form-control">
                                 <option value="TK Wirobrajan" selected>TK Wirobrajan</option>
                                 <option value="SD Kanisius">SD Kanisius Hati Kudus</option>
-
                             </select>
-                            <div
-                                class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-sakti-blue text-xs">
+                            <div class="select-icon">
                                 <i class="fa-solid fa-chevron-down"></i>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="space-y-4 pt-4 text-center">
-                    <label class="text-[11px] font-bold text-gray-400 uppercase tracking-wider block">Jumlah Anak Yang
-                        Akan Didaftarkan</label>
-                    <div class="flex justify-center items-center space-x-2">
-                        <button type="button" class="anak-btn active">1</button>
-                        <button type="button" class="anak-btn">2</button>
-                        <button type="button" class="anak-btn">3</button>
-                        <button type="button" class="anak-btn">4</button>
-                        <button type="button" class="anak-btn">5</button>
+                <div class="counter-section">
+                    <label class="form-label">Jumlah Anak Yang Akan Didaftarkan</label>
+                    <div class="btn-group">
+                        <button type="button" class="anak-btn active" data-val="1">1</button>
+                        <button type="button" class="anak-btn" data-val="2">2</button>
+                        <button type="button" class="anak-btn" data-val="3">3</button>
+                        <button type="button" class="anak-btn" data-val="4">4</button>
+                        <button type="button" class="anak-btn" data-val="5">5</button>
                     </div>
                 </div>
-                <div class="pt-6 flex justify-center">
-                    <a href="{{ route('form.daftar') }}"
-                        class="bg-[#002B5B] hover:bg-[#001F42] text-white font-bold text-sm px-8 py-4 rounded-3xl inline-flex items-center space-x-3 shadow-lg transition">
+
+                <div class="submit-container">
+                    <a href="{{ route('form.daftar') }}" class="btn-submit">
                         <span>Simpan Profil & Mulai Form Siswa</span>
-                        <i class="fa-solid fa-chevron-right text-xs"></i>
+                        <i class="fa-solid fa-chevron-right"></i>
                     </a>
                 </div>
             </form>
         </main>
     </div>
 
-</body>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const buttons = document.querySelectorAll(".anak-btn");
 
-        const buttons = document.querySelectorAll(".anak-btn");
-
-        buttons.forEach(btn => {
-            btn.addEventListener("click", function () {
-
-                buttons.forEach(b => {
-                    b.classList.remove("active");
+            buttons.forEach(btn => {
+                btn.addEventListener("click", function () {
+                    buttons.forEach(b => {
+                        b.classList.remove("active");
+                    });
+                    this.classList.add("active");
                 });
-
-                this.classList.add("active");
             });
         });
-
-    });
-</script>
-
+    </script>
+</body>
 </html>

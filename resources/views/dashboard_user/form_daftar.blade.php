@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SAKTI Portal – Formulir Peserta Didik</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --navy:    #1a2a6c;
@@ -692,52 +693,51 @@
 <body>
 
     <!-- ===================== TOPBAR ===================== -->
-    <header class="topbar">
+   <header class="topbar">
 
-        <!-- Brand -->
-        <div class="topbar-brand">
-            <!-- Logo kapal E-Kanisius -->
-            <img src="{{ asset('img/E-Kanisius 1.png') }}"
-                 alt="E-Kanisius Logo"
-                 style="width:85px; height:auto; object-fit:contain; flex-shrink:0;"
-                 onerror="this.style.display='none'; document.getElementById('fallback-logo').style.display='flex';">
-            <!-- Fallback jika gambar belum ada -->
-            <div id="fallback-logo" class="brand-logo" style="display:none;">⛵</div>
+    <div class="topbar-brand">
+        <img src="{{ asset('img/E-Kanisius 1.png') }}"
+             alt="E-Kanisius Logo"
+             style="width:85px; height:auto; object-fit:contain; flex-shrink:0;"
+             onerror="this.style.display='none'; document.getElementById('fallback-logo').style.display='flex';">
+        
+        <div id="fallback-logo" class="brand-logo" style="display:none;">⛵</div>
 
-
-            <div class="brand-text">
-                <div class="brand-name">PORTAL SAKTI</div>
-                <div class="brand-meta">
-                    <span class="brand-role">Parent</span>
-                    <span class="brand-uid">UID-Jzp4Z3bwwoNY7IhFuiPNdTsN9w63</span>
-                </div>
+        <div class="brand-text">
+            <div class="brand-name">PORTAL SAKTI</div>
+            <div class="brand-meta">
+                <span class="brand-role">Parent</span>
+                <span class="brand-uid">UID-Jzp4Z3bwwoNY7IhFuiPNdTsN9w63</span>
             </div>
         </div>
+    </div>
 
-        <!-- Nav links -->
-        <nav class="topbar-nav">
-            <a class="nav-link active" href="#">
-                <span class="nav-icon">⊞</span> Dashboard <span class="nav-dot"></span>
-            </a>
-            <a class="nav-link" href="#" onclick="showToast('🕐 Membuka Riwayat...')">
-                <span class="nav-icon">🕐</span> Riwayat
-            </a>
-            <a class="nav-link" href="#" onclick="showToast('💬 Membuka Pusat Bantuan...')">
-                <span class="nav-icon">ⓘ</span> Pusat Bantuan
-            </a>
-        </nav>
+    <nav class="topbar-nav">
+        <a class="nav-link active" href="#">
+            <!-- <i class="fa-solid fa-table-cells-large nav-icon"></i> -->
+             Dashboard <span class="nav-dot"></span> 
+        </a>
+        <a class="nav-link" href="#" onclick="showToast('🕐 Membuka Riwayat...')">
+            <!-- <i class="fa-solid fa-clock-rotate-left nav-icon"></i> Riwayat -->
+             Riwayat
+        </a>
+        <a class="nav-link" href="#" onclick="showToast('💬 Membuka Pusat Bantuan...')">
+            <!-- <i class="fa-solid fa-circle-info nav-icon"></i>  -->
+            Pusat Bantuan
+        </a>
+    </nav>
 
-        <!-- Right: user + logout -->
-        <div class="topbar-right">
-            <div class="topbar-username">
-                <div class="topbar-uname">Ignatius Arya</div>
-                <div class="topbar-urole">Cabang Global</div>
-            </div>
-            <button class="topbar-logout" title="Keluar" onclick="showToast('🚪 Sedang keluar...')">
-                🚪
-            </button>
+    <div class="topbar-right">
+        <div class="topbar-username">
+            <div class="topbar-uname">Ignatius Arya</div>
+            <div class="topbar-urole">Cabang Global</div>
         </div>
-    </header>
+        
+        <button class="topbar-logout" title="Keluar" onclick="showToast('🚪 Sedang keluar...')">
+            <i class="fa-solid fa-arrow-right-from-bracket"style="color: #FF4D4D;"></i>
+        </button>
+    </div>
+</header>
 
     <!-- ===================== PAGE BODY ===================== -->
     <main class="page-body">
