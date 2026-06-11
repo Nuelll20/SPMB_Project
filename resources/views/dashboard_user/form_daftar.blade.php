@@ -981,7 +981,15 @@
                             placeholder="Masukkan alamat lengkap tempat tinggal anak..."
                             oninput="validateField(this, v => v.trim().length >= 5)"></textarea>
                     </div>
-
+                            <div class="field-group required">
+                        <div class="alamat-header">
+                            <label class="field-label" for="alamat">Tempat Lahir Anak</label>
+                            
+                        </div>
+                        <textarea id="tempat-lahir" name="tempat_lahir" class="field-textarea"
+                            placeholder="Masukkan tempat lahir anak..."
+                            oninput="validateField(this, v => v.trim().length >= 5)"></textarea>
+                    </div>
                     <div class="field-group">
                         <span class="upload-label">Upload Berkas Fisik</span>
                         <div class="upload-grid">
