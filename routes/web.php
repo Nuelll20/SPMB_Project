@@ -46,6 +46,7 @@ Route::get('/form-daftar', function () {
 })->name('dashboard_user.form_daftar'); 
 
 
+<<<<<<< HEAD
 Route::get('/riwayat', function () {
     return view('dashboard_user.riwayat');
 })->name('riwayat');
@@ -54,3 +55,5 @@ Route::get('/riwayat', function () {
 Route::get('/pusat-bantuan', function () {
     return view('dashboard_user.bantuan');
 })->name('pusat-bantuan');
+=======
+>>>>>>> 62d5040162036d76e68359aafbab2270d7180918
