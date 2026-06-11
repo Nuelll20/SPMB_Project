@@ -5,7 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SAKTI Portal – Formulir Peserta Didik</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -230,6 +232,7 @@
                 opacity: 0;
                 transform: translateY(14px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -387,7 +390,9 @@
             font-weight: 400;
         }
 
-        .field-input:focus, .field-select:focus, .field-textarea:focus {
+        .field-input:focus,
+        .field-select:focus,
+        .field-textarea:focus {
             outline: none;
             border-color: var(--blue);
             background: #f5f8ff;
@@ -395,16 +400,29 @@
         }
 
         /* Input Error State */
-        .field-input.is-invalid, .field-select.is-invalid, .field-textarea.is-invalid, .upload-item.is-invalid {
+        .field-input.is-invalid,
+        .field-select.is-invalid,
+        .field-textarea.is-invalid,
+        .upload-item.is-invalid {
             border-color: var(--red) !important;
             background: #fff5f5 !important;
             animation: shake 0.35s ease;
         }
 
         @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            75% {
+                transform: translateX(5px);
+            }
         }
 
         .field-select {
@@ -463,7 +481,9 @@
             text-transform: uppercase;
         }
 
-        .samakan-btn:hover { background: rgba(0, 74, 173, 0.07); }
+        .samakan-btn:hover {
+            background: rgba(0, 74, 173, 0.07);
+        }
 
         /* ===== UPLOAD BERKAS ===== */
         .upload-label {
@@ -495,24 +515,83 @@
             gap: 6px;
         }
 
-        .upload-item:hover { border-color: var(--blue); background: #f5f8ff; }
-        .upload-item.uploaded { border-color: rgba(22, 163, 74, 0.35); background: #f6fff9; }
-
-        .upload-left { display: flex; align-items: center; gap: 8px; min-width: 0; }
-        .upload-doc-icon { color: var(--muted); font-size: 15px; flex-shrink: 0; }
-        .upload-item.uploaded .upload-doc-icon { color: var(--green); }
-        .upload-name { font-size: 12.5px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .upload-wajib { font-size: 10px; font-weight: 700; color: var(--red); background: rgba(220, 38, 38, 0.08); border-radius: 4px; padding: 1px 5px; flex-shrink: 0; }
-
-        .upload-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
-        .upload-action-btn {
-            width: 28px; height: 28px; border-radius: 7px; border: 1.5px solid var(--border);
-            background: var(--surface2); cursor: pointer; display: flex; align-items: center;
-            justify-content: center; font-size: 13px; transition: all 0.18s; color: var(--muted);
+        .upload-item:hover {
+            border-color: var(--blue);
+            background: #f5f8ff;
         }
 
-        .upload-action-btn:hover { border-color: var(--blue); color: var(--blue); background: rgba(0, 74, 173, 0.06); }
-        .upload-file-input { display: none; }
+        .upload-item.uploaded {
+            border-color: rgba(22, 163, 74, 0.35);
+            background: #f6fff9;
+        }
+
+        .upload-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .upload-doc-icon {
+            color: var(--muted);
+            font-size: 15px;
+            flex-shrink: 0;
+        }
+
+        .upload-item.uploaded .upload-doc-icon {
+            color: var(--green);
+        }
+
+        .upload-name {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .upload-wajib {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--red);
+            background: rgba(220, 38, 38, 0.08);
+            border-radius: 4px;
+            padding: 1px 5px;
+            flex-shrink: 0;
+        }
+
+        .upload-actions {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        .upload-action-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 7px;
+            border: 1.5px solid var(--border);
+            background: var(--surface2);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            transition: all 0.18s;
+            color: var(--muted);
+        }
+
+        .upload-action-btn:hover {
+            border-color: var(--blue);
+            color: var(--blue);
+            background: rgba(0, 74, 173, 0.06);
+        }
+
+        .upload-file-input {
+            display: none;
+        }
 
         /* ===================== BOTTOM BAR ===================== */
         .bottom-bar {
@@ -526,61 +605,260 @@
             padding-bottom: 12px;
         }
 
-        .back-link { color: var(--muted); font-size: 13.5px; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 6px; transition: color 0.2s; }
-        .back-link:hover { color: var(--blue); }
-        .bottom-actions { display: flex; gap: 10px; align-items: center; }
+        .back-link {
+            color: var(--muted);
+            font-size: 13.5px;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--blue);
+        }
+
+        .bottom-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
 
         .btn-draft {
-            background: var(--surface); border: 1.5px solid var(--border); color: var(--text);
-            display: flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: 10px;
-            font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif; transition: all 0.2s;
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: all 0.2s;
         }
-        .btn-draft:hover { border-color: var(--blue); color: var(--blue); background: rgba(0, 74, 173, 0.04); }
+
+        .btn-draft:hover {
+            border-color: var(--blue);
+            color: var(--blue);
+            background: rgba(0, 74, 173, 0.04);
+        }
 
         .btn-submit {
-            background: var(--navy); color: #fff; display: flex; align-items: center; gap: 10px;
-            padding: 13px 32px; border-radius: 10px; font-size: 14px; font-weight: 800;
-            cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif; border: none;
-            letter-spacing: 0.6px; transition: all 0.2s; position: relative; overflow: hidden;
+            background: var(--navy);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 13px 32px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            border: none;
+            letter-spacing: 0.6px;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
         }
-        .btn-submit:hover { background: #111c50; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26, 42, 108, 0.32); }
-        .btn-submit .arrow { transition: transform 0.25s; font-size: 18px; }
-        .btn-submit:hover .arrow { transform: translateX(5px); }
+
+        .btn-submit:hover {
+            background: #111c50;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(26, 42, 108, 0.32);
+        }
+
+        .btn-submit .arrow {
+            transition: transform 0.25s;
+            font-size: 18px;
+        }
+
+        .btn-submit:hover .arrow {
+            transform: translateX(5px);
+        }
 
         /* Counter Section */
-        .counter-section { text-align: center; padding-top: 16px; display: flex; flex-direction: column; gap: 16px; }
-        .btn-group { display: flex; justify-content: center; align-items: center; gap: 8px; }
-        .anak-btn {
-            width: 48px; height: 48px; border-radius: 16px; font-weight: bold; font-size: 14px;
-            cursor: pointer; transition: all 0.2s; background: var(--surface); border: 1px solid var(--border); color: var(--muted);
+        .counter-section {
+            text-align: center;
+            padding-top: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
-        .anak-btn.active { background: var(--navy); color: var(--gold); border: none; }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .anak-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--muted);
+        }
+
+        .anak-btn.active {
+            background: var(--navy);
+            color: var(--gold);
+            border: none;
+        }
 
         /* ===================== MODAL WINDOW POP-UP ===================== */
         .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(26, 42, 108, 0.4); backdrop-filter: blur(4px);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(26, 42, 108, 0.4);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
         }
-        .modal-overlay.show { opacity: 1; pointer-events: auto; }
+
+        .modal-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
         .modal-box {
-            background: var(--surface); padding: 32px; border-radius: 24px;
-            max-width: 400px; width: 90%; text-align: center;
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); transform: scale(0.9); transition: transform 0.3s ease;
+            background: var(--surface);
+            padding: 32px;
+            border-radius: 24px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
         }
-        .modal-overlay.show .modal-box { transform: scale(1); }
-        .modal-icon { width: 56px; height: 56px; background: #fff5f5; color: var(--red); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 16px auto; }
-        .modal-title { font-size: 18px; font-weight: 800; color: var(--navy); margin-bottom: 8px; }
-        .modal-desc { font-size: 14px; color: var(--muted); line-height: 1.5; margin-bottom: 24px; }
-        .modal-btn-close { background: var(--navy); color: var(--surface); border: none; padding: 12px 24px; border-radius: 12px; font-weight: 700; font-size: 14px; cursor: pointer; width: 100%; }
 
-        .page-footer { text-align: center; padding: 20px; font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: 1.2px; text-transform: uppercase; }
-        #toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(70px); background: var(--navy); color: white; padding: 12px 26px; border-radius: 40px; font-size: 13.5px; font-weight: 600; opacity: 0; pointer-events: none; transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s; z-index: 9999; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18); }
-        #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .modal-overlay.show .modal-box {
+            transform: scale(1);
+        }
 
-        @media (max-width: 900px) { .form-grid { grid-template-columns: 1fr; gap: 24px; } .page-body { padding: 24px 20px; } }
-        @media (max-width: 640px) { .topbar-nav { display: none; } .bottom-bar { flex-direction: column; align-items: stretch; } .bottom-actions { flex-direction: column; } .btn-draft, .btn-submit { width: 100%; justify-content: center; } }
+        .modal-icon {
+            width: 56px;
+            height: 56px;
+            background: #fff5f5;
+            color: var(--red);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin: 0 auto 16px auto;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--navy);
+            margin-bottom: 8px;
+        }
+
+        .modal-desc {
+            font-size: 14px;
+            color: var(--muted);
+            line-height: 1.5;
+            margin-bottom: 24px;
+        }
+
+        .modal-btn-close {
+            background: var(--navy);
+            color: var(--surface);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .page-footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--muted);
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+        }
+
+        #toast {
+            position: fixed;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%) translateY(70px);
+            background: var(--navy);
+            color: white;
+            padding: 12px 26px;
+            border-radius: 40px;
+            font-size: 13.5px;
+            font-weight: 600;
+            opacity: 0;
+            pointer-events: none;
+            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s;
+            z-index: 9999;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+        }
+
+        #toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        @media (max-width: 900px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+
+            .page-body {
+                padding: 24px 20px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .topbar-nav {
+                display: none;
+            }
+
+            .bottom-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .bottom-actions {
+                flex-direction: column;
+            }
+
+            .btn-draft,
+            .btn-submit {
+                width: 100%;
+                justify-content: center;
+            }
+        }
     </style>
 </head>
 
@@ -588,7 +866,9 @@
 
     <header class="topbar">
         <div class="topbar-brand">
-            <img src="{{ asset('img/E-Kanisius 1.png') }}" alt="E-Kanisius Logo" style="width:85px; height:auto; object-fit:contain; flex-shrink:0;" onerror="this.style.display='none'; document.getElementById('fallback-logo').style.display='flex';">
+            <img src="{{ asset('img/E-Kanisius 1.png') }}" alt="E-Kanisius Logo"
+                style="width:85px; height:auto; object-fit:contain; flex-shrink:0;"
+                onerror="this.style.display='none'; document.getElementById('fallback-logo').style.display='flex';">
             <div id="fallback-logo" class="brand-logo" style="display:none;">⛵</div>
             <div class="brand-text">
                 <div class="brand-name">PORTAL SAKTI</div>
@@ -616,9 +896,8 @@
         </div>
     </header>
 
-    <form id="formPesertaDidik" action="#" method="POST" class="page-body" novalidate>
+    <form id="formPesertaDidik" action="{{ route('form.daftar.store') }}" method="POST" class="page-body" novalidate>
         @csrf
-        
         <div class="page-header">
             <div>
                 <h1 class="page-title">Formulir Peserta Didik</h1>
@@ -642,18 +921,23 @@
 
                     <div class="field-group required">
                         <label class="field-label" for="namaLengkap">Nama Lengkap</label>
-                        <input type="text" id="namaLengkap" name="nama_lengkap" class="field-input" placeholder="Nama Lengkap" autocomplete="off" oninput="validateField(this, v => v.trim().length >= 3)">
+                        <input type="text" id="namaLengkap" name="nama_lengkap" class="field-input"
+                            placeholder="Nama Lengkap" autocomplete="off"
+                            oninput="validateField(this, v => v.trim().length >= 3)">
                     </div>
 
                     <div class="field-group required">
                         <label class="field-label" for="nik">NIK (Nomor Induk Kependudukan)</label>
-                        <input type="text" id="nik" name="nik" class="field-input" placeholder="16 Digit NIK" maxlength="16" autocomplete="off" oninput="onlyDigits(this); validateField(this, v => /^\d{16}$/.test(v))">
+                        <input type="text" id="nik" name="nik" class="field-input" placeholder="16 Digit NIK"
+                            maxlength="16" autocomplete="off"
+                            oninput="onlyDigits(this); validateField(this, v => /^\d{16}$/.test(v))">
                     </div>
 
                     <div class="field-row required">
                         <div class="field-group">
                             <label class="field-label" for="tanggalLahir">Tanggal Lahir</label>
-                            <input type="date" id="tanggalLahir" name="tanggal_lahir" class="field-input" onchange="validateField(this, v => v !== '')">
+                            <input type="date" id="tanggalLahir" name="tanggal_lahir" class="field-input"
+                                onchange="validateField(this, v => v !== '')">
                         </div>
                         <div class="field-group">
                             <label class="field-label" for="golDarah">Gol. Darah</label>
@@ -674,7 +958,8 @@
 
                     <div class="field-group required">
                         <label class="field-label" for="agama">Agama</label>
-                        <select id="agama" name="agama" class="field-select" onchange="onSelectChange(this); toggleSuratBaptis(this.value)">
+                        <select id="agama" name="agama" class="field-select"
+                            onchange="onSelectChange(this); toggleSuratBaptis(this.value)">
                             <option value="" selected disabled>Pilih Agama</option>
                             <option value="kristen">Kristen</option>
                             <option value="katolik">Katolik</option>
@@ -692,7 +977,9 @@
                                 Samakan dengan Alamat Ortu
                             </button>
                         </div>
-                        <textarea id="alamat" name="alamat" class="field-textarea" placeholder="Masukkan alamat lengkap tempat tinggal anak..." oninput="validateField(this, v => v.trim().length >= 5)"></textarea>
+                        <textarea id="alamat" name="alamat" class="field-textarea"
+                            placeholder="Masukkan alamat lengkap tempat tinggal anak..."
+                            oninput="validateField(this, v => v.trim().length >= 5)"></textarea>
                     </div>
 
                     <div class="field-group">
@@ -701,50 +988,66 @@
                             <div class="upload-item required" id="item-kk" onclick="triggerUpload('file-kk')">
                                 <div class="upload-left"><span class="upload-name">Kartu Keluarga</span></div>
                                 <div class="upload-actions">
-                                    <button type="button" class="upload-action-btn" onclick="previewDoc(event,'Kartu Keluarga')">👁</button>
-                                    <button type="button" class="upload-action-btn" onclick="triggerUpload('file-kk', event)">↑</button>
+                                    <button type="button" class="upload-action-btn"
+                                        onclick="previewDoc(event,'Kartu Keluarga')">👁</button>
+                                    <button type="button" class="upload-action-btn"
+                                        onclick="triggerUpload('file-kk', event)">↑</button>
                                 </div>
-                                <input type="file" id="file-kk" class="upload-file-input" accept="image/*,.pdf" onchange="onUpload(this,'item-kk')">
+                                <input type="file" id="file-kk" class="upload-file-input" accept="image/*,.pdf"
+                                    onchange="onUpload(this,'item-kk')">
                             </div>
 
                             <div class="upload-item required" id="item-akte" onclick="triggerUpload('file-akte')">
                                 <div class="upload-left"><span class="upload-name">Akte Kelahiran</span></div>
                                 <div class="upload-actions">
-                                    <button type="button" class="upload-action-btn" onclick="previewDoc(event,'Akte Kelahiran')">👁</button>
-                                    <button type="button" class="upload-action-btn" onclick="triggerUpload('file-akte', event)">↑</button>
+                                    <button type="button" class="upload-action-btn"
+                                        onclick="previewDoc(event,'Akte Kelahiran')">👁</button>
+                                    <button type="button" class="upload-action-btn"
+                                        onclick="triggerUpload('file-akte', event)">↑</button>
                                 </div>
-                                <input type="file" id="file-akte" class="upload-file-input" accept="image/*,.pdf" onchange="onUpload(this,'item-akte')">
+                                <input type="file" id="file-akte" class="upload-file-input" accept="image/*,.pdf"
+                                    onchange="onUpload(this,'item-akte')">
                             </div>
 
                             <div class="upload-item required" id="item-ktp" onclick="triggerUpload('file-ktp')">
                                 <div class="upload-left"><span class="upload-name">E-KTP Orang Tua</span></div>
                                 <div class="upload-actions">
-                                    <button type="button" class="upload-action-btn" onclick="previewDoc(event,'E-KTP Orang Tua')">👁</button>
-                                    <button type="button" class="upload-action-btn" onclick="triggerUpload('file-ktp', event)">↑</button>
+                                    <button type="button" class="upload-action-btn"
+                                        onclick="previewDoc(event,'E-KTP Orang Tua')">👁</button>
+                                    <button type="button" class="upload-action-btn"
+                                        onclick="triggerUpload('file-ktp', event)">↑</button>
                                 </div>
-                                <input type="file" id="file-ktp" class="upload-file-input" accept="image/*,.pdf" onchange="onUpload(this,'item-ktp')">
+                                <input type="file" id="file-ktp" class="upload-file-input" accept="image/*,.pdf"
+                                    onchange="onUpload(this,'item-ktp')">
                             </div>
 
                             <div class="upload-item required" id="item-foto" onclick="triggerUpload('file-foto')">
                                 <div class="upload-left"><span class="upload-name">Pas Foto (3x4)</span></div>
                                 <div class="upload-actions">
-                                    <button type="button" class="upload-action-btn" onclick="previewDoc(event,'Pas Foto 3x4')">👁</button>
-                                    <button type="button" class="upload-action-btn" onclick="triggerUpload('file-foto', event)">↑</button>
+                                    <button type="button" class="upload-action-btn"
+                                        onclick="previewDoc(event,'Pas Foto 3x4')">👁</button>
+                                    <button type="button" class="upload-action-btn"
+                                        onclick="triggerUpload('file-foto', event)">↑</button>
                                 </div>
-                                <input type="file" id="file-foto" class="upload-file-input" accept="image/*" onchange="onUpload(this,'item-foto')">
+                                <input type="file" id="file-foto" class="upload-file-input" accept="image/*"
+                                    onchange="onUpload(this,'item-foto')">
                             </div>
 
-                            <div class="upload-item" id="item-baptis" style="grid-column: span 2; display: none;" onclick="triggerUpload('file-baptis')">
+                            <div class="upload-item" id="item-baptis" style="grid-column: span 2; display: none;"
+                                onclick="triggerUpload('file-baptis')">
                                 <div class="upload-left">
                                     <span class="upload-doc-icon"></span>
                                     <span class="upload-name">Surat Baptis</span>
                                     <span class="upload-wajib">Wajib</span>
                                 </div>
                                 <div class="upload-actions">
-                                    <button type="button" class="upload-action-btn" onclick="previewDoc(event,'Surat Baptis')">👁</button>
-                                    <button type="button" class="upload-action-btn" onclick="triggerUpload('file-baptis', event)">↑</button>
+                                    <button type="button" class="upload-action-btn"
+                                        onclick="previewDoc(event,'Surat Baptis')">👁</button>
+                                    <button type="button" class="upload-action-btn"
+                                        onclick="triggerUpload('file-baptis', event)">↑</button>
                                 </div>
-                                <input type="file" id="file-baptis" class="upload-file-input" accept="image/*,.pdf" onchange="onUpload(this,'item-baptis')">
+                                <input type="file" id="file-baptis" class="upload-file-input" accept="image/*,.pdf"
+                                    onchange="onUpload(this,'item-baptis')">
                             </div>
                         </div>
                     </div>
@@ -777,7 +1080,8 @@
                 <i class="fa-solid fa-circle-exclamation"></i>
             </div>
             <h3 class="modal-title">Data Belum Lengkap</h3>
-            <p class="modal-desc">Mohon periksa kembali. Seluruh bidang data bertanda bintang (*) dan berkas wajib harus diisi sebelum melanjutkan.</p>
+            <p class="modal-desc">Mohon periksa kembali. Seluruh bidang data bertanda bintang (*) dan berkas wajib harus
+                diisi sebelum melanjutkan.</p>
             <button type="button" id="closeModalBtn" class="modal-btn-close">Mengerti</button>
         </div>
     </div>
@@ -883,7 +1187,7 @@
             anakCount++;
             document.getElementById('anakBadge').textContent = `DATA ANAK ${anakCount}`;
             document.querySelector('.page-subtitle strong').textContent = `• ${anakCount} Calon Murid`;
-            
+
             ['namaLengkap', 'nik', 'tanggalLahir', 'alamat'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) { el.value = ''; el.classList.remove('is-valid', 'is-invalid'); }
@@ -891,12 +1195,12 @@
             document.getElementById('golDarah').value = 'O';
             document.getElementById('agama').value = '';
             toggleSuratBaptis('');
-            
+
             ['item-kk', 'item-akte', 'item-ktp', 'item-foto', 'item-baptis'].forEach(id => {
                 const item = document.getElementById(id);
                 item.classList.remove('uploaded', 'is-invalid');
                 const fileIn = item.querySelector('input[type="file"]');
-                if(fileIn) fileIn.value = '';
+                if (fileIn) fileIn.value = '';
             });
             showToast(`➕ Data Anak ${anakCount} siap diisi`);
         }
@@ -949,7 +1253,7 @@
 
         form.addEventListener("submit", function (event) {
             event.preventDefault(); // Intersepsi pengalihan halaman bawaan browser
-            
+
             let isFormValid = true;
 
             // 1. Validasi Input Teks & Select Utama
@@ -1001,20 +1305,13 @@
 
             // EKSKUSI HASIL VALIDASI
             if (!isFormValid) {
-                modal.classList.add("show"); // Munculkan pop-up modal di tengah layar
-                showToast('⚠️ Gagal mengirim. Mohon lengkapi kolom yang ditandai merah.');
+                modal.classList.add("show");
+                showToast('Gagal mengirim. Mohon lengkapi kolom yang ditandai merah.');
                 return;
             }
 
-            // Jika validasi sukses total
-            const submitBtn = document.getElementById('btnSubmit');
-            submitBtn.innerHTML = 'Memproses... <span class="arrow">›</span>';
-            submitBtn.disabled = true;
-
-            setTimeout(() => {
-                submitBtn.innerHTML = 'Berhasil Dikirim <span class="arrow">›</span>';
-                showToast('🚀 Formulir SAKTI berhasil disubmit ke sistem Yayasan Kanisius!');
-            }, 1500);
+            // Jika semua valid, kirim ke Laravel
+            form.submit();
         });
 
         // Event listener menutup modal

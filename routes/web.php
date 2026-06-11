@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\FormOrtuController;
+use App\Http\Controllers\FormDaftarController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -33,7 +34,7 @@ Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 
 
 Route::get('/dashboard_ortu', function () {
-    return view('dashboard_user.dashboard_ortu'); 
+    return view('dashboard_user.dashboard_ortu');
 })->name('dashboard');
 
 
@@ -41,19 +42,17 @@ Route::get('/profil-ortu', [FormOrtuController::class, 'index'])->name('profil.o
 Route::post('/profil-ortu', [FormOrtuController::class, 'store'])->name('profil.ortu.store');
 
 
-Route::get('/form-daftar', function () {
-    return view('dashboard_user.form_daftar');
-})->name('dashboard_user.form_daftar'); 
+Route::get('/form-daftar', [FormDaftarController::class, 'index'])
+    ->name('form.daftar');
 
+Route::post('/form-daftar', [FormDaftarController::class, 'store'])
+    ->name('form.daftar.store');
 
-<<<<<<< HEAD
 Route::get('/riwayat', function () {
     return view('dashboard_user.riwayat');
 })->name('riwayat');
 
-
 Route::get('/pusat-bantuan', function () {
     return view('dashboard_user.bantuan');
 })->name('pusat-bantuan');
-=======
->>>>>>> 62d5040162036d76e68359aafbab2270d7180918
+
