@@ -5,9 +5,11 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\FormOrtuController;
 use Illuminate\Support\Facades\Route;
 
+
 Route::get('/', function () {
-    return view('dashboard_user.form_daftar');
+    return redirect()->route('login');
 });
+
 
 Route::get('/login', function () {
     return view('auth.login');
@@ -26,13 +28,29 @@ Route::post('/forgot-password', function () {
     return "Fitur send email/proses reset password belum didefinisikan.";
 })->name('password.email');
 
-Route::get('/profil-ortu', [FormOrtuController::class, 'index'])
-    ->name('profil.ortu');
+Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 
-Route::post('/profil-ortu', [FormOrtuController::class, 'store'])
-    ->name('profil.ortu.store');
+
+
+Route::get('/dashboard_ortu', function () {
+    return view('dashboard_user.dashboard_ortu'); 
+})->name('dashboard');
+
+
+Route::get('/profil-ortu', [FormOrtuController::class, 'index'])->name('profil.ortu');
+Route::post('/profil-ortu', [FormOrtuController::class, 'store'])->name('profil.ortu.store');
+
 
 Route::get('/form-daftar', function () {
     return view('dashboard_user.form_daftar');
-})->name('form.daftar');
+})->name('dashboard_user.form_daftar'); 
 
+
+Route::get('/riwayat', function () {
+    return view('dashboard_user.riwayat');
+})->name('riwayat');
+
+
+Route::get('/pusat-bantuan', function () {
+    return view('dashboard_user.bantuan');
+})->name('pusat-bantuan');
