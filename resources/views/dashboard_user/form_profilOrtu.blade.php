@@ -554,21 +554,22 @@
                     <div id="fallback-logo" class="brand-logo-fallback" style="display: none;">⛵</div>
                 </div>
 
-                 <div class="brand-text">
-                <div class="brand-name">PORTAL SAKTI</div>
-                <div class="brand-meta">
-                    <span class="brand-role">Parent</span>
-                    <span class="brand-uid">UID-Jzp4Z3bwwoNY7IhFuiPNdTsN9w63</span>
+                <div class="brand-text">
+                    <div class="brand-name">PORTAL SAKTI</div>
+                    <div class="brand-meta">
+                        <span class="brand-role">Parent</span>
+                        <span class="brand-uid">UID-Jzp4Z3bwwoNY7IhFuiPNdTsN9w63</span>
+                    </div>
                 </div>
             </div>
-        </div>
             <nav class="topbar-nav">
                 <a class="nav-link active" href="#">
                     <span>Dashboard</span>
                     <span class="nav-dot"></span>
                 </a>
-                <a class="nav-link" href="#">
-                    <span>Riwayat</span>
+                <a class="nav-link" href="{{ route('riwayat') }}">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    Riwayat
                 </a>
                 <a class="nav-link" href="#">
                     <span>Pusat Bantuan</span>
@@ -598,7 +599,8 @@
             </p>
 
             <!-- FORM VALIDATION MURNI -->
-            <form id="formProfilOrtu" action="{{ route('profil.ortu.store') }}" method="POST" class="form-container" novalidate>
+            <form id="formProfilOrtu" action="{{ route('profil.ortu.store') }}" method="POST" class="form-container"
+                novalidate>
                 @csrf
                 <div class="form-grid">
                     <!-- Ditambahkan class required pada form-group untuk indikator CSS bintang -->
@@ -633,13 +635,15 @@
                         </div>
                     </div>
                 </div>
-   <div class="form-group required">
+                <div class="form-group required">
                     <label class="form-label">Nomor Telepon</label>
-                    <textarea name="nomor_telepon" class="form-control" placeholder="Masukkan nomor telepon..." required></textarea>
+                    <textarea name="nomor_telepon" class="form-control" placeholder="Masukkan nomor telepon..."
+                        required></textarea>
                 </div>
                 <div class="form-group required">
                     <label class="form-label">Alamat Domisili Sesuai KTP</label>
-                    <textarea name="alamat" class="form-control" placeholder="Masukkan alamat lengkap..." required></textarea>
+                    <textarea name="alamat" class="form-control" placeholder="Masukkan alamat lengkap..."
+                        required></textarea>
                 </div>
 
                 <div class="form-grid">
@@ -686,7 +690,8 @@
                 <i class="fa-solid fa-circle-exclamation"></i>
             </div>
             <h3 class="modal-title">Data Belum Lengkap</h3>
-            <p class="modal-desc">Mohon periksa kembali. Seluruh bidang data bertanda bintang (*) wajib diisi sebelum melanjutkan.</p>
+            <p class="modal-desc">Mohon periksa kembali. Seluruh bidang data bertanda bintang (*) wajib diisi sebelum
+                melanjutkan.</p>
             <button type="button" id="closeModalBtn" class="modal-btn-close">Mengerti</button>
         </div>
     </div>
@@ -709,7 +714,7 @@
 
             form.addEventListener("submit", function (event) {
                 let isFormValid = true;
-                
+
                 // Ambil seluruh elemen input/select/textarea yang memiliki atribut required
                 const requiredFields = form.querySelectorAll("[required]");
 
@@ -737,12 +742,12 @@
 
             // Menghilangkan highlight merah secara realtime saat user mulai mengisi input kembali
             form.querySelectorAll("[required]").forEach(field => {
-                field.addEventListener("input", function() {
+                field.addEventListener("input", function () {
                     if (this.value && this.value.trim() !== "") {
                         this.classList.remove("input-error");
                     }
                 });
-                field.addEventListener("change", function() {
+                field.addEventListener("change", function () {
                     if (this.value) {
                         this.classList.remove("input-error");
                     }

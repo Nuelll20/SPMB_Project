@@ -1,29 +1,36 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SAKTI Portal – Portal Orang Tua</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
     <style>
         :root {
-            --navy:      #1a2a6c;
-            --blue:      #004AAD;
-            --gold:      #f5c400;
+            --navy: #1a2a6c;
+            --blue: #004AAD;
+            --gold: #f5c400;
             --gold-dark: #c9a200;
-            --bg:        #f0f2f8;
-            --surface:   #ffffff;
-            --surface2:  #f4f6fb;
-            --border:    #e0e4ef;
-            --text:      #1a1f36;
-            --muted:     #7b82a0;
-            --green:     #16a34a;
-            --green-bg:  #dcfce7;
-            --red:       #dc2626;
-            --radius:    14px;
+            --bg: #f0f2f8;
+            --surface: #ffffff;
+            --surface2: #f4f6fb;
+            --border: #e0e4ef;
+            --text: #1a1f36;
+            --muted: #7b82a0;
+            --green: #16a34a;
+            --green-bg: #dcfce7;
+            --red: #dc2626;
+            --radius: 14px;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -46,7 +53,7 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 2px 16px rgba(26,42,108,0.07);
+            box-shadow: 0 2px 16px rgba(26, 42, 108, 0.07);
         }
 
         /* Brand */
@@ -70,7 +77,11 @@
             object-fit: contain;
         }
 
-        .brand-text { display: flex; flex-direction: column; line-height: 1.1; }
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.1;
+        }
 
         .brand-name {
             font-size: 15px;
@@ -125,11 +136,14 @@
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
-        .nav-link:hover { background: var(--surface2); color: var(--text); }
+        .nav-link:hover {
+            background: var(--surface2);
+            color: var(--text);
+        }
 
         .nav-link.active {
             color: var(--blue);
-            background: rgba(0,74,173,0.07);
+            background: rgba(0, 74, 173, 0.07);
             font-weight: 700;
         }
 
@@ -160,11 +174,14 @@
         }
 
         .topbar-logout {
-            width: 36px; height: 36px;
-            background: rgba(220,38,38,0.07);
-            border: 1.5px solid rgba(220,38,38,0.15);
+            width: 36px;
+            height: 36px;
+            background: rgba(220, 38, 38, 0.07);
+            border: 1.5px solid rgba(220, 38, 38, 0.15);
             border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 16px;
             cursor: pointer;
             transition: all 0.2s;
@@ -173,8 +190,8 @@
         }
 
         .topbar-logout:hover {
-            background: rgba(220,38,38,0.12);
-            border-color: rgba(220,38,38,0.3);
+            background: rgba(220, 38, 38, 0.12);
+            border-color: rgba(220, 38, 38, 0.3);
         }
 
         /* ==================== PAGE BODY ==================== */
@@ -190,8 +207,15 @@
         }
 
         @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(16px); }
-            to   { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* ==================== MAIN CARD ==================== */
@@ -217,7 +241,7 @@
             right: -80px;
             width: 280px;
             height: 280px;
-            background: radial-gradient(circle, rgba(245,196,0,0.08) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(245, 196, 0, 0.08) 0%, transparent 70%);
             pointer-events: none;
         }
 
@@ -228,7 +252,7 @@
             left: -60px;
             width: 200px;
             height: 200px;
-            background: radial-gradient(circle, rgba(0,74,173,0.06) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(0, 74, 173, 0.06) 0%, transparent 70%);
             pointer-events: none;
         }
 
@@ -243,7 +267,11 @@
             z-index: 1;
         }
 
-        .card-header-left { display: flex; flex-direction: column; gap: 12px; }
+        .card-header-left {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
 
         .card-title {
             font-size: 34px;
@@ -264,7 +292,9 @@
             width: fit-content;
         }
 
-        .status-badge-icon { font-size: 14px; }
+        .status-badge-icon {
+            font-size: 14px;
+        }
 
         .status-badge-text {
             font-size: 12px;
@@ -311,7 +341,7 @@
         .btn-daftarkan .plus-icon {
             width: 22px;
             height: 22px;
-            background: rgba(255,255,255,0.2);
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -347,7 +377,9 @@
         .student-card::before {
             content: '';
             position: absolute;
-            left: 0; top: 0; bottom: 0;
+            left: 0;
+            top: 0;
+            bottom: 0;
             width: 4px;
             background: var(--navy);
             border-radius: 0 3px 3px 0;
@@ -362,7 +394,9 @@
             box-shadow: 0 6px 24px rgba(26, 42, 108, 0.08);
         }
 
-        .student-card:hover::before { opacity: 1; }
+        .student-card:hover::before {
+            opacity: 1;
+        }
 
         .student-avatar {
             width: 52px;
@@ -437,7 +471,7 @@
         }
 
         .btn-verifikasi:hover {
-            background: rgba(245,196,0,0.1);
+            background: rgba(245, 196, 0, 0.1);
             border-color: var(--gold);
         }
 
@@ -447,8 +481,13 @@
         }
 
         @keyframes spin {
-            from { transform: rotate(0deg); }
-            to   { transform: rotate(360deg); }
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .btn-antrian {
@@ -473,7 +512,7 @@
         .btn-antrian:hover {
             background: #111c50;
             transform: translateY(-1px);
-            box-shadow: 0 4px 14px rgba(26,42,108,0.28);
+            box-shadow: 0 4px 14px rgba(26, 42, 108, 0.28);
         }
 
         /* ==================== FOOTER ==================== */
@@ -503,33 +542,73 @@
             font-weight: 600;
             opacity: 0;
             pointer-events: none;
-            transition: transform 0.4s cubic-bezier(0.22,1,0.36,1), opacity 0.4s;
+            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s;
             z-index: 9999;
             white-space: nowrap;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
         }
 
-        #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        #toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
 
         /* ==================== RESPONSIVE ==================== */
         @media (max-width: 900px) {
-            .page-body   { padding: 28px 20px; }
-            .topbar      { padding: 0 20px; }
-            .brand-uid   { display: none; }
-            .main-card   { padding: 28px 24px 32px; }
-            .card-title  { font-size: 26px; }
+            .page-body {
+                padding: 28px 20px;
+            }
+
+            .topbar {
+                padding: 0 20px;
+            }
+
+            .brand-uid {
+                display: none;
+            }
+
+            .main-card {
+                padding: 28px 24px 32px;
+            }
+
+            .card-title {
+                font-size: 26px;
+            }
         }
 
         @media (max-width: 640px) {
-            .topbar-nav  { display: none; }
-            .card-header { flex-direction: column; align-items: flex-start; }
-            .btn-daftarkan { width: 100%; justify-content: center; }
-            .student-card  { flex-wrap: wrap; gap: 14px; }
-            .student-actions { width: 100%; }
-            .btn-verifikasi, .btn-antrian { flex: 1; justify-content: center; }
+            .topbar-nav {
+                display: none;
+            }
+
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .btn-daftarkan {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .student-card {
+                flex-wrap: wrap;
+                gap: 14px;
+            }
+
+            .student-actions {
+                width: 100%;
+            }
+
+            .btn-verifikasi,
+            .btn-antrian {
+                flex: 1;
+                justify-content: center;
+            }
         }
     </style>
 </head>
+
 <body>
 
     <header class="topbar">
@@ -547,8 +626,7 @@
         </div>
 
         <nav class="topbar-nav">
-            <a class="nav-link active" href="{{ route('dashboard') }}">
-                Dashboard
+            <a href="{{ route('form.daftar') }}" class="btn-daftarkan">
             </a>
             <a class="nav-link" href="{{ route('riwayat') }}" onclick="showToast('🕐 Membuka Riwayat...');">
                 Riwayat
@@ -563,7 +641,8 @@
                 <div class="topbar-uname">Ortu Demo</div>
                 <div class="topbar-urole">Cabang Global</div>
             </div>
-            <a href="{{ route('logout') }}" class="topbar-logout" title="Keluar" onclick="showToast('🚪 Sedang keluar...');">
+            <a href="{{ route('logout') }}" class="topbar-logout" title="Keluar"
+                onclick="showToast('🚪 Sedang keluar...');">
                 ↪
             </a>
         </div>
@@ -582,45 +661,65 @@
                     </div>
                 </div>
 
-                <a href="{{ route('dashboard_user.form_daftar') }}" class="btn-daftarkan" onclick="showToast('➕ Membuka formulir pendaftaran...')">
+                <a href="{{ route('form.daftar') }}" class="btn-daftarkan"
+                    onclick="showToast('Membuka formulir pendaftaran...')">
                     <span class="plus-icon">＋</span>
                     DAFTARKAN ANAK
                 </a>
             </div>
 
             <div class="student-list" id="studentList">
-                <div class="student-card">
-                    <div class="student-avatar">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg" style="color: #7b82a0;">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 7.5a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 20.118a7.5 7.5 0 0115 0"/>
-                        </svg>
-                    </div>
+                @forelse($dataSiswa as $siswa)
+                    <div class="student-card">
+                        <div class="student-avatar">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                                xmlns="http://www.w3.org/2000/svg" style="color: #7b82a0;">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M15.75 7.5a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 20.118a7.5 7.5 0 0115 0" />
+                            </svg>
+                        </div>
 
-                    <div class="student-info">
-                        <div class="student-name">alex</div>
-                        <div class="student-meta">
-                            <div class="meta-item">
-                                <span class="meta-icon">🏫</span> JOG-WRO
+
+
+                        <div class="student-info">
+                            <div class="student-name">
+                                {{ $siswa->nama }}
                             </div>
-                            <div class="meta-item">
-                                <span class="meta-icon">🕐</span> 11/6/2026
-                            </div>
-                            <div class="meta-item">
-                                <span class="meta-icon">🔖</span> REG-0
+
+                            <div class="student-meta">
+
+                                <div class="meta-item">
+                                    <span class="meta-icon">📍</span>
+                                    {{ $siswa->tempat_lahir }}
+                                </div>
+
+                                <div class="meta-item">
+                                    <span class="meta-icon">🕐</span>
+                                    {{ \Carbon\Carbon::parse($siswa->created_at)->format('d/m/Y') }}
+                                </div>
+
+                                <div class="meta-item">
+                                    <span class="meta-icon">🔖</span>
+                                    {{ $siswa->nomor_registrasi }}
+                                </div>
+
                             </div>
                         </div>
-                    </div>
 
-                    <div class="student-actions">
-                        <button class="btn-verifikasi" onclick="showToast('📋 Membuka verifikasi berkas...')">
-                            <span class="spin-icon">◌</span> VERIFIKASI BERKAS
-                        </button>
-                        <button class="btn-antrian" onclick="showToast('📌 Kamu dalam antrian pendaftaran.')">
-                            DALAM ANTRIAN
-                        </button>
+
+                        <div class="student-actions">
+                            <a href="{{ route('verifikasi.berkas', $siswa->uid) }}" class="btn-verifikasi">
+                                <span class="spin-icon">◌</span> VERIFIKASI BERKAS
+                            </a>
+                            <button class="btn-antrian">
+                                {{ strtoupper($siswa->status) }}
+                            </button>
+                        </div>
                     </div>
-                </div>
+                @empty
+                    <p>Tidak ada data siswa yang ditemukan.</p>
+                @endforelse
             </div>
         </div>
     </main>
@@ -632,20 +731,21 @@
     <div id="toast"></div>
 
     <script>
-    function showToast(msg, dur = 3000) {
-        const t = document.getElementById('toast');
-        t.textContent = msg;
-        t.classList.add('show');
-        clearTimeout(t._timer);
-        t._timer = setTimeout(() => t.classList.remove('show'), dur);
-    }
+        function showToast(msg, dur = 3000) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            clearTimeout(t._timer);
+            t._timer = setTimeout(() => t.classList.remove('show'), dur);
+        }
 
-    document.querySelectorAll('.nav-link').forEach(link => {
-        link.addEventListener('click', function () {
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            this.classList.add('active');
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function () {
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+            });
         });
-    });
     </script>
 </body>
+
 </html>

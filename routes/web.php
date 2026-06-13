@@ -4,6 +4,9 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\FormOrtuController;
 use App\Http\Controllers\FormDaftarController;
+use App\Http\Controllers\RiwayatController;
+use App\Http\Controllers\DashboardOrtuController;
+use App\Http\Controllers\VerifikasiBerkasController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -33,9 +36,8 @@ Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 
 
 
-Route::get('/dashboard_ortu', function () {
-    return view('dashboard_user.dashboard_ortu');
-})->name('dashboard');
+Route::get('/dashboard_ortu', [DashboardOrtuController::class, 'index'])
+    ->name('dashboard');
 
 
 Route::get('/profil-ortu', [FormOrtuController::class, 'index'])->name('profil.ortu');
@@ -48,15 +50,18 @@ Route::get('/form-daftar', [FormDaftarController::class, 'index'])
 Route::post('/form-daftar', [FormDaftarController::class, 'store'])
     ->name('form.daftar.store');
 
-Route::post('/form-daftar/draft',
-    [FormDaftarController::class, 'saveDraft'])
+Route::post(
+    '/form-daftar/draft',
+    [FormDaftarController::class, 'saveDraft']
+)
     ->name('form.daftar.draft');
 
-Route::get('/riwayat', function () {
-    return view('dashboard_user.riwayat');
-})->name('riwayat');
+Route::get('/riwayat', [RiwayatController::class, 'index'])
+    ->name('riwayat');
 
 Route::get('/pusat-bantuan', function () {
     return view('dashboard_user.bantuan');
 })->name('pusat-bantuan');
 
+Route::get('/verifikasi-berkas/{uid}', [VerifikasiBerkasController::class, 'show'])
+    ->name('verifikasi.berkas');

@@ -41,6 +41,10 @@ class FormDaftarController extends Controller
             'golongan_darah' => $request->gol_darah,
             'tempat_lahir' => $request->tempat_lahir,
             'uid_orangtua' => session('uid_orangtua'),
+            'status' => 'pending',
+            'nomor_registrasi' => 'REG-' . time(),
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
         $files = [
@@ -55,17 +59,17 @@ class FormDaftarController extends Controller
             if ($request->hasFile($inputName)) {
                 $path = $request->file($inputName)->store('berkas', 'public');
 
-                DB::table('berkas')->insert([
-                    'id_pendaftar' => $uidCalonSiswa,
-                    'jenis_berkas' => $jenisBerkas,
-                    'file_url' => $path,
-                    'is_valid' => 0,
-                ]);
+                // DB::table('berkas')->insert([
+                //     'id_pendaftar' => $uidCalonSiswa,
+                //     'jenis_berkas' => $jenisBerkas,
+                //     'file_url' => $path,
+                //     'is_valid' => 0,
+                // ]);
             }
         }
 
-        return redirect()->route('form.daftar')
-            ->with('success', 'Data siswa berhasil disimpan');
+        return redirect()->route('dashboard')
+            ->with('success', 'Pendaftaran berhasil dikirim dan sedang ditinjau admin.');
     }
 
     public function saveDraft(Request $request)

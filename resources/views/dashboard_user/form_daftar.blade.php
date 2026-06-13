@@ -881,7 +881,10 @@
 
         <nav class="topbar-nav">
             <a class="nav-link active" href="#">Dashboard <span class="nav-dot"></span></a>
-            <a class="nav-link" href="#">Riwayat</a>
+            <a class="nav-link" href="{{ route('riwayat') }}">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                Riwayat
+            </a>
             <a class="nav-link" href="#">Pusat Bantuan</a>
         </nav>
 
