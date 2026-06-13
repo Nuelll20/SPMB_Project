@@ -60,8 +60,12 @@ Route::get('/riwayat', [RiwayatController::class, 'index'])
     ->name('riwayat');
 
 Route::get('/pusat-bantuan', function () {
-    return view('dashboard_user.bantuan');
-})->name('pusat-bantuan');
+    return view('dashboard_user.pusat_bantuan');
+})->name('pusat_bantuan');
 
 Route::get('/verifikasi-berkas/{uid}', [VerifikasiBerkasController::class, 'show'])
     ->name('verifikasi.berkas');
+
+Route::get('/admin', function () {
+    return view('dashboard_admin.admin');
+})->name('admin');
