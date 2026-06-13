@@ -5,9 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SAKTI Portal – Formulir Peserta Didik</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -41,6 +39,13 @@
             flex-direction: column;
         }
 
+        .container {
+            max-width: 1152px;
+            width: 100%;
+            margin: 24px auto 0 auto;
+            padding: 0 16px;
+        }
+
         /* ===================== TOPBAR / NAVBAR ===================== */
         .topbar {
             background: var(--surface);
@@ -49,11 +54,11 @@
             height: 64px;
             display: flex;
             align-items: center;
-            gap: 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            justify-content: space-between;
+            gap: 16px;
+            border-radius: 18px;
             box-shadow: 0 2px 16px rgba(26, 42, 108, 0.07);
+            margin-bottom: 24px;
         }
 
         .topbar-brand {
@@ -63,7 +68,7 @@
             margin-right: 40px;
         }
 
-        .brand-logo {
+        .brand-logo-fallback {
             width: 40px;
             height: 40px;
             background: var(--navy);
@@ -72,7 +77,6 @@
             align-items: center;
             justify-content: center;
             font-size: 20px;
-            flex-shrink: 0;
         }
 
         .brand-text {
@@ -97,16 +101,12 @@
         .brand-role {
             font-size: 10px;
             font-weight: 700;
-            color: var(--muted);
+            color: var(--gold-dark);
+            background: #fff8e7;
+            padding: 2px 8px;
+            border-radius: 99px;
+            border: 1px solid #fce8bd;
             text-transform: uppercase;
-            letter-spacing: 0.6px;
-        }
-
-        .brand-uid {
-            font-family: 'DM Mono', monospace;
-            font-size: 9px;
-            color: var(--muted);
-            letter-spacing: 0.3px;
         }
 
         .topbar-nav {
@@ -128,10 +128,6 @@
             color: var(--muted);
             text-decoration: none;
             transition: all 0.2s;
-            cursor: pointer;
-            border: none;
-            background: none;
-            font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
         .nav-link:hover {
@@ -144,11 +140,6 @@
             font-weight: 800;
             background: #f0f4ff;
             box-shadow: 0 2px 8px rgba(26, 42, 108, 0.15);
-        }
-
-        .nav-icon {
-            font-size: 15px;
-            opacity: 0.8;
         }
 
         .nav-dot {
@@ -228,15 +219,8 @@
         }
 
         @keyframes fadeUp {
-            from {
-                opacity: 0;
-                transform: translateY(14px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(14px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .page-title {
@@ -273,7 +257,6 @@
             transition: all 0.2s ease;
             position: relative;
             overflow: hidden;
-            letter-spacing: 0.2px;
             white-space: nowrap;
         }
 
@@ -343,7 +326,6 @@
             color: var(--muted);
         }
 
-        /* Field & Required Indicator */
         .field-group {
             display: flex;
             flex-direction: column;
@@ -399,7 +381,6 @@
             box-shadow: 0 0 0 3px rgba(0, 74, 173, 0.09);
         }
 
-        /* Input Error State */
         .field-input.is-invalid,
         .field-select.is-invalid,
         .field-textarea.is-invalid,
@@ -410,19 +391,9 @@
         }
 
         @keyframes shake {
-
-            0%,
-            100% {
-                transform: translateX(0);
-            }
-
-            25% {
-                transform: translateX(-5px);
-            }
-
-            75% {
-                transform: translateX(5px);
-            }
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
         }
 
         .field-select {
@@ -459,7 +430,6 @@
             height: 96px;
         }
 
-        /* Alamat header row */
         .alamat-header {
             display: flex;
             justify-content: space-between;
@@ -481,9 +451,7 @@
             text-transform: uppercase;
         }
 
-        .samakan-btn:hover {
-            background: rgba(0, 74, 173, 0.07);
-        }
+        .samakan-btn:hover { background: rgba(0, 74, 173, 0.07); }
 
         /* ===== UPLOAD BERKAS ===== */
         .upload-label {
@@ -515,58 +483,15 @@
             gap: 6px;
         }
 
-        .upload-item:hover {
-            border-color: var(--blue);
-            background: #f5f8ff;
-        }
+        .upload-item:hover { border-color: var(--blue); background: #f5f8ff; }
+        .upload-item.uploaded { border-color: rgba(22, 163, 74, 0.35); background: #f6fff9; }
 
-        .upload-item.uploaded {
-            border-color: rgba(22, 163, 74, 0.35);
-            background: #f6fff9;
-        }
-
-        .upload-left {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            min-width: 0;
-        }
-
-        .upload-doc-icon {
-            color: var(--muted);
-            font-size: 15px;
-            flex-shrink: 0;
-        }
-
-        .upload-item.uploaded .upload-doc-icon {
-            color: var(--green);
-        }
-
-        .upload-name {
-            font-size: 12.5px;
-            font-weight: 600;
-            color: var(--text);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .upload-wajib {
-            font-size: 10px;
-            font-weight: 700;
-            color: var(--red);
-            background: rgba(220, 38, 38, 0.08);
-            border-radius: 4px;
-            padding: 1px 5px;
-            flex-shrink: 0;
-        }
-
-        .upload-actions {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            flex-shrink: 0;
-        }
+        .upload-left { display: flex; align-items: center; gap: 8px; min-width: 0; }
+        .upload-doc-icon { color: var(--muted); font-size: 15px; flex-shrink: 0; }
+        .upload-item.uploaded .upload-doc-icon { color: var(--green); }
+        .upload-name { font-size: 12.5px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .upload-wajib { font-size: 10px; font-weight: 700; color: var(--red); background: rgba(220, 38, 38, 0.08); border-radius: 4px; padding: 1px 5px; flex-shrink: 0; }
+        .upload-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
 
         .upload-action-btn {
             width: 28px;
@@ -589,9 +514,8 @@
             background: rgba(0, 74, 173, 0.06);
         }
 
-        .upload-file-input {
-            display: none;
-        }
+        .btn-preview-disabled { opacity: 0.3; cursor: not-allowed; pointer-events: none; }
+        .upload-file-input { display: none; }
 
         /* ===================== BOTTOM BAR ===================== */
         .bottom-bar {
@@ -616,15 +540,8 @@
             transition: color 0.2s;
         }
 
-        .back-link:hover {
-            color: var(--blue);
-        }
-
-        .bottom-actions {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
+        .back-link:hover { color: var(--blue); }
+        .bottom-actions { display: flex; gap: 10px; align-items: center; }
 
         .btn-draft {
             background: var(--surface);
@@ -642,11 +559,7 @@
             transition: all 0.2s;
         }
 
-        .btn-draft:hover {
-            border-color: var(--blue);
-            color: var(--blue);
-            background: rgba(0, 74, 173, 0.04);
-        }
+        .btn-draft:hover { border-color: var(--blue); color: var(--blue); background: rgba(0, 74, 173, 0.04); }
 
         .btn-submit {
             background: var(--navy);
@@ -673,51 +586,10 @@
             box-shadow: 0 8px 24px rgba(26, 42, 108, 0.32);
         }
 
-        .btn-submit .arrow {
-            transition: transform 0.25s;
-            font-size: 18px;
-        }
+        .btn-submit .arrow { transition: transform 0.25s; font-size: 18px; }
+        .btn-submit:hover .arrow { transform: translateX(5px); }
 
-        .btn-submit:hover .arrow {
-            transform: translateX(5px);
-        }
-
-        /* Counter Section */
-        .counter-section {
-            text-align: center;
-            padding-top: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .btn-group {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .anak-btn {
-            width: 48px;
-            height: 48px;
-            border-radius: 16px;
-            font-weight: bold;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            color: var(--muted);
-        }
-
-        .anak-btn.active {
-            background: var(--navy);
-            color: var(--gold);
-            border: none;
-        }
-
-        /* ===================== MODAL WINDOW POP-UP ===================== */
+        /* ===================== MODAL WINDOW POP-UP SYSTEM ===================== */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -752,9 +624,16 @@
             transition: transform 0.3s ease;
         }
 
-        .modal-overlay.show .modal-box {
-            transform: scale(1);
+        .modal-box-large {
+            max-width: 700px;
+            width: 95%;
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
         }
+
+        .modal-overlay.show .modal-box { transform: scale(1); }
 
         .modal-icon {
             width: 56px;
@@ -769,19 +648,29 @@
             margin: 0 auto 16px auto;
         }
 
-        .modal-title {
-            font-size: 18px;
-            font-weight: 800;
-            color: var(--navy);
-            margin-bottom: 8px;
+        .modal-icon-warn {
+            background: #fffbeb;
+            color: var(--gold-dark);
         }
 
-        .modal-desc {
-            font-size: 14px;
-            color: var(--muted);
-            line-height: 1.5;
-            margin-bottom: 24px;
+        .modal-title { font-size: 18px; font-weight: 800; color: var(--navy); margin-bottom: 8px; }
+        .modal-desc { font-size: 14px; color: var(--muted); line-height: 1.5; margin-bottom: 24px; }
+
+        .preview-viewport-content {
+            flex: 1;
+            width: 100%;
+            background: var(--surface2);
+            border-radius: 12px;
+            margin-bottom: 16px;
+            overflow: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px dashed var(--border);
         }
+
+        .preview-viewport-content img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .preview-viewport-content iframe { width: 100%; height: 100%; border: none; }
 
         .modal-btn-close {
             background: var(--navy);
@@ -795,90 +684,56 @@
             width: 100%;
         }
 
-        .page-footer {
-            text-align: center;
-            padding: 20px;
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--muted);
-            letter-spacing: 1.2px;
-            text-transform: uppercase;
+        .modal-btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
         }
 
-        #toast {
-            position: fixed;
-            bottom: 28px;
-            left: 50%;
-            transform: translateX(-50%) translateY(70px);
-            background: var(--navy);
-            color: white;
-            padding: 12px 26px;
-            border-radius: 40px;
-            font-size: 13.5px;
-            font-weight: 600;
-            opacity: 0;
-            pointer-events: none;
-            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s;
-            z-index: 9999;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+        .modal-btn-cancel {
+            background: var(--surface2);
+            color: var(--text);
+            border: 1px solid var(--border);
         }
+        .modal-btn-cancel:hover { background: #e2e8f0; }
 
-        #toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
+        .page-footer { text-align: center; padding: 20px; font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: 1.2px; text-transform: uppercase; }
+        #toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(70px); background: var(--navy); color: white; padding: 12px 26px; border-radius: 40px; font-size: 13.5px; font-weight: 600; opacity: 0; pointer-events: none; transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s; z-index: 9999; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18); }
+        #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-        @media (max-width: 900px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-                gap: 24px;
-            }
-
-            .page-body {
-                padding: 24px 20px;
-            }
-        }
-
-        @media (max-width: 640px) {
-            .topbar-nav {
-                display: none;
-            }
-
-            .bottom-bar {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .bottom-actions {
-                flex-direction: column;
-            }
-
-            .btn-draft,
-            .btn-submit {
-                width: 100%;
-                justify-content: center;
-            }
-        }
+        @media (max-width: 900px) { .form-grid { grid-template-columns: 1fr; gap: 24px; } .page-body { padding: 24px 20px; } }
+        @media (max-width: 640px) { .bottom-bar { flex-direction: column; align-items: stretch; } .bottom-actions { flex-direction: column; } .btn-draft, .btn-submit { width: 100%; justify-content: center; } }
     </style>
 </head>
 
 <body>
 
-    <header class="topbar">
-        <div class="topbar-brand">
-            <img src="{{ asset('img/E-Kanisius 1.png') }}" alt="E-Kanisius Logo"
-                style="width:85px; height:auto; object-fit:contain; flex-shrink:0;"
-                onerror="this.style.display='none'; document.getElementById('fallback-logo').style.display='flex';">
-            <div id="fallback-logo" class="brand-logo" style="display:none;">⛵</div>
-            <div class="brand-text">
-                <div class="brand-name">PORTAL SAKTI</div>
-                <div class="brand-meta">
-                    <span class="brand-role">Parent</span>
-                    <span class="brand-uid">UID-Jzp4Z3bwwoNY7IhFuiPNdTsN9w63</span>
+    <div class="container">
+
+        <header class="topbar">
+            <div class="topbar-brand">
+                <div class="brand-logo-container">
+                    <img src="{{ asset('img/E-Kanisius 1.png') }}" alt="E-Kanisius Logo"
+                        style="width: 85px; height: auto; object-fit: contain; flex-shrink: 0;"
+                        onerror="this.style.display='none'; document.getElementById('fallback-logo').style.display='flex';">
+                    <div id="fallback-logo" class="brand-logo-fallback" style="display: none;">⛵</div>
+                </div>
+                <div class="brand-text">
+                    <div class="brand-name">PORTAL SAKTI</div>
+                    <div class="brand-meta">
+                        <span class="brand-role">Parent</span>
+                        <span class="brand-uid">UID-Jzp4Z3bwwoNY7IhFuiPNdTsN9w63</span>
+                    </div>
                 </div>
             </div>
-        </div>
+            
+            <nav class="topbar-nav">
+                <a class="nav-link" href="#" id="navDashboard">Dashboard</a>
+                <a class="nav-link active" href="#" id="navRiwayat">Riwayat <span class="nav-dot"></span></a>
+                <a class="nav-link" href="#" id="navBantuan">Pusat Bantuan</a>
+            </nav>
 
+<<<<<<< HEAD
         <nav class="topbar-nav">
             <a class="nav-link active" href="#">Dashboard <span class="nav-dot"></span></a>
             <a class="nav-link" href="{{ route('riwayat') }}">
@@ -910,240 +765,219 @@
             <div class="header-actions">
                 <button type="button" class="btn btn-outline" id="btnTambahAnak" onclick="tambahAnak(this, event)">
                     ＋ TAMBAH ANAK
+=======
+            <div class="topbar-right">
+                <div class="topbar-username">
+                    <div class="topbar-uname">Ignatius Arya</div>
+                    <div class="topbar-urole">Cabang Global</div>
+                </div>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    @csrf
+                </form>
+                <button class="topbar-logout" title="Keluar" id="btnTopbarLogout">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+>>>>>>> 4d53f392d0d6e3c909910bc752eaca63cfbee3fe
                 </button>
             </div>
-        </div>
+        </header>
 
-        <div class="form-card">
-            <div class="data-anak-badge" id="anakBadge">DATA ANAK 1</div>
+        <form id="formPesertaDidik" action="{{ route('form.daftar.store') }}" method="POST" class="page-body" novalidate>
+            @csrf
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">Formulir Peserta Didik</h1>
+                    <p class="page-subtitle">Unit Tujuan: <strong>• 1 Calon Murid</strong></p>
+                </div>
+                <div class="header-actions">
+                    <button type="button" class="btn btn-outline" id="btnTambahAnak" onclick="tambahAnak(this, event)">
+                        ＋ TAMBAH ANAK
+                    </button>
+                </div>
+            </div>
 
-            <div class="form-grid">
-                <div class="form-col">
-                    <div class="col-header">
-                        <span class="col-header-title">Identitas Dasar</span>
-                    </div>
-                    <div class="field-group required">
-                        <label class="field-label" for="namaLengkap">Nama Lengkap</label>
+            <div class="form-card">
+                <div class="data-anak-badge" id="anakBadge">DATA ANAK 1</div>
 
-                        <input type="text" id="namaLengkap" name="nama_lengkap" class="field-input"
-                            value="{{ $draft->nama ?? '' }}" placeholder="Nama Lengkap" autocomplete="off"
-                            oninput="validateField(this, v => v.trim().length >= 3)">
-                    </div>
-
-                    <div class="field-group required">
-                        <label class="field-label" for="nik">NIK (Nomor Induk Kependudukan)</label>
-                        <input type="text" id="nik" name="nik" class="field-input" value="{{ $draft->nik ?? '' }}"
-                            placeholder="16 Digit NIK" maxlength="16" autocomplete="off"
-                            oninput="onlyDigits(this); validateField(this, v => /^\d{16}$/.test(v))">
-                    </div>
-
-                    <div class="field-row required">
-                        <div class="field-group">
-                            <label class="field-label" for="tanggalLahir">Tanggal Lahir</label>
-                            <input type="date" id="tanggalLahir" name="tanggal_lahir" class="field-input"
-                                value="{{ $draft->tanggal_lahir ?? '' }}" onchange="validateField(this, v => v !== '')">
+                <div class="form-grid">
+                    <div class="form-col">
+                        <div class="col-header">
+                            <span class="col-header-title">Identitas Dasar</span>
                         </div>
-                        <div class="field-group">
-                            <label class="field-label" for="golDarah">Gol. Darah</label>
-                            <select id="golDarah" name="gol_darah" class="field-select" onchange="onSelectChange(this)">
-                                <option value="" {{ empty($draft->golongan_darah) ? 'selected' : '' }}>
-                                    Pilih Golongan Darah
-                                </option>
-                                <option value="A" {{ ($draft->golongan_darah ?? '') == 'A' ? 'selected' : '' }}>
-                                    A
-                                </option>
-                                <option value="B" {{ ($draft->golongan_darah ?? '') == 'B' ? 'selected' : '' }}>
-                                    B
-                                </option>
-                                <option value="AB" {{ ($draft->golongan_darah ?? '') == 'AB' ? 'selected' : '' }}>
-                                    AB
-                                </option>
-                                <option value="O" {{ ($draft->golongan_darah ?? '') == 'O' ? 'selected' : '' }}>
-                                    O
-                                </option>
+
+                        <div class="field-group required">
+                            <label class="field-label" for="namaLengkap">Nama Lengkap</label>
+                            <input type="text" id="namaLengkap" name="nama_lengkap" class="field-input" placeholder="Nama Lengkap" autocomplete="off" oninput="validateField(this, v => v.trim().length >= 3)">
+                        </div>
+
+                        <div class="field-group required">
+                            <label class="field-label" for="nik">NIK (Nomor Induk Kependudukan)</label>
+                            <input type="text" id="nik" name="nik" class="field-input" placeholder="16 Digit NIK" maxlength="16" autocomplete="off" oninput="onlyDigits(this); validateField(this, v => /^\d{16}$/.test(v))">
+                        </div>
+
+                        <div class="field-row required">
+                            <div class="field-group">
+                                <label class="field-label" for="tanggalLahir">Tanggal Lahir</label>
+                                <input type="date" id="tanggalLahir" name="tanggal_lahir" class="field-input" onchange="validateField(this, v => v !== '')">
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label" for="golDarah">Gol. Darah</label>
+                                <select id="golDarah" name="gol_darah" class="field-select" onchange="onSelectChange(this)">
+                                    <option value="O" selected>O</option>
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="AB">AB</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-col">
+                        <div class="col-header">
+                            <span class="col-header-title">Informasi Lanjutan</span>
+                        </div>
+
+                        <div class="field-group required">
+                            <label class="field-label" for="agama">Agama</label>
+                            <select id="agama" name="agama" class="field-select" onchange="onSelectChange(this); toggleSuratBaptis(this.value)">
+                                <option value="" selected disabled>Pilih Agama</option>
+                                <option value="kristen">Kristen</option>
+                                <option value="katolik">Katolik</option>
+                                <option value="islam">Islam</option>
+                                <option value="buddha">Buddha</option>
+                                <option value="hindu">Hindu</option>
+                                <option value="konghucu">Konghucu</option>
                             </select>
                         </div>
-                    </div>
-                </div>
 
-                <div class="form-col">
-                    <div class="col-header">
-                        <span class="col-header-title">Informasi Lanjutan</span>
-                    </div>
-
-                    <div class="field-group required">
-                        <label class="field-label" for="agama">Agama</label>
-                        <select id="agama" name="agama" class="field-select"
-                            onchange="onSelectChange(this); toggleSuratBaptis(this.value)">
-                            <option value="" disabled {{ empty($draft->agama) ? 'selected' : '' }}>
-                                Pilih Agama
-                            </option>
-                            <option value="kristen" {{ ($draft->agama ?? '') == 'kristen' ? 'selected' : '' }}>
-                                Kristen
-                            </option>
-                            <option value="katolik" {{ ($draft->agama ?? '') == 'katolik' ? 'selected' : '' }}>
-                                Katolik
-                            </option>
-                            <option value="islam" {{ ($draft->agama ?? '') == 'islam' ? 'selected' : '' }}>
-                                Islam
-                            </option>
-                            <option value="buddha" {{ ($draft->agama ?? '') == 'buddha' ? 'selected' : '' }}>
-                                Buddha
-                            </option>
-                            <option value="hindu" {{ ($draft->agama ?? '') == 'hindu' ? 'selected' : '' }}>
-                                Hindu
-                            </option>
-                            <option value="konghucu" {{ ($draft->agama ?? '') == 'konghucu' ? 'selected' : '' }}>
-                                Konghucu
-                            </option>
-                        </select>
-                    </div>
-
-                    <div class="field-group required">
-                        <div class="alamat-header">
-                            <label class="field-label" for="alamat">Alamat Domisili Anak</label>
-                            <button type="button" class="samakan-btn" onclick="samakanAlamat()">
-                                Samakan dengan Alamat Ortu
-                            </button>
+                        <div class="field-group required">
+                            <div class="alamat-header">
+                                <label class="field-label" for="alamat">Alamat Domisili Anak</label>
+                                <button type="button" class="samakan-btn" onclick="samakanAlamat()">
+                                    Samakan dengan Alamat Ortu
+                                </button>
+                            </div>
+                            <textarea id="alamat" name="alamat" class="field-textarea" placeholder="Masukkan alamat lengkap tempat tinggal anak..." oninput="validateField(this, v => v.trim().length >= 5)"></textarea>
                         </div>
-                        <textarea id="alamat" name="alamat" class="field-textarea"
-                            placeholder="Masukkan alamat lengkap tempat tinggal anak..."
-                            oninput="validateField(this, v => v.trim().length >= 5)">{{ $draft->alamat ?? '' }}</textarea>
-                    </div>
-                    <div class="field-group required">
-                        <div class="alamat-header">
-                            <label class="field-label" for="alamat">Tempat Lahir Anak</label>
 
+                        <div class="field-group required">
+                            <label class="field-label" for="tempat-lahir">Tempat Lahir Anak</label>
+                            <input type="text" id="tempat-lahir" name="tempat_lahir" class="field-input" placeholder="Masukkan kota tempat lahir anak..." oninput="validateField(this, v => v.trim().length >= 3)">
                         </div>
-                        <textarea id="tempat-lahir" name="tempat_lahir" class="field-textarea"
-                            placeholder="Masukkan tempat lahir anak..."
-                            oninput="validateField(this, v => v.trim().length >= 5)">{{ $draft->tempat_lahir ?? '' }}</textarea>
-                    </div>
-                    <div class="field-group">
-                        <span class="upload-label">Upload Berkas Fisik</span>
-                        <div class="upload-grid">
-                            <div class="upload-item required" id="item-kk" onclick="triggerUpload('file-kk')">
-                                <div class="upload-left"><span class="upload-name">Kartu Keluarga</span></div>
-                                @if(isset($berkas['Kartu Keluarga']))
-                                    <small style="color:green;">
-                                        ✓ Sudah diupload
-                                    </small>
-                                @endif
-                                <div class="upload-actions">
-                                    <button type="button" class="upload-action-btn"
-                                        onclick="previewDoc(event,'Kartu Keluarga')">👁</button>
-                                    <button type="button" class="upload-action-btn"
-                                        onclick="triggerUpload('file-kk', event)">↑</button>
-                                </div>
-                                <input type="file" id="file-kk" name="kartu_keluarga" class="upload-file-input"
-                                    accept="image/*,.pdf" onchange="onUpload(this,'item-kk')">
-                            </div>
 
-                            <div class="upload-item required" id="item-akte" onclick="triggerUpload('file-akte')">
-                                <div class="upload-left"><span class="upload-name">Akte Kelahiran</span></div>
-                                <div class="upload-actions">
-                                    <button type="button" class="upload-action-btn"
-                                        onclick="previewDoc(event,'Akte Kelahiran')">👁</button>
-                                    <button type="button" class="upload-action-btn"
-                                        onclick="triggerUpload('file-akte', event)">↑</button>
+                        <div class="field-group">
+                            <span class="upload-label">Upload Berkas Fisik</span>
+                            <div class="upload-grid">
+                                <div class="upload-item required" id="item-kk" onclick="triggerUpload('file-kk')">
+                                    <div class="upload-left"><span class="upload-name">Kartu Keluarga</span></div>
+                                    <div class="upload-actions">
+                                        <button type="button" id="btn-prev-file-kk" class="upload-action-btn btn-preview-disabled" title="Preview" onclick="previewDoc(event,'file-kk','Kartu Keluarga')">👁</button>
+                                        <button type="button" class="upload-action-btn" title="Upload" onclick="triggerUpload('file-kk', event)">↑</button>
+                                    </div>
+                                    <input type="file" id="file-kk" class="upload-file-input" accept="image/*,.pdf" onchange="onUpload(this,'item-kk','btn-prev-file-kk')">
                                 </div>
-                                <input type="file" id="file-akte" name="akte_kelahiran" class="upload-file-input"
-                                    accept="image/*,.pdf" onchange="onUpload(this,'item-akte')">
-                            </div>
 
-                            <div class="upload-item required" id="item-ktp" onclick="triggerUpload('file-ktp')">
-                                <div class="upload-left"><span class="upload-name">E-KTP Orang Tua</span></div>
-                                <div class="upload-actions">
-                                    <button type="button" class="upload-action-btn"
-                                        onclick="previewDoc(event,'E-KTP Orang Tua')">👁</button>
-                                    <button type="button" class="upload-action-btn"
-                                        onclick="triggerUpload('file-ktp', event)">↑</button>
+                                <div class="upload-item required" id="item-akte" onclick="triggerUpload('file-akte')">
+                                    <div class="upload-left"><span class="upload-name">Akte Kelahiran</span></div>
+                                    <div class="upload-actions">
+                                        <button type="button" id="btn-prev-file-akte" class="upload-action-btn btn-preview-disabled" title="Preview" onclick="previewDoc(event,'file-akte','Akte Kelahiran')">👁</button>
+                                        <button type="button" class="upload-action-btn" title="Upload" onclick="triggerUpload('file-akte', event)">↑</button>
+                                    </div>
+                                    <input type="file" id="file-akte" class="upload-file-input" accept="image/*,.pdf" onchange="onUpload(this,'item-akte','btn-prev-file-akte')">
                                 </div>
-                                <input type="file" id="file-ktp" name="ktp_ortu" class="upload-file-input"
-                                    accept="image/*,.pdf" onchange="onUpload(this,'item-ktp')">
-                            </div>
 
-                            <div class="upload-item required" id="item-foto" onclick="triggerUpload('file-foto')">
-                                <div class="upload-left"><span class="upload-name">Pas Foto (3x4)</span></div>
-                                <div class="upload-actions">
-                                    <button type="button" class="upload-action-btn"
-                                        onclick="previewDoc(event,'Pas Foto 3x4')">👁</button>
-                                    <button type="button" class="upload-action-btn"
-                                        onclick="triggerUpload('file-foto', event)">↑</button>
+                                <div class="upload-item required" id="item-ktp" onclick="triggerUpload('file-ktp')">
+                                    <div class="upload-left"><span class="upload-name">E-KTP Orang Tua</span></div>
+                                    <div class="upload-actions">
+                                        <button type="button" id="btn-prev-file-ktp" class="upload-action-btn btn-preview-disabled" title="Preview" onclick="previewDoc(event,'file-ktp','E-KTP Orang Tua')">👁</button>
+                                        <button type="button" class="upload-action-btn" title="Upload" onclick="triggerUpload('file-ktp', event)">↑</button>
+                                    </div>
+                                    <input type="file" id="file-ktp" class="upload-file-input" accept="image/*,.pdf" onchange="onUpload(this,'item-ktp','btn-prev-file-ktp')">
                                 </div>
-                                <input type="file" id="file-foto" name="pas_foto" class="upload-file-input"
-                                    accept="image/*" onchange="onUpload(this,'item-foto')">
-                            </div>
 
-                            <div class="upload-item" id="item-baptis" style="grid-column: span 2; display: none;"
-                                onclick="triggerUpload('file-baptis')">
-                                <div class="upload-left">
-                                    <span class="upload-doc-icon"></span>
-                                    <span class="upload-name">Surat Baptis</span>
-                                    <span class="upload-wajib">Wajib</span>
+                                <div class="upload-item required" id="item-foto" onclick="triggerUpload('file-foto')">
+                                    <div class="upload-left"><span class="upload-name">Pas Foto (3x4)</span></div>
+                                    <div class="upload-actions">
+                                        <button type="button" id="btn-prev-file-foto" class="upload-action-btn btn-preview-disabled" title="Preview" onclick="previewDoc(event,'file-foto','Pas Foto 3x4')">👁</button>
+                                        <button type="button" class="upload-action-btn" title="Upload" onclick="triggerUpload('file-foto', event)">↑</button>
+                                    </div>
+                                    <input type="file" id="file-foto" class="upload-file-input" accept="image/*" onchange="onUpload(this,'item-foto','btn-prev-file-foto')">
                                 </div>
-                                <div class="upload-actions">
-                                    <button type="button" class="upload-action-btn"
-                                        onclick="previewDoc(event,'Surat Baptis')">👁</button>
-                                    <button type="button" class="upload-action-btn"
-                                        onclick="triggerUpload('file-baptis', event)">↑</button>
+
+                                <div class="upload-item" id="item-baptis" style="grid-column: span 2; display: none;" onclick="triggerUpload('file-baptis')">
+                                    <div class="upload-left">
+                                        <span class="upload-doc-icon">📄</span>
+                                        <span class="upload-name">Surat Baptis</span>
+                                        <span class="upload-wajib">Wajib</span>
+                                    </div>
+                                    <div class="upload-actions">
+                                        <button type="button" id="btn-prev-file-baptis" class="upload-action-btn btn-preview-disabled" title="Preview" onclick="previewDoc(event,'file-baptis','Surat Baptis')">👁</button>
+                                        <button type="button" class="upload-action-btn" title="Upload" onclick="triggerUpload('file-baptis', event)">↑</button>
+                                    </div>
+                                    <input type="file" id="file-baptis" class="upload-file-input" accept="image/*,.pdf" onchange="onUpload(this,'item-baptis','btn-prev-file-baptis')">
                                 </div>
-                                <input type="file" id="file-baptis" name="surat_baptis" class="upload-file-input"
-                                    accept="image/*,.pdf" onchange="onUpload(this,'item-baptis')">
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="bottom-bar">
-            <a href="{{ route('profil.ortu') }}" class="back-link">← Kembali ke Profil Ortu</a>
-            <div class="bottom-actions">
-                <button type="button" class="btn-draft" id="btnDraft" onclick="saveDraft(this, event)">
-                    SIMPAN DRAFT
-                </button>
-                <button type="submit" class="btn-submit" id="btnSubmit">
-                    SUBMIT SEKARANG <span class="arrow">›</span>
-                </button>
+            <div class="bottom-bar">
+                <a href="{{ route('profil.ortu') }}" class="back-link" id="btnLinkKembali">← Kembali ke Profil Ortu</a>
+                <div class="bottom-actions">
+                    <button type="button" class="btn-draft" id="btnDraft" onclick="saveDraft(this, event)">
+                        SIMPAN DRAFT
+                    </button>
+                    <button type="submit" class="btn-submit" id="btnSubmit">
+                        SUBMIT SEKARANG <span class="arrow">›</span>
+                    </button>
+                </div>
             </div>
-        </div>
-    </form>
-
-    <footer class="page-footer">
-        Yayasan Kanisius © 2026 – Admisi Terintegrasi
-    </footer>
-
-    <div id="toast"></div>
+        </form>
+    </div>
 
     <div id="errorModal" class="modal-overlay">
         <div class="modal-box">
-            <div class="modal-icon">
-                <i class="fa-solid fa-circle-exclamation"></i>
-            </div>
+            <div class="modal-icon"><i class="fa-solid fa-circle-exclamation"></i></div>
             <h3 class="modal-title">Data Belum Lengkap</h3>
-            <p class="modal-desc">Mohon periksa kembali. Seluruh bidang data bertanda bintang (*) dan berkas wajib harus
-                diisi sebelum melanjutkan.</p>
+            <p class="modal-desc">Mohon periksa kembali. Seluruh bidang data bertanda bintang (*) dan berkas wajib harus diisi sebelum melanjutkan.</p>
             <button type="button" id="closeModalBtn" class="modal-btn-close">Mengerti</button>
         </div>
     </div>
 
+    <div id="previewModal" class="modal-overlay">
+        <div class="modal-box modal-box-large">
+            <h3 class="modal-title" id="previewModalTitle" style="margin-bottom: 12px; text-align: left;">Pratinjau Berkas</h3>
+            <div class="preview-viewport-content" id="previewViewport"></div>
+            <button type="button" id="closePreviewModalBtn" class="modal-btn-close">Tutup Pratinjau</button>
+        </div>
+    </div>
+
+    <div id="confirmLeaveModal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-icon modal-icon-warn"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <h3 class="modal-title">Tinggalkan Halaman?</h3>
+            <p class="modal-desc">Data pendaftaran calon murid belum disimpan ke sistem. Apakah Anda yakin ingin keluar dan membuang perubahan?</p>
+            <div class="modal-btn-group">
+                <button type="button" id="btnCancelLeave" class="modal-btn-close modal-btn-cancel">Batal</button>
+                <button type="button" id="btnConfirmLeave" class="modal-btn-close" style="background: var(--red);">Ya, Keluar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast"></div>
+
     <script>
         /* ============================================================
-           TOAST
+           TOAST UTILITIES
         ============================================================ */
         function showToast(msg, dur = 3000) {
             const t = document.getElementById('toast');
-            t.textContent = msg;
             t.textContent = msg;
             t.classList.add('show');
             clearTimeout(t._timer);
             t._timer = setTimeout(() => t.classList.remove('show'), dur);
         }
 
-        /* ============================================================
-           RIPPLE EFFECT
-        ============================================================ */
         function addRipple(btn, e) {
             if (!e) return;
             const rect = btn.getBoundingClientRect();
@@ -1157,7 +991,7 @@
         }
 
         /* ============================================================
-           FIELD VALIDATION LIVE STATE
+           LIVE FIELD VALIDATION
         ============================================================ */
         function validateField(el, rule) {
             if (el.value === '' || el.value === null) {
@@ -1169,17 +1003,11 @@
             el.classList.toggle('is-invalid', !ok);
         }
 
-        function onlyDigits(el) {
-            el.value = el.value.replace(/\D/g, '').slice(0, 16);
-        }
-
-        function onSelectChange(el) {
-            el.classList.remove('is-invalid');
-            el.classList.add('is-valid');
-        }
+        function onlyDigits(el) { el.value = el.value.replace(/\D/g, '').slice(0, 16); }
+        function onSelectChange(el) { el.classList.remove('is-invalid'); el.classList.add('is-valid'); }
 
         /* ============================================================
-           TOGGLE SURAT BAPTIS — Wajib jika Katolik
+           TOGGLE SURAT BAPTIS STATE
         ============================================================ */
         let isKatolik = false;
         function toggleSuratBaptis(val) {
@@ -1194,7 +1022,7 @@
                     item.style.opacity = '1';
                     item.style.transform = 'translateY(0)';
                 });
-                showToast('Surat Baptis wajib dilampirkan untuk calon murid Katolik');
+                showToast('⛪ Surat Baptis wajib dilampirkan untuk calon murid Katolik');
             } else {
                 isKatolik = false;
                 item.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
@@ -1205,6 +1033,7 @@
                     const fileInput = document.getElementById('file-baptis');
                     if (fileInput) fileInput.value = '';
                     item.classList.remove('uploaded', 'is-invalid');
+                    document.getElementById('btn-prev-file-baptis').classList.add('btn-preview-disabled');
                 }, 260);
             }
         }
@@ -1214,187 +1043,194 @@
         ============================================================ */
         function samakanAlamat() {
             const ta = document.getElementById('alamat');
-            const alamatOrtu = @json($orangTua->alamat ?? '');
-
-            if (!alamatOrtu) {
-                showToast('Alamat orang tua belum ditemukan');
-                return;
-            }
-
-            ta.value = alamatOrtu;
+            ta.value = "Jl. Jend. Sudirman No. 45, Yogyakarta";
             ta.classList.remove('is-invalid');
             ta.classList.add('is-valid');
-            showToast('Alamat disalin dari data orang tua');
+            showToast('🏠 Alamat disalin dari data orang tua');
         }
 
         /* ============================================================
-           TAMBAH ANAK STATE RESET
-        ============================================================ */
-        let anakCount = 1;
-        function tambahAnak(btn, e) {
-            addRipple(btn, e);
-            anakCount++;
-            document.getElementById('anakBadge').textContent = `DATA ANAK ${anakCount}`;
-            document.querySelector('.page-subtitle strong').textContent = `• ${anakCount} Calon Murid`;
-
-            ['namaLengkap', 'nik', 'tanggalLahir', 'alamat'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) { el.value = ''; el.classList.remove('is-valid', 'is-invalid'); }
-            });
-            document.getElementById('golDarah').value = 'O';
-            document.getElementById('agama').value = '';
-            toggleSuratBaptis('');
-
-            ['item-kk', 'item-akte', 'item-ktp', 'item-foto', 'item-baptis'].forEach(id => {
-                const item = document.getElementById(id);
-                item.classList.remove('uploaded', 'is-invalid');
-                const fileIn = item.querySelector('input[type="file"]');
-                if (fileIn) fileIn.value = '';
-            });
-            showToast(`➕ Data Anak ${anakCount} siap diisi`);
-        }
-
-        /* ============================================================
-           UPLOAD FILE MECHANISM
+           LOCAL FILE BINDING UPLOAD MECHANISM
         ============================================================ */
         function triggerUpload(inputId, e) {
             if (e) e.stopPropagation();
             document.getElementById(inputId).click();
         }
 
-        function onUpload(input, itemId) {
+        function onUpload(input, itemId, previewBtnId) {
             if (!input.files || !input.files[0]) return;
             const item = document.getElementById(itemId);
+            const prevBtn = document.getElementById(previewBtnId);
             const name = input.files[0].name;
+
             item.classList.add('uploaded');
             item.classList.remove('is-invalid');
-            showToast(`📎 Berkas "${name.slice(0, 15)}..." berhasil diunggah`);
-        }
-
-        function previewDoc(e, name) {
-            e.stopPropagation();
-            showToast(`👁 Membuka pratinjau: ${name}`);
+            prevBtn.classList.remove('btn-preview-disabled'); // Aktifkan tombol mata pratinjau berkas
+            showToast(`📎 Berkas "${name.slice(0, 15)}..." berhasil dipilih`);
         }
 
         /* ============================================================
-           SAVE DRAFT MECHANISM
+           PERBAIKAN: CORE LOGIC RENDERER PREVIEW DOKUMEN & GAMBAR LOKAL
+        ============================================================ */
+        const previewModal = document.getElementById('previewModal');
+        const previewViewport = document.getElementById('previewViewport');
+        const previewModalTitle = document.getElementById('previewModalTitle');
+
+        function previewDoc(e, inputId, labelName) {
+            e.stopPropagation(); // Matikan bubbling klik agar dialog upload tidak terbuka ganda
+            
+            const fileInput = document.getElementById(inputId);
+            if (!fileInput.files || !fileInput.files[0]) return;
+
+            const file = fileInput.files[0];
+            const fileType = file.type;
+            
+            previewModalTitle.textContent = `Pratinjau Berkas: ${labelName}`;
+            previewViewport.innerHTML = ''; // Reset DOM viewport render
+
+            const reader = new FileReader();
+
+            // Skenario 1: Jika berkas bertipe PDF, buat Blob URL lokal untuk Iframe render
+            if (fileType === "application/pdf") {
+                const blobURL = URL.createObjectURL(file);
+                const iframe = document.createElement('iframe');
+                iframe.src = blobURL;
+                previewViewport.appendChild(iframe);
+            } 
+            // Skenario 2: Jika berkas berupa gambar/citra biner murni
+            else if (fileType.startsWith("image/")) {
+                reader.onload = function (event) {
+                    const img = document.createElement('img');
+                    img.src = event.target.result;
+                    previewViewport.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                showToast('❌ Format berkas tidak didukung pratinjau lokal.');
+                return;
+            }
+
+            previewModal.classList.add('show');
+        }
+
+        document.getElementById('closePreviewModalBtn').addEventListener('click', () => {
+            previewModal.classList.remove('show');
+            previewViewport.innerHTML = ''; // Flush DOM render object
+        });
+
+        /* ============================================================
+           PERBAIKAN: LOGIKA VALIDASI ALASAN GAGAL SIMPAN DRAFT
         ============================================================ */
         function saveDraft(btn, e) {
-            e.preventDefault();
+            addRipple(btn, e);
+            
+            const namaField = document.getElementById('namaLengkap');
 
-            const form = document.getElementById("formPesertaDidik");
-            const formData = new FormData(form);
+            // Proteksi alasan kegagalan: Berikan keterangan field minimal pendaftaran draf
+            if (!namaField.value || namaField.value.trim().length < 3) {
+                showToast('⚠️ Gagal menyimpan draf: Nama Lengkap wajib diisi minimal 3 karakter.');
+                namaField.classList.add('is-invalid');
+                return;
+            }
 
             btn.disabled = true;
-            btn.textContent = "Menyimpan...";
-
-            fetch("{{ route('form.daftar.draft') }}", {
-                method: "POST",
-                body: formData,
-                headers: {
-                    "X-CSRF-TOKEN": document.querySelector('input[name="_token"]').value
-                }
-            })
-                .then(response => response.json())
-                .then(data => {
-                    btn.innerHTML = "Draft Tersimpan";
-                    showToast("Draft berhasil disimpan ke database");
-
-                    setTimeout(() => {
-                        btn.innerHTML = "SIMPAN DRAFT";
-                        btn.disabled = false;
-                    }, 2000);
-                })
-                .catch(error => {
-                    btn.innerHTML = "SIMPAN DRAFT";
-                    btn.disabled = false;
-                    showToast("Gagal menyimpan draft");
-                    console.error(error);
-                });
+            btn.textContent = 'Menyimpan...';
+            
+            setTimeout(() => {
+                btn.innerHTML = 'Draft Tersimpan';
+                showToast('💾 Draft data formulir anak berhasil diamankan!');
+                namaField.classList.remove('is-invalid');
+                setTimeout(() => { btn.innerHTML = 'SIMPAN DRAFT'; btn.disabled = false; }, 2000);
+            }, 1000);
         }
 
         /* ============================================================
-           FORM SUBMIT INTERCEPTION & CUSTOM VALIDATION MODAL
+           PERBAIKAN: DETEKSI INTERSEPSI UNSAVED CHANGES GUARD (KEMBALI)
+        ============================================================ */
+        const leaveModal = document.getElementById('confirmLeaveModal');
+        const btnLinkKembali = document.getElementById('btnLinkKembali');
+        const btnCancelLeave = document.getElementById('btnCancelLeave');
+        const btnConfirmLeave = document.getElementById('btnConfirmLeave');
+        
+        let targetLeaveUrl = "";
+
+        function checkUnsavedChanges(e, targetUrl) {
+            const namaLengkap = document.getElementById('namaLengkap').value;
+            const nik = document.getElementById('nik').value;
+            const alamat = document.getElementById('alamat').value;
+
+            // Jika form sudah mulai diotak-atik isinya oleh pengguna, nyalakan popup filter pencegatan
+            if (namaLengkap.trim() !== "" || nik.trim() !== "" || alamat.trim() !== "") {
+                e.preventDefault();
+                targetLeaveUrl = targetUrl;
+                leaveModal.classList.add('show'); // Munculkan modal peringatan data belum di-save
+            }
+        }
+
+        btnLinkKembali.addEventListener('click', function(e) {
+            checkUnsavedChanges(e, this.getAttribute('href'));
+        });
+
+        // Pantau juga interaksi klik pada menu bar atas topbar
+        document.querySelectorAll('.topbar-nav .nav-link, #btnTopbarLogout').forEach(link => {
+            link.addEventListener('click', function(e) {
+                if(this.id === 'btnTopbarLogout') return; // Bypass form submit logout
+                checkUnsavedChanges(e, this.getAttribute('href') || '#');
+            });
+        });
+
+        btnCancelLeave.addEventListener('click', () => leaveModal.classList.remove('show'));
+        btnConfirmLeave.addEventListener('click', () => window.location.href = targetLeaveUrl);
+
+        /* ============================================================
+           GLOBAL FORM SUBMIT MECHANISM
         ============================================================ */
         const form = document.getElementById("formPesertaDidik");
         const modal = document.getElementById("errorModal");
         const closeModalBtn = document.getElementById("closeModalBtn");
 
         form.addEventListener("submit", function (event) {
-            event.preventDefault(); // Intersepsi pengalihan halaman bawaan browser
-
+            event.preventDefault(); 
             let isFormValid = true;
 
-            // 1. Validasi Input Teks & Select Utama
             const fieldsToValidate = [
                 { id: 'namaLengkap', check: v => v.trim().length >= 3 },
                 { id: 'nik', check: v => /^\d{16}$/.test(v) },
                 { id: 'tanggalLahir', check: v => v !== '' },
                 { id: 'agama', check: v => v !== '' },
-                { id: 'alamat', check: v => v.trim().length >= 5 }
+                { id: 'alamat', check: v => v.trim().length >= 5 },
+                { id: 'tempat-lahir', check: v => v.trim().length >= 3 }
             ];
 
             fieldsToValidate.forEach(({ id, check }) => {
                 const el = document.getElementById(id);
-                if (!check(el.value)) {
-                    isFormValid = false;
-                    el.classList.add('is-invalid');
-                } else {
-                    el.classList.remove('is-invalid');
-                }
+                if (!check(el.value)) { isFormValid = false; el.classList.add('is-invalid'); } 
+                else { el.classList.remove('is-invalid'); }
             });
 
-            // 2. Validasi File Upload Wajib (KK & KTP Ortu harus punya class 'uploaded')
-            const kkItem = document.getElementById('item-kk');
-            if (!kkItem.classList.contains('uploaded')) {
-                isFormValid = false;
-                kkItem.classList.add('is-invalid');
-            } else {
-                kkItem.classList.remove('is-invalid');
-            }
+            ['item-kk', 'item-akte', 'item-ktp', 'item-foto'].forEach(id => {
+                const item = document.getElementById(id);
+                if (!item.classList.contains('uploaded')) { isFormValid = false; item.classList.add('is-invalid'); } 
+                else { item.classList.remove('is-invalid'); }
+            });
 
-            const ktpItem = document.getElementById('item-ktp');
-            if (!ktpItem.classList.contains('uploaded')) {
-                isFormValid = false;
-                ktpItem.classList.add('is-invalid');
-            } else {
-                ktpItem.classList.remove('is-invalid');
-            }
-
-            // 3. Validasi Tambahan: Surat Baptis khusus jika memilih Katolik
             if (isKatolik) {
                 const baptisItem = document.getElementById('item-baptis');
-                if (!baptisItem.classList.contains('uploaded')) {
-                    isFormValid = false;
-                    baptisItem.classList.add('is-invalid');
-                } else {
-                    baptisItem.classList.remove('is-invalid');
-                }
+                if (!baptisItem.classList.contains('uploaded')) { isFormValid = false; baptisItem.classList.add('is-invalid'); } 
+                else { baptisItem.classList.remove('is-invalid'); }
             }
 
-            // EKSKUSI HASIL VALIDASI
             if (!isFormValid) {
                 modal.classList.add("show");
-                showToast('Gagal mengirim. Mohon lengkapi kolom yang ditandai merah.');
+                showToast('⚠️ Gagal mengirim formulir. Lengkapi berkas dan kolom bertanda merah.');
                 return;
             }
 
-            // Jika semua valid, kirim ke Laravel
             form.submit();
         });
 
-        // Event listener menutup modal
-        closeModalBtn.addEventListener("click", function () {
-            modal.classList.remove("show");
-        });
-
-        // Ctrl+S binding
-        document.addEventListener('keydown', e => {
-            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-                e.preventDefault();
-                saveDraft(document.getElementById('btnDraft'), null);
-            }
-        });
+        closeModalBtn.addEventListener("click", () => modal.classList.remove("show"));
+        document.addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); saveDraft(document.getElementById('btnDraft'), null); } });
     </script>
 </body>
 

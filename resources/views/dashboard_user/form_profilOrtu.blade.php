@@ -315,8 +315,8 @@
 
         /* State jika input divalidasi kosong saat submit */
         .form-control.input-error {
-            border-color: var(--red);
-            background: #fff5f5;
+            border-color: var(--red) !important;
+            background: #fff5f5 !important;
         }
 
         .form-control:focus {
@@ -397,7 +397,6 @@
             justify-content: center;
         }
 
-        /* Mengganti tag <a> menjadi <button type="submit"> murni */
         .btn-submit {
             background: var(--navy);
             color: var(--surface);
@@ -562,6 +561,10 @@
                     </div>
                 </div>
             </div>
+<<<<<<< HEAD
+=======
+            
+>>>>>>> 4d53f392d0d6e3c909910bc752eaca63cfbee3fe
             <nav class="topbar-nav">
                 <a class="nav-link active" href="#">
                     <span>Dashboard</span>
@@ -582,7 +585,11 @@
                     <div class="topbar-urole">Cabang Global</div>
                 </div>
 
-                <button class="topbar-logout" title="Keluar" onclick="showToast('🚪 Sedang keluar...')">
+                <!-- SECURE FORM LOGOUT AUTENTIKASI -->
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    @csrf
+                </form>
+                <button class="topbar-logout" title="Keluar" onclick="event.preventDefault(); if(confirm('Apakah Anda yakin ingin keluar?')) { document.getElementById('logout-form').submit(); }">
                     <i class="fa-solid fa-arrow-right-from-bracket"></i>
                 </button>
             </div>
@@ -602,8 +609,9 @@
             <form id="formProfilOrtu" action="{{ route('profil.ortu.store') }}" method="POST" class="form-container"
                 novalidate>
                 @csrf
+                
                 <div class="form-grid">
-                    <!-- Ditambahkan class required pada form-group untuk indikator CSS bintang -->
+                    <!-- Pendidikan Terakhir -->
                     <div class="form-group required">
                         <label class="form-label">Pendidikan Terakhir</label>
                         <div class="select-wrapper">
@@ -620,6 +628,7 @@
                         </div>
                     </div>
 
+                    <!-- Rentang Penghasilan -->
                     <div class="form-group required">
                         <label class="form-label">Rentang Penghasilan</label>
                         <div class="select-wrapper">
@@ -635,6 +644,7 @@
                         </div>
                     </div>
                 </div>
+<<<<<<< HEAD
                 <div class="form-group required">
                     <label class="form-label">Nomor Telepon</label>
                     <textarea name="nomor_telepon" class="form-control" placeholder="Masukkan nomor telepon..."
@@ -645,8 +655,25 @@
                     <textarea name="alamat" class="form-control" placeholder="Masukkan alamat lengkap..."
                         required></textarea>
                 </div>
+=======
+>>>>>>> 4d53f392d0d6e3c909910bc752eaca63cfbee3fe
 
                 <div class="form-grid">
+                    <!-- PERBAIKAN: Mengubah Nomor Telepon menjadi input text satu baris dengan pembatas angka -->
+                    <div class="form-group required">
+                        <label class="form-label">Nomor Telepon</label>
+                        <input type="text" 
+                               name="nomor_telepon" 
+                               id="nomor_telepon" 
+                               class="form-control" 
+                               placeholder="Contoh: 081234567890" 
+                               maxlength="12" 
+                               required 
+                               autocomplete="off" 
+                               oninput="onlyDigitsPhone(this)">
+                    </div>
+
+                    <!-- Unit Sekolah Tujuan -->
                     <div class="form-group required">
                         <label class="form-label">Unit Sekolah Tujuan</label>
                         <div class="select-wrapper">
@@ -661,6 +688,13 @@
                     </div>
                 </div>
 
+                <!-- Alamat Domisili Sesuai KTP (Tetap textarea panjang) -->
+                <div class="form-group required">
+                    <label class="form-label">Alamat Domisili Sesuai KTP</label>
+                    <textarea name="alamat" id="alamat" class="form-control" placeholder="Masukkan alamat lengkap..." required></textarea>
+                </div>
+
+                <!-- Counter Section Jumlah Anak -->
                 <div class="counter-section">
                     <label class="form-label">Jumlah Anak Yang Akan Didaftarkan</label>
                     <div class="btn-group">
@@ -672,7 +706,7 @@
                     </div>
                 </div>
 
-                <!-- PERBAIKAN: Berubah menjadi Button type="submit" asli -->
+                <!-- Submit Button -->
                 <div class="submit-container">
                     <button type="submit" class="btn-submit">
                         <span>Simpan Profil & Mulai Form Siswa</span>
@@ -697,6 +731,16 @@
     </div>
 
     <script>
+        // Kunci regex khusus angka untuk nomor telepon operator seluler Indonesia
+        function onlyDigitsPhone(el) {
+            el.value = el.value.replace(/\D/g, ''); // Hapus karakter selain angka
+            
+            // Re-validate live state borders
+            if (el.value.length >= 10 && el.value.length <= 12) {
+                el.classList.remove('input-error');
+            }
+        }
+
         document.addEventListener("DOMContentLoaded", function () {
             // Logika Seleksi Tombol Jumlah Anak
             const buttons = document.querySelectorAll(".anak-btn");
@@ -719,19 +763,24 @@
                 const requiredFields = form.querySelectorAll("[required]");
 
                 requiredFields.forEach(field => {
-                    // Validasi jika value kosong atau belum memilih opsi valid
-                    if (!field.value || field.value.trim() === "") {
+                    // Tambahan filter validasi digit untuk nomor telepon agar tidak terlalu pendek
+                    if (field.id === "nomor_telepon" && field.value.length < 10) {
                         isFormValid = false;
-                        field.classList.add("input-error"); // Tambah border merah murni CSS
+                        field.classList.add("input-error");
+                    }
+                    // Validasi standar jika kosong
+                    else if (!field.value || field.value.trim() === "") {
+                        isFormValid = false;
+                        field.classList.add("input-error"); 
                     } else {
-                        field.classList.remove("input-error");
+                        field.field; field.classList.remove("input-error");
                     }
                 });
 
-                // Jika ada data yang kosong, gagalkan pemindahan halaman dan munculkan Pop-up
+                // Jika ada data yang kosong atau tidak valid, gagalkan submit dan munculkan Pop-up
                 if (!isFormValid) {
-                    event.preventDefault(); // Menghentikan redirect/action form
-                    modal.classList.add("show"); // Menampilkan pop-up modal di tengah
+                    event.preventDefault(); 
+                    modal.classList.add("show"); 
                 }
             });
 
@@ -740,8 +789,9 @@
                 modal.classList.remove("show");
             });
 
-            // Menghilangkan highlight merah secara realtime saat user mulai mengisi input kembali
+            // Menghilangkan highlight merah secara realtime saat user mulai mengisi kembali
             form.querySelectorAll("[required]").forEach(field => {
+<<<<<<< HEAD
                 field.addEventListener("input", function () {
                     if (this.value && this.value.trim() !== "") {
                         this.classList.remove("input-error");
@@ -749,6 +799,13 @@
                 });
                 field.addEventListener("change", function () {
                     if (this.value) {
+=======
+                const eventType = field.tagName === "SELECT" ? "change" : "input";
+                field.addEventListener(eventType, function() {
+                    if (this.id === "nomor_telepon" && this.value.length >= 10) {
+                        this.classList.remove("input-error");
+                    } else if (this.value && this.value.trim() !== "" && this.id !== "nomor_telepon") {
+>>>>>>> 4d53f392d0d6e3c909910bc752eaca63cfbee3fe
                         this.classList.remove("input-error");
                     }
                 });
