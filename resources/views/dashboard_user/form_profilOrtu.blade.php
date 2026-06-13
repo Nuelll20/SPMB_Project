@@ -561,10 +561,6 @@
                     </div>
                 </div>
             </div>
-<<<<<<< HEAD
-=======
-            
->>>>>>> 4d53f392d0d6e3c909910bc752eaca63cfbee3fe
             <nav class="topbar-nav">
                 <a class="nav-link active" href="#">
                     <span>Dashboard</span>
@@ -644,19 +640,7 @@
                         </div>
                     </div>
                 </div>
-<<<<<<< HEAD
                 <div class="form-group required">
-                    <label class="form-label">Nomor Telepon</label>
-                    <textarea name="nomor_telepon" class="form-control" placeholder="Masukkan nomor telepon..."
-                        required></textarea>
-                </div>
-                <div class="form-group required">
-                    <label class="form-label">Alamat Domisili Sesuai KTP</label>
-                    <textarea name="alamat" class="form-control" placeholder="Masukkan alamat lengkap..."
-                        required></textarea>
-                </div>
-=======
->>>>>>> 4d53f392d0d6e3c909910bc752eaca63cfbee3fe
 
                 <div class="form-grid">
                     <!-- PERBAIKAN: Mengubah Nomor Telepon menjadi input text satu baris dengan pembatas angka -->
@@ -673,7 +657,7 @@
                                oninput="onlyDigitsPhone(this)">
                     </div>
 
-                    <!-- Unit Sekolah Tujuan -->
+                   <!-- Unit Sekolah Tujuan -->
                     <div class="form-group required">
                         <label class="form-label">Unit Sekolah Tujuan</label>
                         <div class="select-wrapper">
@@ -693,7 +677,7 @@
                     <label class="form-label">Alamat Domisili Sesuai KTP</label>
                     <textarea name="alamat" id="alamat" class="form-control" placeholder="Masukkan alamat lengkap..." required></textarea>
                 </div>
-
+ 
                 <!-- Counter Section Jumlah Anak -->
                 <div class="counter-section">
                     <label class="form-label">Jumlah Anak Yang Akan Didaftarkan</label>

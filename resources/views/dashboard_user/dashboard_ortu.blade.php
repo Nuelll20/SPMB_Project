@@ -5,9 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SAKTI Portal – Portal Orang Tua</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --navy: #1a2a6c;
@@ -40,158 +39,173 @@
             display: flex;
             flex-direction: column;
         }
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 24px;
+        }   
 
         /* ===================== TOPBAR / NAVBAR ===================== */
-        .topbar {
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            padding: 0 32px;
-            height: 64px;
-            display: flex;
-            align-items: center;
-            gap: 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 16px rgba(26, 42, 108, 0.07);
+       .topbar-wrapper {
+            width: 100%;
+            background: var(--bg);
+            padding-top: 24px;
+            animation: fadeIn 0.6s ease forwards;
         }
 
-        /* Brand */
+        .topbar {
+            background: var(--surface);
+            border-radius: var(--radius-md);
+            padding: 14px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 20px rgba(0, 43, 91, 0.04);
+        }
+
         .topbar-brand {
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-right: 40px;
         }
 
-        .brand-logo-wrap {
+        .brand-logo-box {
+            width: 44px;
+            height: 44px;
+            background: var(--navy);
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
+            transition: transform 0.3s ease;
         }
 
-        .brand-logo-wrap img {
-            height: 42px;
-            width: auto;
-            object-fit: contain;
+        .topbar-brand:hover .brand-logo-box {
+            transform: rotate(-5deg) scale(1.05);
         }
 
-        .brand-text {
-            display: flex;
-            flex-direction: column;
-            line-height: 1.1;
+        .brand-logo-box i {
+            color: #ffffff;
+            font-size: 20px;
         }
 
-        .brand-name {
-            font-size: 15px;
-            font-weight: 800;
-            color: var(--navy);
-            letter-spacing: 0.3px;
+        .brand-title {
+            font-size: 16px;
+            font-weight: 900;
+            color: var(--text-dark);
+            letter-spacing: 0.5px;
+            line-height: 1.2;
         }
 
         .brand-meta {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
+            margin-top: 2px;
         }
 
-        .brand-role {
-            font-size: 10px;
-            font-weight: 700;
-            color: var(--muted);
+        .badge-parent {
+            background: var(--gold-light);
+            color: var(--gold);
+            border: 1px solid var(--gold-border);
+            font-size: 9px;
+            font-weight: 800;
+            padding: 1px 6px;
+            border-radius: 99px;
             text-transform: uppercase;
-            letter-spacing: 0.6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
         }
 
-        .brand-uid {
+        .uid-text {
             font-family: 'DM Mono', monospace;
             font-size: 9px;
-            color: var(--muted);
-            letter-spacing: 0.3px;
+            color: #94a3b8;
         }
 
-        /* Nav links */
+        /* Nav Links */
         .topbar-nav {
             display: flex;
             align-items: center;
-            gap: 4px;
-            flex: 1;
+            gap: 28px;
         }
 
         .nav-link {
             display: flex;
             align-items: center;
-            gap: 7px;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 13.5px;
-            font-weight: 600;
-            color: var(--muted);
+            gap: 8px;
             text-decoration: none;
-            transition: all 0.2s;
-            cursor: pointer;
-            border: none;
-            background: none;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-
-        .nav-link:hover {
-            background: var(--surface2);
-            color: var(--text);
-        }
-
-        .nav-link.active {
-            color: var(--blue);
-            background: rgba(0, 74, 173, 0.07);
+            color: var(--text-gray);
+            font-size: 13.5px;
             font-weight: 700;
+            transition: color 0.3s ease;
+            position: relative;
         }
 
-        /* Topbar right */
+        .nav-link:hover, .nav-link.active {
+            color: var(--navy);
+        }
+
+        /* Indikator Titik Emas Aktif Berpindah Ke Riwayat */
+        .nav-link.active .nav-dot {
+            width: 5px;
+            height: 5px;
+            background: var(--gold);
+            border-radius: 50%;
+            display: inline-block;
+            margin-left: 2px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* Topbar Right */
         .topbar-right {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 16px;
         }
 
-        .topbar-username {
+        .user-info {
             text-align: right;
-            line-height: 1.2;
+            line-height: 1.3;
         }
 
-        .topbar-uname {
-            font-size: 14px;
+        .user-name {
+            font-size: 13.5px;
+            font-weight: 800;
+            color: var(--text-dark);
+        }
+
+        .user-branch {
+            font-size: 9.5px;
             font-weight: 700;
-            color: var(--text);
-        }
-
-        .topbar-urole {
-            font-size: 10px;
-            font-weight: 600;
-            color: var(--muted);
+            color: #94a3b8;
             text-transform: uppercase;
-            letter-spacing: 0.6px;
+            letter-spacing: 0.5px;
         }
 
-        .topbar-logout {
-            width: 36px;
-            height: 36px;
-            background: rgba(220, 38, 38, 0.07);
-            border: 1.5px solid rgba(220, 38, 38, 0.15);
-            border-radius: 8px;
+        .btn-logout {
+            width: 38px;
+            height: 38px;
+            background: #FFF0F0;
+            border: none;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
             cursor: pointer;
-            transition: all 0.2s;
-            text-decoration: none;
-            color: var(--red);
+            transition: all 0.2s ease;
         }
 
-        .topbar-logout:hover {
-            background: rgba(220, 38, 38, 0.12);
-            border-color: rgba(220, 38, 38, 0.3);
+        .btn-logout:hover {
+            background: #FFE0E0;
+            transform: scale(1.05);
+        }
+
+        .btn-logout i {
+            color: #FF4D4D;
+            font-size: 14px;
         }
 
         /* ==================== PAGE BODY ==================== */
@@ -611,42 +625,50 @@
 
 <body>
 
-    <header class="topbar">
-        <div class="topbar-brand">
-            <div class="brand-logo-wrap">
-                <img src="{{ asset('img/E-Kanisius 1.png') }}" alt="Logo SAKTI">
-            </div>
-            <div class="brand-text">
-                <div class="brand-name">PORTAL SAKTI</div>
-                <div class="brand-meta">
-                    <span class="brand-role">Parent</span>
-                    <span class="brand-uid">UID-MOCK-parent-001</span>
+    <div class="topbar-wrapper">
+        <div class="container">
+            <header class="topbar">
+                
+                <div class="topbar-brand">
+                    <img src="{{ asset('img/E-Kanisius 1.png') }}" alt="E-Kanisius Logo" 
+                         style="width:85px; height:auto; object-fit:contain; flex-shrink:0;" 
+                         onerror="this.style.display='none'; document.getElementById('fallback-logo').style.display='flex';">
+                    
+                    <div id="fallback-logo" class="brand-logo-box" style="display:none;">
+                        <i class="fa-solid fa-building-columns"></i>
+                    </div>
+                    
+                    <div class="brand-text">
+                        <div class="brand-title">SAKTI PORTAL</div>
+                        <div class="brand-meta">
+                            <span class="badge-parent"><i class="fa-solid fa-shield-halved"></i> Parent</span>
+                            <span class="uid-text">UID-MOCK-parent-001</span>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
 
-        <nav class="topbar-nav">
-            <a href="{{ route('form.daftar') }}" class="btn-daftarkan">
-            </a>
-            <a class="nav-link" href="{{ route('riwayat') }}" onclick="showToast('🕐 Membuka Riwayat...');">
-                Riwayat
-            </a>
-            <a class="nav-link" href="{{ route('pusat-bantuan') }}" onclick="showToast('ⓘ Membuka Pusat Bantuan...');">
-                Pusat Bantuan
-            </a>
-        </nav>
+                <nav class="topbar-nav">
+                    <a class="nav-link active" href="{{ route('dashboard') }}">
+                         Dashboard <span class="nav-dot"></span>
+                    </a>
+                    <a class="nav-link" href="{{ route('riwayat') }}">
+                         Riwayat 
+                    </a>
+                    <a class="nav-link" href="#"> Pusat Bantuan</a>
+                </nav>
 
-        <div class="topbar-right">
-            <div class="topbar-username">
-                <div class="topbar-uname">Ortu Demo</div>
-                <div class="topbar-urole">Cabang Global</div>
-            </div>
-            <a href="{{ route('logout') }}" class="topbar-logout" title="Keluar"
-                onclick="showToast('🚪 Sedang keluar...');">
-                ↪
-            </a>
+                <div class="topbar-right">
+                    <div class="user-info">
+                        <div class="user-name">Ortu Demo</div>
+                        <div class="user-branch">Cabang Global</div>
+                    </div>
+                    <button class="btn-logout" title="Keluar">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    </button>
+                </div>
+            </header>
         </div>
-    </header>
+    </div>
 
     <main class="page-body">
         <div class="main-card">

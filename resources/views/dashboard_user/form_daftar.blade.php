@@ -47,152 +47,165 @@
         }
 
         /* ===================== TOPBAR / NAVBAR ===================== */
+       .topbar-wrapper {
+            width: 100%;
+            background: var(--bg);
+            padding-top: 24px;
+            animation: fadeIn 0.6s ease forwards;
+        }
+
         .topbar {
             background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            padding: 0 32px;
-            height: 64px;
+            border-radius: var(--radius-md);
+            padding: 14px 28px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 16px;
-            border-radius: 18px;
-            box-shadow: 0 2px 16px rgba(26, 42, 108, 0.07);
-            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(0, 43, 91, 0.04);
         }
 
         .topbar-brand {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-right: 40px;
+            gap: 12px;
         }
 
-        .brand-logo-fallback {
-            width: 40px;
-            height: 40px;
+        .brand-logo-box {
+            width: 44px;
+            height: 44px;
             background: var(--navy);
-            border-radius: 10px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: transform 0.3s ease;
+        }
+
+        .topbar-brand:hover .brand-logo-box {
+            transform: rotate(-5deg) scale(1.05);
+        }
+
+        .brand-logo-box i {
+            color: #ffffff;
             font-size: 20px;
         }
 
-        .brand-text {
-            display: flex;
-            flex-direction: column;
-            line-height: 1.1;
-        }
-
-        .brand-name {
-            font-size: 15px;
-            font-weight: 800;
-            color: var(--navy);
-            letter-spacing: 0.3px;
+        .brand-title {
+            font-size: 16px;
+            font-weight: 900;
+            color: var(--text-dark);
+            letter-spacing: 0.5px;
+            line-height: 1.2;
         }
 
         .brand-meta {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
+            margin-top: 2px;
         }
 
-        .brand-role {
-            font-size: 10px;
-            font-weight: 700;
-            color: var(--gold-dark);
-            background: #fff8e7;
-            padding: 2px 8px;
+        .badge-parent {
+            background: var(--gold-light);
+            color: var(--gold);
+            border: 1px solid var(--gold-border);
+            font-size: 9px;
+            font-weight: 800;
+            padding: 1px 6px;
             border-radius: 99px;
-            border: 1px solid #fce8bd;
             text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
         }
 
+        .uid-text {
+            font-family: 'DM Mono', monospace;
+            font-size: 9px;
+            color: #94a3b8;
+        }
+
+        /* Nav Links */
         .topbar-nav {
             display: flex;
             align-items: center;
-            gap: 4px;
-            flex: 1;
-            justify-content: center;
+            gap: 28px;
         }
 
         .nav-link {
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 6px 14px;
-            border-radius: 99px;
-            font-size: 13.5px;
-            font-weight: 600;
-            color: var(--muted);
             text-decoration: none;
-            transition: all 0.2s;
+            color: var(--text-gray);
+            font-size: 13.5px;
+            font-weight: 700;
+            transition: color 0.3s ease;
+            position: relative;
         }
 
-        .nav-link:hover {
-            background: #f0f4ff;
+        .nav-link:hover, .nav-link.active {
             color: var(--navy);
         }
 
-        .nav-link.active {
-            color: var(--navy);
-            font-weight: 800;
-            background: #f0f4ff;
-            box-shadow: 0 2px 8px rgba(26, 42, 108, 0.15);
-        }
-
-        .nav-dot {
-            width: 8px;
-            height: 8px;
+        /* Indikator Titik Emas Aktif Berpindah Ke Riwayat */
+        .nav-link.active .nav-dot {
+            width: 5px;
+            height: 5px;
             background: var(--gold);
             border-radius: 50%;
-            flex-shrink: 0;
-            order: -1;
+            display: inline-block;
+            margin-left: 2px;
+            animation: fadeIn 0.3s ease;
         }
 
+        /* Topbar Right */
         .topbar-right {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 16px;
         }
 
-        .topbar-username {
+        .user-info {
             text-align: right;
-            line-height: 1.2;
+            line-height: 1.3;
         }
 
-        .topbar-uname {
-            font-size: 14px;
+        .user-name {
+            font-size: 13.5px;
+            font-weight: 800;
+            color: var(--text-dark);
+        }
+
+        .user-branch {
+            font-size: 9.5px;
             font-weight: 700;
-            color: var(--text);
-        }
-
-        .topbar-urole {
-            font-size: 10px;
-            font-weight: 600;
-            color: var(--muted);
+            color: #94a3b8;
             text-transform: uppercase;
-            letter-spacing: 0.6px;
+            letter-spacing: 0.5px;
         }
 
-        .topbar-logout {
-            width: 36px;
-            height: 36px;
-            background: rgba(220, 38, 38, 0.07);
-            border: 1.5px solid rgba(220, 38, 38, 0.15);
-            border-radius: 8px;
+        .btn-logout {
+            width: 38px;
+            height: 38px;
+            background: #FFF0F0;
+            border: none;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
         }
 
-        .topbar-logout:hover {
-            background: rgba(220, 38, 38, 0.12);
-            border-color: rgba(220, 38, 38, 0.3);
+        .btn-logout:hover {
+            background: #FFE0E0;
+            transform: scale(1.05);
+        }
+
+        .btn-logout i {
+            color: #FF4D4D;
+            font-size: 14px;
         }
 
         /* ===================== PAGE BODY ===================== */
@@ -708,78 +721,50 @@
 
 <body>
 
-    <div class="container">
-
-        <header class="topbar">
-            <div class="topbar-brand">
-                <div class="brand-logo-container">
-                    <img src="{{ asset('img/E-Kanisius 1.png') }}" alt="E-Kanisius Logo"
-                        style="width: 85px; height: auto; object-fit: contain; flex-shrink: 0;"
-                        onerror="this.style.display='none'; document.getElementById('fallback-logo').style.display='flex';">
-                    <div id="fallback-logo" class="brand-logo-fallback" style="display: none;">⛵</div>
-                </div>
-                <div class="brand-text">
-                    <div class="brand-name">PORTAL SAKTI</div>
-                    <div class="brand-meta">
-                        <span class="brand-role">Parent</span>
-                        <span class="brand-uid">UID-Jzp4Z3bwwoNY7IhFuiPNdTsN9w63</span>
+   <div class="topbar-wrapper">
+        <div class="container">
+            <header class="topbar">
+                
+                <div class="topbar-brand">
+                    <img src="{{ asset('img/E-Kanisius 1.png') }}" alt="E-Kanisius Logo" 
+                         style="width:85px; height:auto; object-fit:contain; flex-shrink:0;" 
+                         onerror="this.style.display='none'; document.getElementById('fallback-logo').style.display='flex';">
+                    
+                    <div id="fallback-logo" class="brand-logo-box" style="display:none;">
+                        <i class="fa-solid fa-building-columns"></i>
+                    </div>
+                    
+                    <div class="brand-text">
+                        <div class="brand-title">SAKTI PORTAL</div>
+                        <div class="brand-meta">
+                            <span class="badge-parent"><i class="fa-solid fa-shield-halved"></i> Parent</span>
+                            <span class="uid-text">UID-MOCK-parent-001</span>
+                        </div>
                     </div>
                 </div>
-            </div>
-            
-            <nav class="topbar-nav">
-                <a class="nav-link" href="#" id="navDashboard">Dashboard</a>
-                <a class="nav-link active" href="#" id="navRiwayat">Riwayat <span class="nav-dot"></span></a>
-                <a class="nav-link" href="#" id="navBantuan">Pusat Bantuan</a>
-            </nav>
 
-<<<<<<< HEAD
-        <nav class="topbar-nav">
-            <a class="nav-link active" href="#">Dashboard <span class="nav-dot"></span></a>
-            <a class="nav-link" href="{{ route('riwayat') }}">
-                <i class="fa-solid fa-clock-rotate-left"></i>
-                Riwayat
-            </a>
-            <a class="nav-link" href="#">Pusat Bantuan</a>
-        </nav>
+                <nav class="topbar-nav">
+                    <a class="nav-link" href="{{ route('dashboard') }}">
+                        <i class="fa-solid fa-table-cells-large"></i> Dashboard
+                    </a>
+                    <a class="nav-link active" href="#">
+                        <i class="fa-solid fa-clock-rotate-left"></i> Riwayat <span class="nav-dot"></span>
+                    </a>
+                    <a class="nav-link" href="#"><i class="fa-solid fa-circle-info"></i> Pusat Bantuan</a>
+                </nav>
 
-        <div class="topbar-right">
-            <div class="topbar-username">
-                <div class="topbar-uname">Ignatius Arya</div>
-                <div class="topbar-urole">Cabang Global</div>
-            </div>
-            <button class="topbar-logout" title="Keluar">
-                <i class="fa-solid fa-arrow-right-from-bracket" style="color: #FF4D4D;"></i>
-            </button>
-        </div>
-    </header>
-
-    <form id="formPesertaDidik" action="{{ route('form.daftar.store') }}" method="POST" enctype="multipart/form-data"
-        class="page-body" novalidate>
-        @csrf
-        <div class="page-header">
-            <div>
-                <h1 class="page-title">Formulir Peserta Didik</h1>
-                <p class="page-subtitle">Unit Tujuan: <strong>• 1 Calon Murid</strong></p>
-            </div>
-            <div class="header-actions">
-                <button type="button" class="btn btn-outline" id="btnTambahAnak" onclick="tambahAnak(this, event)">
-                    ＋ TAMBAH ANAK
-=======
-            <div class="topbar-right">
-                <div class="topbar-username">
-                    <div class="topbar-uname">Ignatius Arya</div>
-                    <div class="topbar-urole">Cabang Global</div>
+                <div class="topbar-right">
+                    <div class="user-info">
+                        <div class="user-name">Ortu Demo</div>
+                        <div class="user-branch">Cabang Global</div>
+                    </div>
+                    <button class="btn-logout" title="Keluar">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    </button>
                 </div>
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                    @csrf
-                </form>
-                <button class="topbar-logout" title="Keluar" id="btnTopbarLogout">
-                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
->>>>>>> 4d53f392d0d6e3c909910bc752eaca63cfbee3fe
-                </button>
-            </div>
-        </header>
+            </header>
+        </div>
+    </div>s
 
         <form id="formPesertaDidik" action="{{ route('form.daftar.store') }}" method="POST" class="page-body" novalidate>
             @csrf

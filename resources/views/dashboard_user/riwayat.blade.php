@@ -441,11 +441,11 @@
                 </div>
 
                 <nav class="topbar-nav">
-                    <a class="nav-link" href="{{ route('dashboard') }}">
-                        <i class="fa-solid fa-table-cells-large"></i> Dashboard
+                    <a class="nav-link active" href="{{ route('dashboard') }}">
+                        <i class="fa-solid fa-table-cells-large"></i> Dashboard<span class="nav-dot"></span>
                     </a>
-                    <a class="nav-link active" href="#">
-                        <i class="fa-solid fa-clock-rotate-left"></i> Riwayat <span class="nav-dot"></span>
+                    <a class="nav-link" href="#">
+                        <i class="fa-solid fa-clock-rotate-left"></i> Riwayat 
                     </a>
                     <a class="nav-link" href="#"><i class="fa-solid fa-circle-info"></i> Pusat Bantuan</a>
                 </nav>
