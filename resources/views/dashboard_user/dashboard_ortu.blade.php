@@ -654,17 +654,20 @@
                     <a class="nav-link" href="{{ route('riwayat') }}">
                          Riwayat 
                     </a>
-                    <a class="nav-link" href="#"> Pusat Bantuan</a>
+                    <a class="nav-link" href="{{ route('pusat_bantuan') }}"> Pusat Bantuan</a>
                 </nav>
 
                 <div class="topbar-right">
                     <div class="user-info">
-                        <div class="user-name">Ortu Demo</div>
+                        <div class="user-name">{{ auth()->user()->name ?? 'Orang Tua' }}</div>
                         <div class="user-branch">Cabang Global</div>
                     </div>
-                    <button class="btn-logout" title="Keluar">
-                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                    </button>
+                    <form action="{{ route('logout') }}" method="POST" style="margin:0;">
+                        @csrf
+                        <button type="submit" id="btnTopbarLogout" class="btn-logout" title="Keluar" onclick="return confirm('Apakah Anda yakin ingin keluar?')">
+                            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        </button>
+                    </form>
                 </div>
             </header>
         </div>

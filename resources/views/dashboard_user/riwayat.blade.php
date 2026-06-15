@@ -447,17 +447,20 @@
                     <a class="nav-link" href="#">
                         <i class="fa-solid fa-clock-rotate-left"></i> Riwayat 
                     </a>
-                    <a class="nav-link" href="#"><i class="fa-solid fa-circle-info"></i> Pusat Bantuan</a>
+                    <a class="nav-link" href="{{ route('pusat_bantuan') }}"><i class="fa-solid fa-circle-info"></i> Pusat Bantuan</a>
                 </nav>
 
                 <div class="topbar-right">
                     <div class="user-info">
-                        <div class="user-name">Ortu Demo</div>
+                        <div class="user-name">{{ auth()->user()->name ?? 'Orang Tua' }}</div>
                         <div class="user-branch">Cabang Global</div>
                     </div>
-                    <button class="btn-logout" title="Keluar">
-                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                    </button>
+                    <form action="{{ route('logout') }}" method="POST" style="margin:0;">
+                        @csrf
+                        <button type="submit" id="btnTopbarLogout" class="btn-logout" title="Keluar" onclick="return confirm('Apakah Anda yakin ingin keluar?')">
+                            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        </button>
+                    </form>
                 </div>
             </header>
         </div>
@@ -481,12 +484,12 @@
                                     <i class="fa-solid fa-file-lines"></i>
                                 </div>
                                 <div class="student-details">
-                                    <h3 class="student-name">{{ $siswa->nama_lengkap }}</h3>
+                                    <h3 class="student-name">{{ $siswa->nama }}</h3>
                                     
                                     <div class="student-meta-tags">
                                         <span class="uid-code">ID: {{ $siswa->nomor_registrasi ?? 'REG-MOCK-PARENT-001-1781196705596-0' }}</span>
                                         <span class="meta-divider">•</span>
-                                        <span>{{ $siswa->created_at ? $siswa->created_at->format('d/m/Y') : '11/6/2026' }}</span>
+                                        <span>{{ $siswa->created_at ? \Carbon\Carbon::parse($siswa->created_at)->format('d/m/Y') : '-' }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -496,7 +499,7 @@
                                     <div class="badge-status-pill status-pending">
                                         Pending
                                     </div>
-                                @elif($siswa->status == 'approved' || $siswa->status == 'diterima')
+                                @elseif($siswa->status == 'approved' || $siswa->status == 'diterima')
                                     <div class="badge-status-pill status-approved">
                                         Approved
                                     </div>
