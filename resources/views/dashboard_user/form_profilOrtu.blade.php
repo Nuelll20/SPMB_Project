@@ -416,6 +416,12 @@
             transform: translateY(-1px);
         }
 
+        .btn-submit:disabled {
+            opacity: 0.75;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         .btn-submit i {
             font-size: 12px;
         }
@@ -630,13 +636,13 @@
                         <div class="brand-title">SAKTI PORTAL</div>
                         <div class="brand-meta">
                             <span class="badge-parent"><i class="fa-solid fa-shield-halved"></i> Parent</span>
-                            <span class="uid-text">UID-MOCK-parent-001</span>
+                            <span class="uid-text">UID-{{ auth()->id() ?? 'parent' }}</span>
                         </div>
                     </div>
                 </div>
 
                 <nav class="topbar-nav">
-                    <a class="nav-link active" href="{{ route('dashboard') }}"><span class="nav-dot"></span>
+                    <a class="nav-link" href="{{ route('dashboard') }}">
                          Dashboard
                     </a>
                     <a class="nav-link" href="{{ route('riwayat') }}">
@@ -647,7 +653,7 @@
 
                 <div class="topbar-right">
                     <div class="user-info">
-                        <div class="user-name">Ortu Demo</div>
+                        <div class="user-name">{{ auth()->user()->name ?? 'Orang Tua' }}</div>
                         <div class="user-branch">Cabang Global</div>
                     </div>
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
@@ -675,25 +681,48 @@
             <form id="formProfilOrtu" action="{{ route('profil.ortu.store') }}" method="POST" class="form-container" novalidate>
                 @csrf
 
+                @if ($errors->any())
+                    <div style="background:#fee2e2;color:#991b1b;padding:12px 16px;border-radius:10px;margin-bottom:8px;">
+                        <strong>Profil gagal disimpan:</strong>
+                        <ul style="margin-top:8px;padding-left:18px;">
+                            @foreach ($errors->getMessages() as $field => $messages)
+                                @foreach ($messages as $message)
+                                    <li><strong>{{ $field }}</strong>: {{ $message }}</li>
+                                @endforeach
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                @if (session('success'))
+                    <div style="background:#dcfce7;color:#166534;padding:12px 16px;border-radius:10px;margin-bottom:8px;">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+                @if (session('warning'))
+                    <div style="background:#fef3c7;color:#92400e;padding:12px 16px;border-radius:10px;margin-bottom:8px;">
+                        {{ session('warning') }}
+                    </div>
+                @endif
+
+                @if (session('error'))
+                    <div style="background:#fee2e2;color:#991b1b;padding:12px 16px;border-radius:10px;margin-bottom:8px;">
+                        {{ session('error') }}
+                    </div>
+                @endif
+
                 <div class="form-grid">
                     <div class="form-group required">
                         <label class="form-label">Pendidikan Terakhir</label>
                         <div class="select-wrapper">
                             @php($pendidikanValue = old('pendidikan', $orangTua->pendidikan ?? 'S1'))
                             <select name="pendidikan" class="form-control" required>
-<<<<<<< HEAD
                                 <option value="SMA" {{ $pendidikanValue == 'SMA' ? 'selected' : '' }}>SMA / Sederajat</option>
                                 <option value="D3" {{ $pendidikanValue == 'D3' ? 'selected' : '' }}>D3 / Diploma</option>
                                 <option value="S1" {{ $pendidikanValue == 'S1' ? 'selected' : '' }}>S1 / Sarjana</option>
                                 <option value="S2" {{ $pendidikanValue == 'S2' ? 'selected' : '' }}>S2 / Magister</option>
                                 <option value="S3" {{ $pendidikanValue == 'S3' ? 'selected' : '' }}>S3 / Doktor</option>
-=======
-                                <option value="SMA">SMA / Sederajat</option>
-                                <option value="D3">D3 / Diploma</option>
-                                <option value="S1" selected>S1 / Sarjana</option>
-                                <option value="S2">S2 / Magister</option>
-                                <option value="S3">S3 / Doktor</option>
->>>>>>> b9efc4c094d501c2c3a3dc6456cc98671d3eb5a7
                             </select>
                             <div class="select-icon"><i class="fa-solid fa-chevron-down"></i></div>
                         </div>
@@ -715,10 +744,7 @@
                 </div>
 
                 <div class="form-grid">
-<<<<<<< HEAD
-=======
                     <!-- Nomor Telepon -->
->>>>>>> b9efc4c094d501c2c3a3dc6456cc98671d3eb5a7
                     <div class="form-group required">
                         <label class="form-label">Nomor Telepon</label>
                         <input type="text"
@@ -746,10 +772,7 @@
                     </div>
                 </div>
 
-<<<<<<< HEAD
-=======
                 <!-- Alamat Domisili Sesuai KTP -->
->>>>>>> b9efc4c094d501c2c3a3dc6456cc98671d3eb5a7
                 <div class="form-group required">
                     <label class="form-label">Alamat Domisili Sesuai KTP</label>
                     <textarea name="alamat" id="alamat" class="form-control" placeholder="Masukkan alamat lengkap..." required>{{ old('alamat', $orangTua->alamat ?? '') }}</textarea>
@@ -880,6 +903,13 @@
                 if (!isFormValid) {
                     event.preventDefault();
                     modal.classList.add("show");
+                    return;
+                }
+
+                const submitBtn = form.querySelector('.btn-submit');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<span>Menyimpan...</span><i class="fa-solid fa-spinner fa-spin"></i>';
                 }
             });
 
@@ -889,19 +919,10 @@
 
             form.querySelectorAll("[required]").forEach(field => {
                 const eventType = field.tagName === "SELECT" ? "change" : "input";
-<<<<<<< HEAD
-                field.addEventListener(eventType, function () {
-                    if (this.id === "nomor_telepon") {
-                        if (this.value.length >= 10 && this.value.length <= 15) {
-                            this.classList.remove("input-error");
-                        }
-                    } else if (this.value && this.value.trim() !== "") {
-=======
                 field.addEventListener(eventType, function() {
                     if (this.id === "nomor_telepon" && this.value.length >= 10) {
                         this.classList.remove("input-error");
                     } else if (this.value && this.value.trim() !== "" && this.id !== "nomor_telepon") {
->>>>>>> b9efc4c094d501c2c3a3dc6456cc98671d3eb5a7
                         this.classList.remove("input-error");
                     }
                 });

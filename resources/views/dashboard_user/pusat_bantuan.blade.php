@@ -20,9 +20,11 @@
             --gold-border: #FCE8BD;
             --bg: #F4F7FA;         /* Background canvas luar */
             --surface: #ffffff;    /* Warna dasar container/card */
+            --surface2: #f4f6fb;
             --border: #eef2f6;
             --text-dark: #002B5B;
             --text-gray: #7b82a0;
+            --muted: #7b82a0;
             --muted-bg: #F0F5FA;
             --red: #dc2626;
             
@@ -554,7 +556,7 @@
                         <div class="brand-title">SAKTI PORTAL</div>
                         <div class="brand-meta">
                             <span class="badge-parent"><i class="fa-solid fa-shield-halved"></i> Parent</span>
-                            <span class="uid-text">UID-MOCK-parent-001</span>
+                            <span class="uid-text">UID-{{ str_pad(auth()->id() ?? 0, 4, '0', STR_PAD_LEFT) }}</span>
                         </div>
                     </div>
                 </div>
@@ -576,21 +578,12 @@
                         <div class="user-name">{{ auth()->user()->name ?? 'Orang Tua' }}</div>
                         <div class="user-branch">Cabang Global</div>
                     </div>
-<<<<<<< HEAD
-                    <form action="{{ route('logout') }}" method="POST" style="margin:0;">
-                        @csrf
-                        <button type="submit" class="btn-logout" title="Keluar" onclick="return confirm('Apakah Anda yakin ingin keluar?')">
-                            <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                        </button>
-                    </form>
-=======
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                         @csrf
                     </form>
                     <button type="button" class="btn-logout" title="Keluar" onclick="openLogoutModal()" style="border: none; background: none; cursor: pointer;">
                         <i class="fa-solid fa-arrow-right-from-bracket"></i>
                     </button>
->>>>>>> b9efc4c094d501c2c3a3dc6456cc98671d3eb5a7
                 </div>
             </header>
         </div>
@@ -615,7 +608,7 @@
                             <div class="faq-card">
                                 <div class="faq-question">Bagaimana cara mengganti unit sekolah pendaftaran?</div>
                                 <div class="faq-answer">
-                                    Jika pendaftaran masih berupa Draft, Anda dapat menghapusnya and memulai baru. Jika sudah terkirim, silakan hubungi admin sekolah melalui fitur chat bantuan.
+                                    Jika pendaftaran masih berupa Draft, Anda dapat menghapusnya dan memulai baru. Jika sudah terkirim, silakan hubungi admin sekolah melalui fitur chat bantuan.
                                 </div>
                             </div>
 
@@ -709,8 +702,13 @@
         ============================================================ */
         const logModal = document.getElementById('logoutModal');
 
-        function openLogoutModal() { logModal.classList.add('show'); }
-        function closeLogoutModal() { logModal.classList.remove('show'); }
+        function openLogoutModal() {
+            if (logModal) logModal.classList.add('show');
+        }
+
+        function closeLogoutModal() {
+            if (logModal) logModal.classList.remove('show');
+        }
 
         function handleLogout() {
             closeLogoutModal();
@@ -718,7 +716,7 @@
             setTimeout(() => {
                 const logoutForm = document.getElementById('logout-form');
                 if (logoutForm) logoutForm.submit();
-            }, 800); 
+            }, 800);
         }
     </script>
 </body>

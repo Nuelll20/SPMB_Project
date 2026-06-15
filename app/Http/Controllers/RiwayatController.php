@@ -12,40 +12,69 @@ class RiwayatController extends Controller
     {
         $orangTua = $this->getOrangTua();
 
-        if (! $orangTua) {
+        if (!$orangTua) {
             return redirect()->route('profil.ortu')
                 ->with('warning', 'Lengkapi profil orang tua terlebih dahulu.');
         }
 
-        session(['uid_orangtua' => $orangTua->uid]);
-
         $dataSiswa = DB::table('calon_siswa')
-            ->where('uid_orangtua', $orangTua->uid)
-            ->orderByDesc('uid')
-            ->get();
+            ->leftJoin('pendaftaran', 'pendaftaran.calon_siswa_id', '=', 'calon_siswa.uid')
+            ->where('calon_siswa.uid_orangtua', $orangTua->uid)
+            ->select(
+                'calon_siswa.uid',
+                'calon_siswa.nama',
+                'calon_siswa.nik',
+                'calon_siswa.tanggal_lahir',
+                'calon_siswa.tempat_lahir',
+                'calon_siswa.agama',
+                'calon_siswa.golongan_darah',
+                'calon_siswa.alamat',
+                'calon_siswa.status',
+                'calon_siswa.nomor_registrasi',
+                'calon_siswa.created_at',
+                'pendaftaran.uid as pendaftaran_uid',
+                'pendaftaran.no_pendaftaran',
+                'pendaftaran.status_pendaftaran',
+                'pendaftaran.tanggal_daftar'
+            )
+            ->orderByDesc('calon_siswa.uid')
+            ->get()
+            ->map(function ($siswa) {
+                $siswa->status = $siswa->status_pendaftaran ?? $siswa->status ?? 'pending';
+                $siswa->nomor_registrasi = $siswa->nomor_registrasi ?? $siswa->no_pendaftaran ?? '-';
 
-        return view('dashboard_user.riwayat', compact('dataSiswa', 'orangTua'));
+                return $siswa;
+            });
+
+        return view('dashboard_user.riwayat', compact('dataSiswa'));
     }
 
     private function getOrangTua()
     {
         $user = Auth::user();
 
-        if (! $user) {
+        if (!$user) {
             return null;
         }
 
         if (session()->has('uid_orangtua')) {
-            $orangTua = DB::table('orang_tua')->where('uid', session('uid_orangtua'))->first();
+            $orangTua = DB::table('orang_tua')
+                ->where('uid', session('uid_orangtua'))
+                ->first();
+
             if ($orangTua) {
                 return $orangTua;
             }
         }
 
         if (Schema::hasColumn('orang_tua', 'user_id')) {
-            return DB::table('orang_tua')->where('user_id', $user->id)->first();
+            return DB::table('orang_tua')
+                ->where('user_id', $user->id)
+                ->first();
         }
 
-        return DB::table('orang_tua')->where('nama', $user->name)->first();
+        return DB::table('orang_tua')
+            ->where('nama', $user->name)
+            ->first();
     }
 }

@@ -5,13 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SAKTI Portal – Formulir Peserta Didik</title>
-<<<<<<< HEAD
-    <link
-        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap"
-        rel="stylesheet">
-=======
         <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
->>>>>>> b9efc4c094d501c2c3a3dc6456cc98671d3eb5a7
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -827,71 +821,6 @@
             border: 1px solid var(--border);
         }
 
-<<<<<<< HEAD
-        .modal-btn-cancel:hover {
-            background: #e2e8f0;
-        }
-
-        .page-footer {
-            text-align: center;
-            padding: 20px;
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--muted);
-            letter-spacing: 1.2px;
-            text-transform: uppercase;
-        }
-
-        #toast {
-            position: fixed;
-            bottom: 28px;
-            left: 50%;
-            transform: translateX(-50%) translateY(70px);
-            background: var(--navy);
-            color: white;
-            padding: 12px 26px;
-            border-radius: 40px;
-            font-size: 13.5px;
-            font-weight: 600;
-            opacity: 0;
-            pointer-events: none;
-            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s;
-            z-index: 9999;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
-        }
-
-        #toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        @media (max-width: 900px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-                gap: 24px;
-            }
-
-            .page-body {
-                padding: 24px 20px;
-            }
-        }
-
-        @media (max-width: 640px) {
-            .bottom-bar {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .bottom-actions {
-                flex-direction: column;
-            }
-
-            .btn-draft,
-            .btn-submit {
-                width: 100%;
-                justify-content: center;
-            }
-=======
         .page-footer { text-align: center; padding: 20px; font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: 1.2px; text-transform: uppercase; }
         
         /* ==================== CORE FIX: RE-POSITIONING TOAST MECHANISM ==================== */
@@ -940,13 +869,12 @@
             .btn-outline { width: 100%; justify-content: center; }
             .field-row { grid-template-columns: 1fr; gap: 20px; }
             .upload-grid { grid-template-columns: 1fr; }
-            .upload-item { style="grid-column: span 1 !important;" }
+            #item-baptis { grid-column: span 1 !important; }
             .bottom-bar { flex-direction: column; align-items: stretch; gap: 20px; } 
             .bottom-actions { flex-direction: column; width: 100%; } 
             .btn-draft, .btn-submit { width: 100%; justify-content: center; } 
             #toast { left: 20px; right: 20px; bottom: 20px; transform: translateY(30px); text-align: center; justify-content: center; }
             #toast.show { transform: translateY(0); }
->>>>>>> b9efc4c094d501c2c3a3dc6456cc98671d3eb5a7
         }
     </style>
 </head>
@@ -985,11 +913,6 @@
                     <a class="nav-link" href="{{ route('pusat_bantuan') }}">
                         Pusat Bantuan
                     </a>
-<<<<<<< HEAD
-                    <a class="nav-link" href="{{ route('pusat_bantuan') }}"><i class="fa-solid fa-circle-info"></i>
-                        Pusat Bantuan</a>
-=======
->>>>>>> b9efc4c094d501c2c3a3dc6456cc98671d3eb5a7
                 </nav>
 
                 <div class="topbar-right">
@@ -997,15 +920,6 @@
                         <div class="user-name">{{ auth()->user()->name ?? 'Orang Tua' }}</div>
                         <div class="user-branch">Cabang Global</div>
                     </div>
-<<<<<<< HEAD
-                    <form action="{{ route('logout') }}" method="POST" style="margin:0;">
-                        @csrf
-                        <button type="submit" id="btnTopbarLogout" class="btn-logout" title="Keluar"
-                            onclick="return confirm('Apakah Anda yakin ingin keluar?')">
-                            <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                        </button>
-                    </form>
-=======
                     
                     <!-- FIX LOGOUT: Diubah menggunakan Button pemicu JavaScript POST terstruktur -->
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
@@ -1015,7 +929,6 @@
                     <button type="button" class="btn-logout" title="Keluar" onclick="openLogoutModal()">
                         <i class="fa-solid fa-arrow-right-from-bracket"></i>
                     </button>
->>>>>>> b9efc4c094d501c2c3a3dc6456cc98671d3eb5a7
                 </div>
             </header>
         </div>
@@ -1452,13 +1365,7 @@
             PERBAIKAN: LOGIKA VALIDASI ALASAN GAGAL SIMPAN DRAFT & RE-ROUTE showToast
         ============================================================ */
         function saveDraft(btn, e) {
-<<<<<<< HEAD
-            addRipple(btn, e);
-=======
             if (e) addRipple(btn, e);
-            
-            const namaField = document.getElementById('namaLengkap');
->>>>>>> b9efc4c094d501c2c3a3dc6456cc98671d3eb5a7
 
             const form = document.getElementById('formPesertaDidik');
             const namaField = document.getElementById('namaLengkap');
@@ -1469,7 +1376,7 @@
             const tempatField = document.getElementById('tempat-lahir');
 
             if (!namaField.value || namaField.value.trim().length < 3) {
-                showToast('⚠️ Gagal menyimpan draf: Data tidak lengkap.');
+                showToast('⚠️ Gagal menyimpan draf: Nama Lengkap wajib diisi minimal 3 karakter.');
                 namaField.classList.add('is-invalid');
                 return;
             }
@@ -1481,7 +1388,6 @@
 
             btn.disabled = true;
             btn.textContent = 'Menyimpan...';
-<<<<<<< HEAD
 
             fetch("{{ route('form.daftar.draft') }}", {
                 method: 'POST',
@@ -1493,11 +1399,24 @@
             })
                 .then(async response => {
                     const data = await response.json().catch(() => ({}));
+
                     if (!response.ok || !data.success) {
-                        throw new Error(data.message || 'Draft gagal disimpan. Periksa data yang wajib diisi.');
+                        let message = data.message || 'Draft gagal disimpan. Periksa kembali data yang wajib diisi.';
+
+                        if (data.errors) {
+                            const firstKey = Object.keys(data.errors)[0];
+                            if (firstKey && data.errors[firstKey] && data.errors[firstKey][0]) {
+                                message = data.errors[firstKey][0];
+                            }
+                        }
+
+                        throw new Error(message);
                     }
+
                     btn.innerHTML = 'Draft Tersimpan';
                     showToast('💾 Draft data formulir anak berhasil disimpan ke database!');
+                    namaField.classList.remove('is-invalid');
+
                     setTimeout(() => {
                         btn.innerHTML = 'SIMPAN DRAFT';
                         btn.disabled = false;
@@ -1508,15 +1427,14 @@
                     btn.disabled = false;
                     showToast('❌ ' + error.message);
                 });
-=======
-            
-            setTimeout(() => {
-                btn.innerHTML = 'Draft Tersimpan';
-                showToast('💾 data formulir anak berhasil disimpan dalam draft!');
-                namaField.classList.remove('is-invalid');
-                setTimeout(() => { btn.innerHTML = 'SIMPAN DRAFT'; btn.disabled = false; }, 2000);
-            }, 1000);
->>>>>>> b9efc4c094d501c2c3a3dc6456cc98671d3eb5a7
+        }
+
+        /* ============================================================
+            TOMBOL TAMBAH ANAK
+        ============================================================ */
+        function tambahAnak(btn, e) {
+            if (e) addRipple(btn, e);
+            showToast('ℹ️ Untuk saat ini, satu form digunakan untuk satu calon siswa. Setelah submit, Anda bisa menambahkan anak lagi dari dashboard.');
         }
 
         /* ============================================================
@@ -1574,15 +1492,9 @@
         });
 
         // Pantau juga interaksi klik pada menu bar atas topbar
-<<<<<<< HEAD
-        document.querySelectorAll('.topbar-nav .nav-link, #btnTopbarLogout').forEach(link => {
-            link.addEventListener('click', function (e) {
-                if (this.id === 'btnTopbarLogout') return; // Bypass form submit logout
-=======
         document.querySelectorAll('.topbar-nav .nav-link, .btn-logout').forEach(link => {
             link.addEventListener('click', function(e) {
                 if(this.classList.contains('btn-logout')) return; // Bypass form submit logout karena ditangani modal khusus
->>>>>>> b9efc4c094d501c2c3a3dc6456cc98671d3eb5a7
                 checkUnsavedChanges(e, this.getAttribute('href') || '#');
             });
         });
