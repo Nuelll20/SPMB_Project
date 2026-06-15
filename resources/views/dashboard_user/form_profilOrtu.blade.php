@@ -348,15 +348,6 @@
             font-family: inherit;
         }
 
-        /* Counter Section */
-        .counter-section {
-            text-align: center;
-            padding-top: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
         .btn-group {
             display: flex;
             justify-content: center;
@@ -776,17 +767,6 @@
                 <div class="form-group required">
                     <label class="form-label">Alamat Domisili Sesuai KTP</label>
                     <textarea name="alamat" id="alamat" class="form-control" placeholder="Masukkan alamat lengkap..." required>{{ old('alamat', $orangTua->alamat ?? '') }}</textarea>
-                </div>
-
-                <div class="counter-section">
-                    <label class="form-label">Jumlah Anak Yang Akan Didaftarkan</label>
-                    @php($jumlahAnakValue = old('jumlah_anak', $orangTua->jumlah_anak ?? 1))
-                    <input type="hidden" name="jumlah_anak" id="jumlah_anak" value="{{ $jumlahAnakValue }}">
-                    <div class="btn-group">
-                        @for($i = 1; $i <= 5; $i++)
-                            <button type="button" class="anak-btn {{ (int)$jumlahAnakValue === $i ? 'active' : '' }}" data-val="{{ $i }}">{{ $i }}</button>
-                        @endfor
-                    </div>
                 </div>
 
                 <div class="submit-container">

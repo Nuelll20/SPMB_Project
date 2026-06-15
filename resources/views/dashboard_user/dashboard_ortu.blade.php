@@ -761,12 +761,6 @@
                         <span class="status-badge-text">Sisa Kuota: 23</span>
                     </div>
                 </div>
-
-                <a href="{{ route('form.daftar') }}" class="btn-daftarkan"
-                    onclick="showToast('Membuka formulir pendaftaran...')">
-                    <span class="plus-icon">＋</span>
-                    DAFTARKAN ANAK
-                </a>
             </div>
 
             <div class="student-list" id="studentList">
