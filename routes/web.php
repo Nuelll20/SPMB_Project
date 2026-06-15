@@ -32,7 +32,7 @@ Route::post('/forgot-password', function () {
     return "Fitur send email/proses reset password belum didefinisikan.";
 })->name('password.email');
 
-Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 
 
@@ -69,3 +69,6 @@ Route::get('/verifikasi-berkas/{uid}', [VerifikasiBerkasController::class, 'show
 Route::get('/admin', function () {
     return view('dashboard_admin.admin');
 })->name('admin');
+Route::get('/invoice', function () {
+    return view('dashboard_admin.invoice');
+})->name('invoice');
