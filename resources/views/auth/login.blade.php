@@ -504,7 +504,7 @@
             <form method="POST" action="{{ route('login') }}" id="loginForm">
                 @csrf
 
-                <h2 class="form-title anim-child">Sign In To Your Account</h2>
+                <h2 class="form-title anim-child">Masuk ke Akun Anda</h2>
 
                 <!-- Email -->
                 <div class="form-group anim-child">
@@ -527,7 +527,7 @@
 
                 <!-- Password -->
                 <div class="form-group anim-child">
-                    <label for="password" class="form-label">Password</label>
+                    <label for="password" class="form-label">Kata Sandi</label>
                     <div class="input-wrapper">
                         <input
                             type="password"
@@ -551,22 +551,22 @@
                     <div class="checkbox-container">
                         <input type="checkbox" id="remember" name="remember" class="checkbox-input"
                             {{ old('remember') ? 'checked' : '' }}>
-                        <label for="remember" class="checkbox-label">Remember me</label>
+                        <label for="remember" class="checkbox-label">Ingat Saya</label>
                     </div>
                     <div class="forgot-password">
-                        <a href="{{ route('password.request') }}">Forgot Password?</a>
+                        <a href="{{ route('password.request') }}">Lupa Kata Sandi?</a>
                     </div>
                 </div>
 
                 <!-- Login Button -->
                 <button type="submit" class="login-button anim-child" id="loginBtn">
-                    <span class="btn-text">Login</span>
+                    <span class="btn-text">Masuk</span>
                 </button>
 
                 <!-- Register -->
                 <div class="register-section anim-child">
-                    <span>Dont have an account ? </span>
-                    <a href="{{ route('register') }}">Register Here</a>
+                    <span>Tidak Memiliki Akun? </span>
+                    <a href="{{ route('register') }}">Daftar Disini</a>
                 </div>
             </form>
         </div>
@@ -724,7 +724,16 @@
         @if ($errors->any())
             showToast('⚠️ Periksa kembali email atau password kamu.');
         @endif
-
+document.addEventListener("DOMContentLoaded", function () {
+    // Cek apakah ada session flash 'success_logout' dari Laravel
+    @if(session('success_logout'))
+        // Panggil fungsi toast bawaan template kamu di sini
+        toast('info', '<i class="fas fa-info-circle"></i> {{ session("success_logout") }}');
+        
+        // Atau kalau pakai alert bawaan browser buat testing:
+        // alert('{{ session("success_logout") }}');
+    @endif
+});
         /* ============================================================
            9. INPUT FOCUS: remove invalid class when user starts typing
         ============================================================ */

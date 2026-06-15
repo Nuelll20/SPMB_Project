@@ -14,6 +14,7 @@
         :root {
             --navy: #002B5B;       /* Warna utama SAKTI Blue */
             --navy-dark: #001F42;
+            --blue: #004AAD;
             --gold: #E5A93C;       /* Aksen SAKTI Orange / Gold */
             --gold-light: #FFF8E7;
             --gold-border: #FCE8BD;
@@ -23,6 +24,7 @@
             --text-dark: #002B5B;
             --text-gray: #7b82a0;
             --muted-bg: #F0F5FA;
+            --red: #dc2626;
             
             /* Status Colors */
             --blue-status: #004AAD;
@@ -54,10 +56,10 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1152px;
             width: 100%;
             margin: 0 auto;
-            padding: 0 24px;
+            padding: 0 16px;
         }
 
         /* Keyframes Animasi Entrance */
@@ -81,18 +83,19 @@
         .topbar-wrapper {
             width: 100%;
             background: var(--bg);
-            padding-top: 24px;
+            padding-top: 16px; 
             animation: fadeIn 0.6s ease forwards;
         }
 
         .topbar {
             background: var(--surface);
-            border-radius: var(--radius-md);
+            border-radius: 16px; 
             padding: 14px 28px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             box-shadow: 0 4px 20px rgba(0, 43, 91, 0.04);
+            border: 1px solid var(--border); 
         }
 
         .topbar-brand {
@@ -248,11 +251,10 @@
 
         .dashboard-card {
             background: var(--surface);
-            border-radius: var(--radius-lg);
-            padding: 48px;
-            box-shadow: 0 10px 30px rgba(0, 43, 91, 0.02);
-            border: 1px solid rgba(238, 242, 246, 0.5);
-            
+            border-radius: 22px;
+            padding: 40px 44px 44px;
+            box-shadow: 0 4px 40px rgba(26, 42, 108, 0.07);
+            border: 1px solid var(--border);
             opacity: 0;
             animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
         }
@@ -278,87 +280,6 @@
             text-transform: uppercase;
         }
 
-        /* ===================== HISTORY LIST / REUSED FOR HELP CENTER ===================== */
-        .history-list-container {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .history-row {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            padding: 24px 32px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 24px;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .history-row:hover {
-            transform: translateY(-2px);
-            border-color: rgba(0, 74, 173, 0.15);
-            box-shadow: 0 6px 20px rgba(0, 43, 91, 0.04);
-        }
-
-        .document-icon-box {
-            width: 54px;
-            height: 54px;
-            background: #EBF3FC;
-            border-radius: var(--radius-sm);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #004AAD;
-            font-size: 20px;
-            transition: all 0.3s ease;
-        }
-
-        .history-row:hover .document-icon-box {
-            background: #004AAD;
-            color: #ffffff;
-        }
-
-        .student-profile {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .student-details {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .student-name {
-            font-size: 16px;
-            font-weight: 800;
-            color: var(--text-dark);
-        }
-
-        .badge-status-pill {
-            border: none;
-            border-radius: 12px;
-            padding: 10px 28px;
-            font-size: 11px;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 110px;
-            text-decoration: none;
-        }
-
-        .status-approved {
-            background: var(--green-status-bg);
-            color: var(--green-status);
-        }
-
         /* ===================== HELP CENTER LAYOUT ===================== */
         .help-grid {
             display: grid;
@@ -374,15 +295,25 @@
             margin-bottom: 24px;
         }
 
+        /* PERBAIKAN: Menambahkan layout list & gap jarak 16px agar card FAQ tidak menempel */
+        .faq-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px; 
+        }
+
         .faq-card {
             background: var(--muted-bg);
-            border-radius: var(--radius-md);
+            border-radius: var(--radius-sm);
             padding: 24px 28px;
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid transparent;
         }
 
         .faq-card:hover {
             transform: translateY(-2px);
+            background: var(--surface);
+            border-color: rgba(0, 74, 173, 0.15);
             box-shadow: 0 6px 20px rgba(0, 43, 91, 0.04);
         }
 
@@ -402,7 +333,7 @@
 
         .contact-card {
             background: var(--navy);
-            border-radius: var(--radius-md);
+            border-radius: var(--radius-sm);
             padding: 32px;
             display: flex;
             flex-direction: column;
@@ -477,6 +408,73 @@
             box-shadow: 0 8px 20px rgba(229, 169, 60, 0.35);
         }
 
+        /* ===================== MODAL WINDOW POP-UP SYSTEM ===================== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(26, 42, 108, 0.4);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.show { opacity: 1; pointer-events: auto; }
+
+        .modal-box {
+            background: var(--surface);
+            padding: 32px;
+            border-radius: 24px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.show .modal-box { transform: scale(1); }
+
+        .modal-icon {
+            width: 56px;
+            height: 56px;
+            background: #fff5f5;
+            color: var(--red);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin: 0 auto 16px auto;
+        }
+
+        .modal-title { font-size: 18px; font-weight: 800; color: var(--navy); margin-bottom: 8px; }
+        .modal-desc { font-size: 14px; color: var(--muted); line-height: 1.5; margin-bottom: 24px; }
+
+        .modal-btn-close {
+            background: var(--navy);
+            color: var(--surface);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+        }
+        .modal-btn-close:hover { background: #111c44; }
+        .modal-btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .modal-btn-cancel { background: var(--surface2); color: #334155; border: 1px solid var(--border); }
+        .modal-btn-cancel:hover { background: #e2e8f0; }
+
         /* ===================== FOOTER SYSTEM ===================== */
         .page-footer {
             text-align: center;
@@ -489,19 +487,57 @@
             margin-top: auto;
         }
 
-        /* Responsive Styling */
+        /* ==================== TOAST ==================== */
+        #toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--navy);
+            color: white;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 13.5px;
+            font-weight: 600;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(30px);
+            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s;
+            z-index: 9999;
+            box-shadow: 0 10px 25px -5px rgba(26, 42, 108, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #toast.show { opacity: 1; transform: translateX(0); }
+
+        /* ==================== MASTER RESPONSIVE ==================== */
+        @media (max-width: 900px) {
+            .help-grid { grid-template-columns: 1fr; gap: 32px; }
+            .dashboard-card { padding: 32px 24px; }
+        }
+
         @media (max-width: 768px) {
-            .topbar { flex-direction: column; gap: 16px; text-align: center; }
+            .topbar { padding: 12px 20px; }
             .topbar-nav { gap: 16px; }
-            .help-grid { grid-template-columns: 1fr; }
-            .dashboard-card { padding: 28px; }
+        }
+
+        @media (max-width: 640px) {
+            .topbar { flex-direction: column; gap: 14px; padding: 16px; text-align: center; }
+            .topbar-brand { flex-direction: column; gap: 4px; }
+            .topbar-nav { width: 100%; justify-content: center; gap: 16px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 8px 0; }
+            .topbar-right { width: 100%; justify-content: space-between; }
+            .user-info { text-align: left; }
+            .btn-operator { width: 100%; justify-content: center; }
+            #toast { left: 20px; right: 20px; bottom: 20px; transform: translateY(30px); text-align: center; justify-content: center; }
+            #toast.show { transform: translateY(0); }
         }
     </style>
 </head>
 
 <body>
 
-    <div class="topbar-wrapper">
+   <div class="topbar-wrapper">
         <div class="container">
             <header class="topbar">
                 
@@ -525,13 +561,13 @@
 
                 <nav class="topbar-nav">
                     <a class="nav-link" href="{{ route('dashboard') }}">
-                        <i class=""></i> Dashboard
+                         Dashboard
                     </a>
                     <a class="nav-link" href="{{ route('riwayat') }}">
-                        <i class=""></i> Riwayat 
+                         Riwayat 
                     </a>
                     <a class="nav-link active" href="{{ route('pusat_bantuan') }}">
-                        <i class=""></i> Pusat Bantuan<span class="nav-dot"></span>
+                         Pusat Bantuan<span class="nav-dot"></span>
                     </a>
                 </nav>
 
@@ -540,12 +576,21 @@
                         <div class="user-name">{{ auth()->user()->name ?? 'Orang Tua' }}</div>
                         <div class="user-branch">Cabang Global</div>
                     </div>
+<<<<<<< HEAD
                     <form action="{{ route('logout') }}" method="POST" style="margin:0;">
                         @csrf
                         <button type="submit" class="btn-logout" title="Keluar" onclick="return confirm('Apakah Anda yakin ingin keluar?')">
                             <i class="fa-solid fa-arrow-right-from-bracket"></i>
                         </button>
                     </form>
+=======
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        @csrf
+                    </form>
+                    <button type="button" class="btn-logout" title="Keluar" onclick="openLogoutModal()" style="border: none; background: none; cursor: pointer;">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    </button>
+>>>>>>> b9efc4c094d501c2c3a3dc6456cc98671d3eb5a7
                 </div>
             </header>
         </div>
@@ -570,7 +615,7 @@
                             <div class="faq-card">
                                 <div class="faq-question">Bagaimana cara mengganti unit sekolah pendaftaran?</div>
                                 <div class="faq-answer">
-                                    Jika pendaftaran masih berupa Draft, Anda dapat menghapusnya dan memulai baru. Jika sudah terkirim, silakan hubungi admin sekolah melalui fitur chat bantuan.
+                                    Jika pendaftaran masih berupa Draft, Anda dapat menghapusnya and memulai baru. Jika sudah terkirim, silakan hubungi admin sekolah melalui fitur chat bantuan.
                                 </div>
                             </div>
 
@@ -631,9 +676,50 @@
         </div>
     </main>
 
-    <footer class="page-footer">
-        Yayasan Kanisius © 2026 • Admisi Terintegrasi
-    </footer>
+    <!-- STRUCTURE LOGOUT POP-UP MODAL -->
+    <div id="logoutModal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-icon" style="background: #fff5f5; color: var(--red);"><i class="fa-solid fa-arrow-right-from-bracket"></i></div>
+            <h3 class="modal-title">Mengakhiri Sesi?</h3>
+            <p class="modal-desc">Apakah Anda yakin ingin keluar dari SAKTI Portal? Sesi Anda akan dihapus demi keamanan akun.</p>
+            <div class="modal-btn-group">
+                <button type="button" onclick="closeLogoutModal()" class="modal-btn-close modal-btn-cancel">Batal</button>
+                <button type="button" onclick="handleLogout()" class="modal-btn-close" style="background: var(--navy);">Ya, Keluar</button>
+            </div>
+        </div>
+    </div>
 
+    <div id="toast"></div>
+
+    <script>
+        /* ============================================================
+            TOAST UTILITIES
+        ============================================================ */
+        function showToast(msg, dur = 3000) {
+            const t = document.getElementById('toast');
+            if (!t) return;
+            t.innerHTML = msg;
+            t.classList.add('show');
+            clearTimeout(t._timer);
+            t._timer = setTimeout(() => t.classList.remove('show'), dur);
+        }
+
+        /* ============================================================
+            MODAL LOGOUT CONTROLLERS
+        ============================================================ */
+        const logModal = document.getElementById('logoutModal');
+
+        function openLogoutModal() { logModal.classList.add('show'); }
+        function closeLogoutModal() { logModal.classList.remove('show'); }
+
+        function handleLogout() {
+            closeLogoutModal();
+            showToast('<i class="fas fa-arrow-right-from-bracket"></i> Mengakhiri Sesi...');
+            setTimeout(() => {
+                const logoutForm = document.getElementById('logout-form');
+                if (logoutForm) logoutForm.submit();
+            }, 800); 
+        }
+    </script>
 </body>
 </html>

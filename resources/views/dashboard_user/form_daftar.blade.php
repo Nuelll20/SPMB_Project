@@ -5,9 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SAKTI Portal – Formulir Peserta Didik</title>
+<<<<<<< HEAD
     <link
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap"
         rel="stylesheet">
+=======
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+>>>>>>> b9efc4c094d501c2c3a3dc6456cc98671d3eb5a7
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -52,18 +56,19 @@
         .topbar-wrapper {
             width: 100%;
             background: var(--bg);
-            padding-top: 24px;
+            padding-top: 16px; /* Jarak dari paling atas layar dikurangi agar lebih presisi */
             animation: fadeIn 0.6s ease forwards;
         }
 
         .topbar {
             background: var(--surface);
-            border-radius: var(--radius-md);
+            border-radius: 16px; /* DIUBAH LANGSUNG KE ANGKA: Biar langsung rounded sempurna tanpa variabel gaib */
             padding: 14px 28px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             box-shadow: 0 4px 20px rgba(0, 43, 91, 0.04);
+            border: 1px solid var(--border); /* Ditambahkan border tipis agar senada dengan main-card */
         }
 
         .topbar-brand {
@@ -151,7 +156,7 @@
             color: var(--navy);
         }
 
-        /* Indikator Titik Emas Aktif Berpindah Ke Riwayat */
+        /* Indikator Titik Emas Aktif */
         .nav-link.active .nav-dot {
             width: 5px;
             height: 5px;
@@ -199,6 +204,7 @@
             justify-content: center;
             cursor: pointer;
             transition: all 0.2s ease;
+            text-decoration: none;
         }
 
         .btn-logout:hover {
@@ -210,6 +216,7 @@
             color: #FF4D4D;
             font-size: 14px;
         }
+
 
         /* ===================== PAGE BODY ===================== */
         .page-body {
@@ -226,7 +233,7 @@
         /* ===================== PAGE HEADER ===================== */
         .page-header {
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             justify-content: space-between;
             gap: 16px;
             flex-wrap: wrap;
@@ -820,6 +827,7 @@
             border: 1px solid var(--border);
         }
 
+<<<<<<< HEAD
         .modal-btn-cancel:hover {
             background: #e2e8f0;
         }
@@ -883,6 +891,62 @@
                 width: 100%;
                 justify-content: center;
             }
+=======
+        .page-footer { text-align: center; padding: 20px; font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: 1.2px; text-transform: uppercase; }
+        
+        /* ==================== CORE FIX: RE-POSITIONING TOAST MECHANISM ==================== */
+        #toast { 
+            position: fixed; 
+            bottom: 30px; 
+            right: 30px; 
+            background: var(--navy); 
+            color: white; 
+            padding: 14px 28px; 
+            border-radius: 12px; 
+            font-size: 13.5px; 
+            font-weight: 600; 
+            opacity: 0; 
+            pointer-events: none; 
+            transform: translateX(30px); 
+            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s; 
+            z-index: 9999; 
+            box-shadow: 0 10px 25px -5px rgba(26, 42, 108, 0.3); 
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        #toast.show { opacity: 1; transform: translateX(0); }
+
+        /* ===================== PERBAIKAN: MASTER GRID RESPONSIVE UI ===================== */
+        @media (max-width: 900px) { 
+            .form-grid { grid-template-columns: 1fr; gap: 24px; } 
+            .page-body { padding: 24px 16px; } 
+            .form-card { padding: 24px; }
+        }
+
+        @media (max-width: 768px) {
+            .topbar { padding: 12px 20px; }
+            .topbar-nav { gap: 16px; }
+            .page-title { font-size: 22px; }
+        }
+
+        @media (max-width: 640px) { 
+            .topbar { flex-direction: column; gap: 14px; padding: 16px; text-align: center; }
+            .topbar-brand { flex-direction: column; gap: 4px; }
+            .topbar-nav { width: 100%; justify-content: center; gap: 16px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 8px 0; }
+            .topbar-right { width: 100%; justify-content: space-between; }
+            .user-info { text-align: left; }
+            .page-header { flex-direction: column; align-items: stretch; text-align: center; }
+            .btn-outline { width: 100%; justify-content: center; }
+            .field-row { grid-template-columns: 1fr; gap: 20px; }
+            .upload-grid { grid-template-columns: 1fr; }
+            .upload-item { style="grid-column: span 1 !important;" }
+            .bottom-bar { flex-direction: column; align-items: stretch; gap: 20px; } 
+            .bottom-actions { flex-direction: column; width: 100%; } 
+            .btn-draft, .btn-submit { width: 100%; justify-content: center; } 
+            #toast { left: 20px; right: 20px; bottom: 20px; transform: translateY(30px); text-align: center; justify-content: center; }
+            #toast.show { transform: translateY(0); }
+>>>>>>> b9efc4c094d501c2c3a3dc6456cc98671d3eb5a7
         }
     </style>
 </head>
@@ -913,13 +977,19 @@
 
                 <nav class="topbar-nav">
                     <a class="nav-link" href="{{ route('dashboard') }}">
-                        <i class="fa-solid fa-table-cells-large"></i> Dashboard
+                        Dashboard
                     </a>
-                    <a class="nav-link active" href="#">
-                        <i class="fa-solid fa-clock-rotate-left"></i> Riwayat <span class="nav-dot"></span>
+                    <a class="nav-link" href="{{ route('riwayat') }}">
+                        Riwayat 
                     </a>
+                    <a class="nav-link" href="{{ route('pusat_bantuan') }}">
+                        Pusat Bantuan
+                    </a>
+<<<<<<< HEAD
                     <a class="nav-link" href="{{ route('pusat_bantuan') }}"><i class="fa-solid fa-circle-info"></i>
                         Pusat Bantuan</a>
+=======
+>>>>>>> b9efc4c094d501c2c3a3dc6456cc98671d3eb5a7
                 </nav>
 
                 <div class="topbar-right">
@@ -927,6 +997,7 @@
                         <div class="user-name">{{ auth()->user()->name ?? 'Orang Tua' }}</div>
                         <div class="user-branch">Cabang Global</div>
                     </div>
+<<<<<<< HEAD
                     <form action="{{ route('logout') }}" method="POST" style="margin:0;">
                         @csrf
                         <button type="submit" id="btnTopbarLogout" class="btn-logout" title="Keluar"
@@ -934,6 +1005,17 @@
                             <i class="fa-solid fa-arrow-right-from-bracket"></i>
                         </button>
                     </form>
+=======
+                    
+                    <!-- FIX LOGOUT: Diubah menggunakan Button pemicu JavaScript POST terstruktur -->
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        @csrf
+                    </form>
+                    <!-- Memanggil modal khusus logout saat di-klik -->
+                    <button type="button" class="btn-logout" title="Keluar" onclick="openLogoutModal()">
+                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                    </button>
+>>>>>>> b9efc4c094d501c2c3a3dc6456cc98671d3eb5a7
                 </div>
             </header>
         </div>
@@ -1190,15 +1272,29 @@
         </div>
     </div>
 
+    <!-- ADD MODAL: Struktur Pop-Up Khusus Konfirmasi Logout -->
+    <div id="logoutModal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-icon" style="background: #fff5f5; color: var(--red);"><i class="fa-solid fa-arrow-right-from-bracket"></i></div>
+            <h3 class="modal-title">Mengakhiri Sesi?</h3>
+            <p class="modal-desc">Apakah Anda yakin ingin keluar dari SAKTI Portal?</p>
+            <div class="modal-btn-group">
+                <button type="button" onclick="closeLogoutModal()" class="modal-btn-close modal-btn-cancel">Batal</button>
+                <button type="button" onclick="handleLogout()" class="modal-btn-close" style="background: var(--navy);">Ya, Keluar</button>
+            </div>
+        </div>
+    </div>
+
     <div id="toast"></div>
 
     <script>
         /* ============================================================
-           TOAST UTILITIES
+            TOAST UTILITIES & FIX NAME BINDING
         ============================================================ */
         function showToast(msg, dur = 3000) {
             const t = document.getElementById('toast');
-            t.textContent = msg;
+            if (!t) return;
+            t.innerHTML = msg; // Menggunakan innerHTML agar tag ikon FontAwesome bisa dirender
             t.classList.add('show');
             clearTimeout(t._timer);
             t._timer = setTimeout(() => t.classList.remove('show'), dur);
@@ -1217,7 +1313,7 @@
         }
 
         /* ============================================================
-           LIVE FIELD VALIDATION
+            LIVE FIELD VALIDATION
         ============================================================ */
         function validateField(el, rule) {
             if (el.value === '' || el.value === null) {
@@ -1233,7 +1329,7 @@
         function onSelectChange(el) { el.classList.remove('is-invalid'); el.classList.add('is-valid'); }
 
         /* ============================================================
-           TOGGLE SURAT BAPTIS STATE
+            TOGGLE SURAT BAPTIS STATE
         ============================================================ */
         let isKatolik = false;
         function toggleSuratBaptis(val) {
@@ -1265,7 +1361,7 @@
         }
 
         /* ============================================================
-           SAMAKAN ALAMAT
+            SAMAKAN ALAMAT
         ============================================================ */
         function samakanAlamat() {
             const ta = document.getElementById('alamat');
@@ -1281,13 +1377,16 @@
         }
 
         /* ============================================================
-           LOCAL FILE BINDING UPLOAD MECHANISM
+            LOCAL FILE BINDING UPLOAD MECHANISM
         ============================================================ */
         function triggerUpload(inputId, e) {
             if (e) e.stopPropagation();
             document.getElementById(inputId).click();
         }
 
+        /* ============================================================
+            PERBAIKAN: FIX FUNCTION NAME FROM showToast
+        ============================================================ */
         function onUpload(input, itemId, previewBtnId) {
             if (!input.files || !input.files[0]) return;
             const item = document.getElementById(itemId);
@@ -1301,7 +1400,7 @@
         }
 
         /* ============================================================
-           PERBAIKAN: CORE LOGIC RENDERER PREVIEW DOKUMEN & GAMBAR LOKAL
+            PERBAIKAN: CORE LOGIC RENDERER PREVIEW DOKUMEN & GAMBAR LOKAL
         ============================================================ */
         const previewModal = document.getElementById('previewModal');
         const previewViewport = document.getElementById('previewViewport');
@@ -1337,7 +1436,7 @@
                 };
                 reader.readAsDataURL(file);
             } else {
-                showToast('❌ Format berkas tidak didukung pratinjau lokal.');
+                showToast('❌ Format berkas tidak didukung.');
                 return;
             }
 
@@ -1350,10 +1449,16 @@
         });
 
         /* ============================================================
-           PERBAIKAN: LOGIKA VALIDASI ALASAN GAGAL SIMPAN DRAFT
+            PERBAIKAN: LOGIKA VALIDASI ALASAN GAGAL SIMPAN DRAFT & RE-ROUTE showToast
         ============================================================ */
         function saveDraft(btn, e) {
+<<<<<<< HEAD
             addRipple(btn, e);
+=======
+            if (e) addRipple(btn, e);
+            
+            const namaField = document.getElementById('namaLengkap');
+>>>>>>> b9efc4c094d501c2c3a3dc6456cc98671d3eb5a7
 
             const form = document.getElementById('formPesertaDidik');
             const namaField = document.getElementById('namaLengkap');
@@ -1364,7 +1469,7 @@
             const tempatField = document.getElementById('tempat-lahir');
 
             if (!namaField.value || namaField.value.trim().length < 3) {
-                showToast('⚠️ Gagal menyimpan draf: Nama Lengkap wajib diisi minimal 3 karakter.');
+                showToast('⚠️ Gagal menyimpan draf: Data tidak lengkap.');
                 namaField.classList.add('is-invalid');
                 return;
             }
@@ -1376,6 +1481,7 @@
 
             btn.disabled = true;
             btn.textContent = 'Menyimpan...';
+<<<<<<< HEAD
 
             fetch("{{ route('form.daftar.draft') }}", {
                 method: 'POST',
@@ -1402,10 +1508,46 @@
                     btn.disabled = false;
                     showToast('❌ ' + error.message);
                 });
+=======
+            
+            setTimeout(() => {
+                btn.innerHTML = 'Draft Tersimpan';
+                showToast('💾 data formulir anak berhasil disimpan dalam draft!');
+                namaField.classList.remove('is-invalid');
+                setTimeout(() => { btn.innerHTML = 'SIMPAN DRAFT'; btn.disabled = false; }, 2000);
+            }, 1000);
+>>>>>>> b9efc4c094d501c2c3a3dc6456cc98671d3eb5a7
         }
 
         /* ============================================================
-           PERBAIKAN: DETEKSI INTERSEPSI UNSAVED CHANGES GUARD (KEMBALI)
+            ADD LOGOUT MODAL TOGGLES: Fungsi buka tutup modal & trigger form POST
+        ============================================================ */
+        const logModal = document.getElementById('logoutModal');
+
+        function openLogoutModal() {
+            logModal.classList.add('show');
+        }
+
+        function closeLogoutModal() {
+            logModal.classList.remove('show');
+        }
+
+        function handleLogout() {
+            // Tutup modal konfirmasi logout terlebih dahulu
+            closeLogoutModal();
+            
+            // Render animasi toast di pojok kanan bawah halaman
+            showToast('<i class="fas fa-arrow-right-from-bracket"></i> Mengakhiri Sesi...');
+            
+            // Eksekusi pengakhiran session Laravel form POST setelah transisi toast selesai
+            setTimeout(() => {
+                const logoutForm = document.getElementById('logout-form');
+                if (logoutForm) logoutForm.submit();
+            }, 800); 
+        }
+
+        /* ============================================================
+            PERBAIKAN: DETEKSI INTERSEPSI UNSAVED CHANGES GUARD (KEMBALI)
         ============================================================ */
         const leaveModal = document.getElementById('confirmLeaveModal');
         const btnLinkKembali = document.getElementById('btnLinkKembali');
@@ -1432,9 +1574,15 @@
         });
 
         // Pantau juga interaksi klik pada menu bar atas topbar
+<<<<<<< HEAD
         document.querySelectorAll('.topbar-nav .nav-link, #btnTopbarLogout').forEach(link => {
             link.addEventListener('click', function (e) {
                 if (this.id === 'btnTopbarLogout') return; // Bypass form submit logout
+=======
+        document.querySelectorAll('.topbar-nav .nav-link, .btn-logout').forEach(link => {
+            link.addEventListener('click', function(e) {
+                if(this.classList.contains('btn-logout')) return; // Bypass form submit logout karena ditangani modal khusus
+>>>>>>> b9efc4c094d501c2c3a3dc6456cc98671d3eb5a7
                 checkUnsavedChanges(e, this.getAttribute('href') || '#');
             });
         });
@@ -1443,7 +1591,7 @@
         btnConfirmLeave.addEventListener('click', () => window.location.href = targetLeaveUrl);
 
         /* ============================================================
-           GLOBAL FORM SUBMIT MECHANISM
+            GLOBAL FORM SUBMIT MECHANISM
         ============================================================ */
         const form = document.getElementById("formPesertaDidik");
         const modal = document.getElementById("errorModal");
