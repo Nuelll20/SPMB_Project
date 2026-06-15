@@ -8,9 +8,16 @@ class VerifikasiBerkasController extends Controller
 {
     public function show($uid)
     {
+        $uidOrangTua = session('uid_orangtua');
+
         $siswa = DB::table('calon_siswa')
             ->where('uid', $uid)
+            ->where('uid_orangtua', $uidOrangTua)
             ->first();
+
+        if (! $siswa) {
+            abort(404, 'Data calon siswa tidak ditemukan.');
+        }
 
         $berkas = DB::table('berkas')
             ->where('id_pendaftar', $uid)

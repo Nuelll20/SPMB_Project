@@ -20,6 +20,7 @@
             --gold-border: #FCE8BD;
             --bg: #F4F7FA;         /* Background canvas luar */
             --surface: #ffffff;    /* Warna dasar container/card */
+            --surface2: #F4F7FA;
             --border: #eef2f6;
             --text-dark: #002B5B;
             --text-gray: #7b82a0;
@@ -571,7 +572,7 @@
                         <div class="brand-title">SAKTI PORTAL</div>
                         <div class="brand-meta">
                             <span class="badge-parent"><i class="fa-solid fa-shield-halved"></i> Parent</span>
-                            <span class="uid-text">UID-MOCK-parent-001</span>
+                            <span class="uid-text">UID-{{ auth()->id() ?? 'GUEST' }}</span>
                         </div>
                     </div>
                 </div>
@@ -588,7 +589,7 @@
 
                 <div class="topbar-right">
                     <div class="user-info">
-                        <div class="user-name">Ortu Demo</div>
+                        <div class="user-name">{{ auth()->user()->name ?? 'Orang Tua' }}</div>
                         <div class="user-branch">Cabang Global</div>
                     </div>
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
@@ -611,34 +612,73 @@
                     <h2 class="card-title-history">Riwayat Pendaftaran</h2>
                 </div>
 
+                @if (session('success'))
+                    <div style="background:#dcfce7;color:#166534;padding:12px 16px;border-radius:12px;margin-bottom:18px;font-size:13px;font-weight:700;">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+                @if (session('warning'))
+                    <div style="background:#fef3c7;color:#92400e;padding:12px 16px;border-radius:12px;margin-bottom:18px;font-size:13px;font-weight:700;">
+                        {{ session('warning') }}
+                    </div>
+                @endif
+
+                @if (session('error'))
+                    <div style="background:#fee2e2;color:#991b1b;padding:12px 16px;border-radius:12px;margin-bottom:18px;font-size:13px;font-weight:700;">
+                        {{ session('error') }}
+                    </div>
+                @endif
+
                 <div class="history-list-container">
                     
                     @forelse($dataSiswa as $siswa)
+                        @php
+                            $statusLower = strtolower($siswa->status ?? $siswa->status_pendaftaran ?? 'pending');
+
+                            if (in_array($statusLower, ['approved', 'accepted', 'diterima'])) {
+                                $statusClass = 'status-approved';
+                                $statusLabel = 'Approved';
+                            } elseif (in_array($statusLower, ['rejected', 'ditolak'])) {
+                                $statusClass = 'status-rejected';
+                                $statusLabel = 'Rejected';
+                            } else {
+                                $statusClass = 'status-pending';
+                                $statusLabel = 'Pending';
+                            }
+
+                            $nomorRegistrasi = $siswa->nomor_registrasi ?? $siswa->no_pendaftaran ?? '-';
+                            $tanggalRiwayat = $siswa->created_at ?? $siswa->tanggal_daftar ?? null;
+                            $tanggalLahir = !empty($siswa->tanggal_lahir)
+                                ? \Carbon\Carbon::parse($siswa->tanggal_lahir)->format('d/m/Y')
+                                : '-';
+                            $ttl = trim(($siswa->tempat_lahir ?? '-') . ', ' . $tanggalLahir);
+                        @endphp
+
                         <div class="history-row">
                             <div class="student-profile">
-                                <div class="document-icon-box" title="Lihat Detail Formulir" 
-                                     onclick="openDetailModal('{{ $siswa->nama_lengkap }}', '{{ $siswa->nik }}', '{{ $siswa->tempat_lahir }}, {{ \Carbon\Carbon::parse($siswa->tanggal_lahir)->format('d/m/Y') }}', '{{ $siswa->agama }}', '{{ $siswa->golongan_darah }}', '{{ $siswa->alamat }}')">
+                                <div class="document-icon-box btn-detail-siswa" title="Lihat Detail Formulir"
+                                     data-nama="{{ e($siswa->nama ?? '-') }}"
+                                     data-nik="{{ e($siswa->nik ?? '-') }}"
+                                     data-ttl="{{ e($ttl) }}"
+                                     data-agama="{{ e($siswa->agama ?? '-') }}"
+                                     data-goldar="{{ e($siswa->golongan_darah ?? '-') }}"
+                                     data-alamat="{{ e($siswa->alamat ?? '-') }}">
                                     <i class="fa-solid fa-file-lines"></i>
                                 </div>
                                 <div class="student-details">
-                                    <h3 class="student-name">{{ $siswa->nama_lengkap }}</h3>
-                                    
+                                    <h3 class="student-name">{{ $siswa->nama ?? '-' }}</h3>
+
                                     <div class="student-meta-tags">
-                                        <span class="uid-code">ID: {{ $siswa->nomor_registrasi ?? 'REG-MOCK-PARENT-001' }}</span>
+                                        <span class="uid-code">ID: {{ $nomorRegistrasi }}</span>
                                         <span class="meta-divider">•</span>
-                                        <span>{{ $siswa->created_at ? $siswa->created_at->format('d/m/Y') : '11/6/2026' }}</span>
+                                        <span>{{ $tanggalRiwayat ? \Carbon\Carbon::parse($tanggalRiwayat)->format('d/m/Y') : '-' }}</span>
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="status-actions">
-                                @if($siswa->status == 'pending' || $siswa->status == 'verifikasi' || $siswa->status == 'proses')
-                                    <div class="badge-status-pill status-pending">Pending</div>
-                                @elif($siswa->status == 'approved' || $siswa->status == 'diterima')
-                                    <div class="badge-status-pill status-approved">Approved</div>
-                                @else
-                                    <div class="badge-status-pill status-rejected">Rejected</div>
-                                @endif
+                                <div class="badge-status-pill {{ $statusClass }}">{{ $statusLabel }}</div>
                             </div>
                         </div>
                     @empty
@@ -745,13 +785,28 @@
         ============================================================ */
         const detModal = document.getElementById('detailModal');
 
-        function openDetailModal(nama, nik, ttl, agama, goldar, alamat) {
-            document.getElementById('detNama').textContent = nama;
-            document.getElementById('detNik').textContent = nik;
-            document.getElementById('detTtl').textContent = ttl;
-            document.getElementById('detAgama').textContent = agama;
-            document.getElementById('detGoldar').textContent = goldar;
-            document.getElementById('detAlamat').textContent = alamat;
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.btn-detail-siswa').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    openDetailModal({
+                        nama: this.dataset.nama || '-',
+                        nik: this.dataset.nik || '-',
+                        ttl: this.dataset.ttl || '-',
+                        agama: this.dataset.agama || '-',
+                        goldar: this.dataset.goldar || '-',
+                        alamat: this.dataset.alamat || '-',
+                    });
+                });
+            });
+        });
+
+        function openDetailModal(data) {
+            document.getElementById('detNama').textContent = data.nama || '-';
+            document.getElementById('detNik').textContent = data.nik || '-';
+            document.getElementById('detTtl').textContent = data.ttl || '-';
+            document.getElementById('detAgama').textContent = data.agama || '-';
+            document.getElementById('detGoldar').textContent = data.goldar || '-';
+            document.getElementById('detAlamat').textContent = data.alamat || '-';
             detModal.classList.add('show');
         }
 

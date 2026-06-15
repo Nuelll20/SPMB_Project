@@ -23,6 +23,11 @@
             --green-bg: #dcfce7;
             --red: #dc2626;
             --radius: 14px;
+            --radius-md: 16px;
+            --text-dark: #1a1f36;
+            --text-gray: #7b82a0;
+            --gold-light: rgba(245, 196, 0, 0.12);
+            --gold-border: rgba(245, 196, 0, 0.28);
         }
 
         * {
@@ -694,7 +699,7 @@
                         <div class="brand-title">SAKTI PORTAL</div>
                         <div class="brand-meta">
                             <span class="badge-parent"><i class="fa-solid fa-shield-halved"></i> Parent</span>
-                            <span class="uid-text">UID-MOCK-parent-001</span>
+                            <span class="uid-text">UID-{{ auth()->id() ?? 'parent' }}</span>
                         </div>
                     </div>
                 </div>
@@ -713,7 +718,7 @@
 
                 <div class="topbar-right">
                     <div class="user-info">
-                        <div class="user-name">Ortu Demo</div>
+                        <div class="user-name">{{ auth()->user()->name ?? 'Orang Tua' }}</div>
                         <div class="user-branch">Cabang Global</div>
                     </div>
                      <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
@@ -728,6 +733,24 @@
     </div>
 
     <main class="page-body">
+        @if (session('success'))
+            <div style="background:#dcfce7;color:#166534;padding:14px 18px;border-radius:14px;border:1px solid rgba(22,163,74,.25);font-weight:700;">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if (session('warning'))
+            <div style="background:#fef3c7;color:#92400e;padding:14px 18px;border-radius:14px;border:1px solid rgba(245,158,11,.25);font-weight:700;">
+                {{ session('warning') }}
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div style="background:#fee2e2;color:#991b1b;padding:14px 18px;border-radius:14px;border:1px solid rgba(220,38,38,.25);font-weight:700;">
+                {{ session('error') }}
+            </div>
+        @endif
+
         <div class="main-card">
             <div class="card-header">
                 <div class="card-header-left">
@@ -760,44 +783,45 @@
 
                         <div class="student-info">
                             <div class="student-name">
-                                {{ $siswa->nama }}
+                                {{ $siswa->nama ?? '-' }}
                             </div>
 
                             <div class="student-meta">
                                 <div class="meta-item">
                                     <span class="meta-icon">📍</span>
-                                    {{ $siswa->tempat_lahir }}
+                                    {{ $siswa->tempat_lahir ?? '-' }}
                                 </div>
 
                                 <div class="meta-item">
                                     <span class="meta-icon">🕐</span>
-                                    {{ \Carbon\Carbon::parse($siswa->created_at)->format('d/m/Y') }}
+                                    {{ !empty($siswa->created_at) ? \Carbon\Carbon::parse($siswa->created_at)->format('d/m/Y') : '-' }}
                                 </div>
 
                                 <div class="meta-item">
                                     <span class="meta-icon">🔖</span>
-                                    {{ $siswa->nomor_registrasi }}
+                                    {{ $siswa->nomor_registrasi ?? '-' }}
                                 </div>
                             </div>
                         </div>
 
                         <div class="student-actions">
-                            <a href="{{ route('verifikasi.berkas', $siswa->uid) }}" class="btn-verifikasi">
+                            <a href="{{ route('verifikasi.berkas', $siswa->pendaftaran_uid ?? $siswa->uid) }}" class="btn-verifikasi">
                                 <span class="spin-icon">◌</span> VERIFIKASI BERKAS
                             </a>
                             
                             @php
-                                $statusLower = strtolower($siswa->status);
+                                $statusText = $siswa->status ?? 'pending';
+                                $statusLower = strtolower($statusText);
                                 $extraClass = '';
-                                if(in_array($statusLower, ['approved', 'accepted', 'diterima'])) {
+                                if (in_array($statusLower, ['approved', 'accepted', 'diterima'])) {
                                     $extraClass = 'approved-style';
-                                } elseif(in_array($statusLower, ['rejected', 'ditolak'])) {
+                                } elseif (in_array($statusLower, ['rejected', 'ditolak'])) {
                                     $extraClass = 'rejected-style';
                                 }
                             @endphp
                             <button type="button" class="btn-antrian {{ $extraClass }}" 
-                                    onclick="handleStatusAction('{{ $statusLower }}', '{{ $siswa->nama }}')">
-                                {{ strtoupper($siswa->status) }}
+                                    onclick="handleStatusAction('{{ $statusLower }}', '{{ $siswa->nama ?? '-' }}')">
+                                {{ strtoupper($statusText) }}
                             </button>
                         </div>
                     </div>

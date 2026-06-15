@@ -1,50 +1,47 @@
 <?php
 
 namespace App\Http\Controllers\Auth;
-use Illuminate\Support\Facades\Auth;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class LoginController extends Controller
 {
     public function showLoginForm()
     {
-       
-        return view('auth.login'); 
+        return view('auth.login');
     }
 
-    /**
-     * Memproses data inputan dari form login.
-     */
     public function login(Request $request)
     {
-        // 1. Validasi inputan email dan password dari form
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
 
-        // 2. Cek apakah user mencentang pilihan "Remember Me"
-        $remember = $request->has('remember');
+        $remember = $request->boolean('remember');
 
-        // 3. Proses autentikasi (mencocokkan ke database)
-        if (Auth::attempt($credentials, $remember)) {
-            // Jika sukses, buat ulang session biar aman
-            $request->session()->regenerate();
-
-            // Alihkan user ke halaman utama (misal: dashboard)
-            return redirect()->route('profil.ortu'); 
+        if (! Auth::attempt($credentials, $remember)) {
+            return back()->withErrors([
+                'email' => 'Email atau password yang kamu masukkan salah.',
+            ])->onlyInput('email');
         }
 
-        // 4. Jika gagal login, kembalikan ke halaman login dengan pesan error
-        return back()->withErrors([
-            'email' => 'Email atau password yang kamu masukkan salah.',
-        ])->onlyInput('email'); // Email tidak hilang dari inputan biar ga capek ngetik ulang
+        $request->session()->regenerate();
+
+        $orangTua = $this->findOrangTuaForCurrentUser();
+
+        if ($orangTua) {
+            session(['uid_orangtua' => $orangTua->uid]);
+            return redirect()->route('dashboard');
+        }
+
+        return redirect()->route('profil.ortu');
     }
 
-    /**
-     * Memproses Logout.
-     */
     public function logout(Request $request)
     {
         Auth::logout();
@@ -52,6 +49,25 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/login');
+        return redirect()->route('login');
+    }
+
+    private function findOrangTuaForCurrentUser()
+    {
+        $user = Auth::user();
+
+        if (! $user) {
+            return null;
+        }
+
+        $query = DB::table('orang_tua');
+
+        // Jika kolom user_id sudah ditambahkan, pakai relasi yang paling aman.
+        if (Schema::hasColumn('orang_tua', 'user_id')) {
+            return $query->where('user_id', $user->id)->first();
+        }
+
+        // Fallback agar tetap cocok dengan struktur database lama Anda.
+        return $query->where('nama', $user->name)->first();
     }
 }

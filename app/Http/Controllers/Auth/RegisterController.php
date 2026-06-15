@@ -18,7 +18,7 @@ class RegisterController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
+            'email' => 'required|email|max:255|unique:users,email',
             'password' => 'required|min:8|confirmed',
         ]);
 
@@ -26,6 +26,8 @@ class RegisterController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
         return redirect()->route('login')->with('success', 'Registrasi berhasil, silakan login.');

@@ -416,6 +416,12 @@
             transform: translateY(-1px);
         }
 
+        .btn-submit:disabled {
+            opacity: 0.75;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         .btn-submit i {
             font-size: 12px;
         }
@@ -630,13 +636,13 @@
                         <div class="brand-title">SAKTI PORTAL</div>
                         <div class="brand-meta">
                             <span class="badge-parent"><i class="fa-solid fa-shield-halved"></i> Parent</span>
-                            <span class="uid-text">UID-MOCK-parent-001</span>
+                            <span class="uid-text">UID-{{ auth()->id() ?? 'parent' }}</span>
                         </div>
                     </div>
                 </div>
 
                 <nav class="topbar-nav">
-                    <a class="nav-link active" href="{{ route('dashboard') }}"><span class="nav-dot"></span>
+                    <a class="nav-link" href="{{ route('dashboard') }}">
                          Dashboard
                     </a>
                     <a class="nav-link" href="{{ route('riwayat') }}">
@@ -647,7 +653,7 @@
 
                 <div class="topbar-right">
                     <div class="user-info">
-                        <div class="user-name">Ortu Demo</div>
+                        <div class="user-name">{{ auth()->user()->name ?? 'Orang Tua' }}</div>
                         <div class="user-branch">Cabang Global</div>
                     </div>
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
@@ -672,41 +678,67 @@
             </p>
 
             <!-- FORM VALIDATION MURNI -->
-            <form id="formProfilOrtu" action="{{ route('profil.ortu.store') }}" method="POST" class="form-container"
-                novalidate>
+            <form id="formProfilOrtu" action="{{ route('profil.ortu.store') }}" method="POST" class="form-container" novalidate>
                 @csrf
-                
+
+                @if ($errors->any())
+                    <div style="background:#fee2e2;color:#991b1b;padding:12px 16px;border-radius:10px;margin-bottom:8px;">
+                        <strong>Profil gagal disimpan:</strong>
+                        <ul style="margin-top:8px;padding-left:18px;">
+                            @foreach ($errors->getMessages() as $field => $messages)
+                                @foreach ($messages as $message)
+                                    <li><strong>{{ $field }}</strong>: {{ $message }}</li>
+                                @endforeach
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                @if (session('success'))
+                    <div style="background:#dcfce7;color:#166534;padding:12px 16px;border-radius:10px;margin-bottom:8px;">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+                @if (session('warning'))
+                    <div style="background:#fef3c7;color:#92400e;padding:12px 16px;border-radius:10px;margin-bottom:8px;">
+                        {{ session('warning') }}
+                    </div>
+                @endif
+
+                @if (session('error'))
+                    <div style="background:#fee2e2;color:#991b1b;padding:12px 16px;border-radius:10px;margin-bottom:8px;">
+                        {{ session('error') }}
+                    </div>
+                @endif
+
                 <div class="form-grid">
-                    <!-- Pendidikan Terakhir -->
                     <div class="form-group required">
                         <label class="form-label">Pendidikan Terakhir</label>
                         <div class="select-wrapper">
+                            @php($pendidikanValue = old('pendidikan', $orangTua->pendidikan ?? 'S1'))
                             <select name="pendidikan" class="form-control" required>
-                                <option value="SMA">SMA / Sederajat</option>
-                                <option value="D3">D3 / Diploma</option>
-                                <option value="S1" selected>S1 / Sarjana</option>
-                                <option value="S2">S2 / Magister</option>
-                                <option value="S3">S3 / Doktor</option>
+                                <option value="SMA" {{ $pendidikanValue == 'SMA' ? 'selected' : '' }}>SMA / Sederajat</option>
+                                <option value="D3" {{ $pendidikanValue == 'D3' ? 'selected' : '' }}>D3 / Diploma</option>
+                                <option value="S1" {{ $pendidikanValue == 'S1' ? 'selected' : '' }}>S1 / Sarjana</option>
+                                <option value="S2" {{ $pendidikanValue == 'S2' ? 'selected' : '' }}>S2 / Magister</option>
+                                <option value="S3" {{ $pendidikanValue == 'S3' ? 'selected' : '' }}>S3 / Doktor</option>
                             </select>
-                            <div class="select-icon">
-                                <i class="fa-solid fa-chevron-down"></i>
-                            </div>
+                            <div class="select-icon"><i class="fa-solid fa-chevron-down"></i></div>
                         </div>
                     </div>
 
-                    <!-- Rentang Penghasilan -->
                     <div class="form-group required">
                         <label class="form-label">Rentang Penghasilan</label>
                         <div class="select-wrapper">
+                            @php($penghasilanValue = old('penghasilan', $orangTua->gaji ?? ''))
                             <select name="penghasilan" class="form-control" required>
-                                <option value="" selected disabled>Pilih Rentang Gaji</option>
-                                <option value="1">&lt; Rp 5.000.000</option>
-                                <option value="2">Rp 5.000.000 - Rp 10.000.000</option>
-                                <option value="3">&gt; Rp 10.000.000</option>
+                                <option value="" {{ $penghasilanValue == '' ? 'selected' : '' }} disabled>Pilih Rentang Gaji</option>
+                                <option value="4000000" {{ (string)$penghasilanValue == '4000000.00' || (string)$penghasilanValue == '4000000' ? 'selected' : '' }}>&lt; Rp 5.000.000</option>
+                                <option value="7500000" {{ (string)$penghasilanValue == '7500000.00' || (string)$penghasilanValue == '7500000' ? 'selected' : '' }}>Rp 5.000.000 - Rp 10.000.000</option>
+                                <option value="12000000" {{ (string)$penghasilanValue == '12000000.00' || (string)$penghasilanValue == '12000000' ? 'selected' : '' }}>&gt; Rp 10.000.000</option>
                             </select>
-                            <div class="select-icon">
-                                <i class="fa-solid fa-chevron-down"></i>
-                            </div>
+                            <div class="select-icon"><i class="fa-solid fa-chevron-down"></i></div>
                         </div>
                     </div>
                 </div>
@@ -715,28 +747,27 @@
                     <!-- Nomor Telepon -->
                     <div class="form-group required">
                         <label class="form-label">Nomor Telepon</label>
-                        <input type="text" 
-                               name="nomor_telepon" 
-                               id="nomor_telepon" 
-                               class="form-control" 
-                               placeholder="Contoh: 081234567890" 
-                               maxlength="12" 
-                               required 
-                               autocomplete="off" 
+                        <input type="text"
+                               name="nomor_telepon"
+                               id="nomor_telepon"
+                               class="form-control"
+                               placeholder="Contoh: 081234567890"
+                               maxlength="15"
+                               value="{{ old('nomor_telepon', $orangTua->no_telp ?? '') }}"
+                               required
+                               autocomplete="off"
                                oninput="onlyDigitsPhone(this)">
                     </div>
 
-                   <!-- Unit Sekolah Tujuan -->
                     <div class="form-group required">
                         <label class="form-label">Unit Sekolah Tujuan</label>
                         <div class="select-wrapper">
+                            @php($unitValue = old('unit_sekolah', $orangTua->unit_sekolah ?? 'TK Wirobrajan'))
                             <select name="unit_sekolah" class="form-control" required>
-                                <option value="TK Wirobrajan" selected>TK Wirobrajan</option>
-                                <option value="SD Kanisius">SD Kanisius Hati Kudus</option>
+                                <option value="TK Wirobrajan" {{ $unitValue == 'TK Wirobrajan' ? 'selected' : '' }}>TK Wirobrajan</option>
+                                <option value="SD Kanisius" {{ $unitValue == 'SD Kanisius' ? 'selected' : '' }}>SD Kanisius Hati Kudus</option>
                             </select>
-                            <div class="select-icon">
-                                <i class="fa-solid fa-chevron-down"></i>
-                            </div>
+                            <div class="select-icon"><i class="fa-solid fa-chevron-down"></i></div>
                         </div>
                     </div>
                 </div>
@@ -744,22 +775,20 @@
                 <!-- Alamat Domisili Sesuai KTP -->
                 <div class="form-group required">
                     <label class="form-label">Alamat Domisili Sesuai KTP</label>
-                    <textarea name="alamat" id="alamat" class="form-control" placeholder="Masukkan alamat lengkap..." required></textarea>
+                    <textarea name="alamat" id="alamat" class="form-control" placeholder="Masukkan alamat lengkap..." required>{{ old('alamat', $orangTua->alamat ?? '') }}</textarea>
                 </div>
- 
-                <!-- Counter Section Jumlah Anak -->
+
                 <div class="counter-section">
                     <label class="form-label">Jumlah Anak Yang Akan Didaftarkan</label>
+                    @php($jumlahAnakValue = old('jumlah_anak', $orangTua->jumlah_anak ?? 1))
+                    <input type="hidden" name="jumlah_anak" id="jumlah_anak" value="{{ $jumlahAnakValue }}">
                     <div class="btn-group">
-                        <button type="button" class="anak-btn active" data-val="1">1</button>
-                        <button type="button" class="anak-btn" data-val="2">2</button>
-                        <button type="button" class="anak-btn" data-val="3">3</button>
-                        <button type="button" class="anak-btn" data-val="4">4</button>
-                        <button type="button" class="anak-btn" data-val="5">5</button>
+                        @for($i = 1; $i <= 5; $i++)
+                            <button type="button" class="anak-btn {{ (int)$jumlahAnakValue === $i ? 'active' : '' }}" data-val="{{ $i }}">{{ $i }}</button>
+                        @endfor
                     </div>
                 </div>
 
-                <!-- Submit Button -->
                 <div class="submit-container">
                     <button type="submit" class="btn-submit">
                         <span>Simpan Profil & Mulai Form Siswa</span>
@@ -797,12 +826,9 @@
     <div id="toast"></div>
 
     <script>
-        // Kunci regex khusus angka untuk nomor telepon operator seluler Indonesia
         function onlyDigitsPhone(el) {
-            el.value = el.value.replace(/\D/g, ''); // Hapus karakter selain angka
-            
-            // Re-validate live state borders
-            if (el.value.length >= 10 && el.value.length <= 12) {
+            el.value = el.value.replace(/\D/g, '');
+            if (el.value.length >= 10 && el.value.length <= 15) {
                 el.classList.remove('input-error');
             }
         }
@@ -843,54 +869,54 @@
         }
 
         document.addEventListener("DOMContentLoaded", function () {
-            // Logika Seleksi Tombol Jumlah Anak
             const buttons = document.querySelectorAll(".anak-btn");
+            const jumlahAnakInput = document.getElementById("jumlah_anak");
+
             buttons.forEach(btn => {
                 btn.addEventListener("click", function () {
                     buttons.forEach(b => b.classList.remove("active"));
                     this.classList.add("active");
+                    if (jumlahAnakInput) jumlahAnakInput.value = this.dataset.val;
                 });
             });
 
-            // ELEMEN VALIDASI CUSTOM POP-UP
             const form = document.getElementById("formProfilOrtu");
             const modal = document.getElementById("errorModal");
             const closeModalBtn = document.getElementById("closeModalBtn");
 
             form.addEventListener("submit", function (event) {
                 let isFormValid = true;
-
-                // Ambil seluruh elemen input/select/textarea yang memiliki atribut required
                 const requiredFields = form.querySelectorAll("[required]");
 
                 requiredFields.forEach(field => {
-                    // Tambahan filter validasi digit untuk nomor telepon agar tidak terlalu pendek
-                    if (field.id === "nomor_telepon" && field.value.length < 10) {
+                    if (field.id === "nomor_telepon" && (field.value.length < 10 || field.value.length > 15)) {
                         isFormValid = false;
                         field.classList.add("input-error");
-                    }
-                    // Validasi standar jika kosong
-                    else if (!field.value || field.value.trim() === "") {
+                    } else if (!field.value || field.value.trim() === "") {
                         isFormValid = false;
-                        field.classList.add("input-error"); 
+                        field.classList.add("input-error");
                     } else {
                         field.classList.remove("input-error");
                     }
                 });
 
-                // Jika ada data yang kosong atau tidak valid, gagalkan submit dan munculkan Pop-up
                 if (!isFormValid) {
-                    event.preventDefault(); 
-                    modal.classList.add("show"); 
+                    event.preventDefault();
+                    modal.classList.add("show");
+                    return;
+                }
+
+                const submitBtn = form.querySelector('.btn-submit');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<span>Menyimpan...</span><i class="fa-solid fa-spinner fa-spin"></i>';
                 }
             });
 
-            // Menutup pop-up ketika tombol 'Mengerti' diklik
             closeModalBtn.addEventListener("click", function () {
                 modal.classList.remove("show");
             });
 
-            // Menghilangkan highlight merah secara realtime saat user mulai mengisi kembali
             form.querySelectorAll("[required]").forEach(field => {
                 const eventType = field.tagName === "SELECT" ? "change" : "input";
                 field.addEventListener(eventType, function() {

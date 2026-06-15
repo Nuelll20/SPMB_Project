@@ -145,7 +145,8 @@
             position: relative;
         }
 
-        .nav-link:hover, .nav-link.active {
+        .nav-link:hover,
+        .nav-link.active {
             color: var(--navy);
         }
 
@@ -235,8 +236,15 @@
         }
 
         @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(14px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(14px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .page-title {
@@ -407,9 +415,19 @@
         }
 
         @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            75% {
+                transform: translateX(5px);
+            }
         }
 
         .field-select {
@@ -467,7 +485,9 @@
             text-transform: uppercase;
         }
 
-        .samakan-btn:hover { background: rgba(0, 74, 173, 0.07); }
+        .samakan-btn:hover {
+            background: rgba(0, 74, 173, 0.07);
+        }
 
         /* ===== UPLOAD BERKAS ===== */
         .upload-label {
@@ -499,15 +519,58 @@
             gap: 6px;
         }
 
-        .upload-item:hover { border-color: var(--blue); background: #f5f8ff; }
-        .upload-item.uploaded { border-color: rgba(22, 163, 74, 0.35); background: #f6fff9; }
+        .upload-item:hover {
+            border-color: var(--blue);
+            background: #f5f8ff;
+        }
 
-        .upload-left { display: flex; align-items: center; gap: 8px; min-width: 0; }
-        .upload-doc-icon { color: var(--muted); font-size: 15px; flex-shrink: 0; }
-        .upload-item.uploaded .upload-doc-icon { color: var(--green); }
-        .upload-name { font-size: 12.5px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .upload-wajib { font-size: 10px; font-weight: 700; color: var(--red); background: rgba(220, 38, 38, 0.08); border-radius: 4px; padding: 1px 5px; flex-shrink: 0; }
-        .upload-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+        .upload-item.uploaded {
+            border-color: rgba(22, 163, 74, 0.35);
+            background: #f6fff9;
+        }
+
+        .upload-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .upload-doc-icon {
+            color: var(--muted);
+            font-size: 15px;
+            flex-shrink: 0;
+        }
+
+        .upload-item.uploaded .upload-doc-icon {
+            color: var(--green);
+        }
+
+        .upload-name {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .upload-wajib {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--red);
+            background: rgba(220, 38, 38, 0.08);
+            border-radius: 4px;
+            padding: 1px 5px;
+            flex-shrink: 0;
+        }
+
+        .upload-actions {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+        }
 
         .upload-action-btn {
             width: 28px;
@@ -530,8 +593,15 @@
             background: rgba(0, 74, 173, 0.06);
         }
 
-        .btn-preview-disabled { opacity: 0.3; cursor: not-allowed; pointer-events: none; }
-        .upload-file-input { display: none; }
+        .btn-preview-disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .upload-file-input {
+            display: none;
+        }
 
         /* ===================== BOTTOM BAR ===================== */
         .bottom-bar {
@@ -556,8 +626,15 @@
             transition: color 0.2s;
         }
 
-        .back-link:hover { color: var(--blue); }
-        .bottom-actions { display: flex; gap: 10px; align-items: center; }
+        .back-link:hover {
+            color: var(--blue);
+        }
+
+        .bottom-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
 
         .btn-draft {
             background: var(--surface);
@@ -575,7 +652,11 @@
             transition: all 0.2s;
         }
 
-        .btn-draft:hover { border-color: var(--blue); color: var(--blue); background: rgba(0, 74, 173, 0.04); }
+        .btn-draft:hover {
+            border-color: var(--blue);
+            color: var(--blue);
+            background: rgba(0, 74, 173, 0.04);
+        }
 
         .btn-submit {
             background: var(--navy);
@@ -602,8 +683,14 @@
             box-shadow: 0 8px 24px rgba(26, 42, 108, 0.32);
         }
 
-        .btn-submit .arrow { transition: transform 0.25s; font-size: 18px; }
-        .btn-submit:hover .arrow { transform: translateX(5px); }
+        .btn-submit .arrow {
+            transition: transform 0.25s;
+            font-size: 18px;
+        }
+
+        .btn-submit:hover .arrow {
+            transform: translateX(5px);
+        }
 
         /* ===================== MODAL WINDOW POP-UP SYSTEM ===================== */
         .modal-overlay {
@@ -649,7 +736,9 @@
             padding: 24px;
         }
 
-        .modal-overlay.show .modal-box { transform: scale(1); }
+        .modal-overlay.show .modal-box {
+            transform: scale(1);
+        }
 
         .modal-icon {
             width: 56px;
@@ -669,8 +758,19 @@
             color: var(--gold-dark);
         }
 
-        .modal-title { font-size: 18px; font-weight: 800; color: var(--navy); margin-bottom: 8px; }
-        .modal-desc { font-size: 14px; color: var(--muted); line-height: 1.5; margin-bottom: 24px; }
+        .modal-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--navy);
+            margin-bottom: 8px;
+        }
+
+        .modal-desc {
+            font-size: 14px;
+            color: var(--muted);
+            line-height: 1.5;
+            margin-bottom: 24px;
+        }
 
         .preview-viewport-content {
             flex: 1;
@@ -685,8 +785,17 @@
             border: 1px dashed var(--border);
         }
 
-        .preview-viewport-content img { max-width: 100%; max-height: 100%; object-fit: contain; }
-        .preview-viewport-content iframe { width: 100%; height: 100%; border: none; }
+        .preview-viewport-content img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .preview-viewport-content iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
 
         .modal-btn-close {
             background: var(--navy);
@@ -711,7 +820,6 @@
             color: var(--text);
             border: 1px solid var(--border);
         }
-        .modal-btn-cancel:hover { background: #e2e8f0; }
 
         .page-footer { text-align: center; padding: 20px; font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: 1.2px; text-transform: uppercase; }
         
@@ -761,7 +869,7 @@
             .btn-outline { width: 100%; justify-content: center; }
             .field-row { grid-template-columns: 1fr; gap: 20px; }
             .upload-grid { grid-template-columns: 1fr; }
-            .upload-item { style="grid-column: span 1 !important;" }
+            #item-baptis { grid-column: span 1 !important; }
             .bottom-bar { flex-direction: column; align-items: stretch; gap: 20px; } 
             .bottom-actions { flex-direction: column; width: 100%; } 
             .btn-draft, .btn-submit { width: 100%; justify-content: center; } 
@@ -773,19 +881,19 @@
 
 <body>
 
-   <div class="topbar-wrapper">
+    <div class="topbar-wrapper">
         <div class="container">
             <header class="topbar">
-                
+
                 <div class="topbar-brand">
-                    <img src="{{ asset('img/E-Kanisius 1.png') }}" alt="E-Kanisius Logo" 
-                         style="width:85px; height:auto; object-fit:contain; flex-shrink:0;" 
-                         onerror="this.style.display='none'; document.getElementById('fallback-logo').style.display='flex';">
-                    
+                    <img src="{{ asset('img/E-Kanisius 1.png') }}" alt="E-Kanisius Logo"
+                        style="width:85px; height:auto; object-fit:contain; flex-shrink:0;"
+                        onerror="this.style.display='none'; document.getElementById('fallback-logo').style.display='flex';">
+
                     <div id="fallback-logo" class="brand-logo-box" style="display:none;">
                         <i class="fa-solid fa-building-columns"></i>
                     </div>
-                    
+
                     <div class="brand-text">
                         <div class="brand-title">SAKTI PORTAL</div>
                         <div class="brand-meta">
@@ -809,7 +917,7 @@
 
                 <div class="topbar-right">
                     <div class="user-info">
-                        <div class="user-name">Ortu Demo</div>
+                        <div class="user-name">{{ auth()->user()->name ?? 'Orang Tua' }}</div>
                         <div class="user-branch">Cabang Global</div>
                     </div>
                     
@@ -826,172 +934,238 @@
         </div>
     </div>
 
-        <form id="formPesertaDidik" action="{{ route('form.daftar.store') }}" method="POST" class="page-body" novalidate>
-            @csrf
-            <div class="page-header">
-                <div>
-                    <h1 class="page-title">Formulir Peserta Didik</h1>
-                    <p class="page-subtitle">Unit Tujuan: <strong>• 1 Calon Murid</strong></p>
-                </div>
-                <div class="header-actions">
-                    <button type="button" class="btn btn-outline" id="btnTambahAnak" onclick="tambahAnak(this, event)">
-                        ＋ TAMBAH ANAK
-                    </button>
-                </div>
+    <form id="formPesertaDidik" action="{{ route('form.daftar.store') }}" method="POST" enctype="multipart/form-data"
+        class="page-body" novalidate>
+        @csrf
+        @if ($errors->any())
+            <div style="background:#fee2e2;color:#991b1b;padding:12px 16px;border-radius:10px;margin-bottom:16px;">
+                <strong>Form gagal dikirim:</strong>
+                <ul style="margin-top:8px;padding-left:18px;">
+                    @foreach ($errors->getMessages() as $field => $messages)
+                        @foreach ($messages as $message)
+                            <li><strong>{{ $field }}</strong>: {{ $message }}</li>
+                        @endforeach
+                    @endforeach
+                </ul>
             </div>
+        @endif
 
-            <div class="form-card">
-                <div class="data-anak-badge" id="anakBadge">DATA ANAK 1</div>
+        @if (session('success'))
+            <div style="background:#dcfce7;color:#166534;padding:12px 16px;border-radius:10px;margin-bottom:16px;">
+                {{ session('success') }}
+            </div>
+        @endif
 
-                <div class="form-grid">
-                    <div class="form-col">
-                        <div class="col-header">
-                            <span class="col-header-title">Identitas Dasar</span>
-                        </div>
+        @if (session('warning'))
+            <div style="background:#fef3c7;color:#92400e;padding:12px 16px;border-radius:10px;margin-bottom:16px;">
+                {{ session('warning') }}
+            </div>
+        @endif
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Formulir Peserta Didik</h1>
+                <p class="page-subtitle">Unit Tujuan: <strong>• 1 Calon Murid</strong></p>
+            </div>
+            <div class="header-actions">
+                <button type="button" class="btn btn-outline" id="btnTambahAnak" onclick="tambahAnak(this, event)">
+                    ＋ TAMBAH ANAK
+                </button>
+            </div>
+        </div>
 
-                        <div class="field-group required">
-                            <label class="field-label" for="namaLengkap">Nama Lengkap</label>
-                            <input type="text" id="namaLengkap" name="nama_lengkap" class="field-input" placeholder="Nama Lengkap" autocomplete="off" oninput="validateField(this, v => v.trim().length >= 3)">
-                        </div>
+        <div class="form-card">
+            <div class="data-anak-badge" id="anakBadge">DATA ANAK 1</div>
 
-                        <div class="field-group required">
-                            <label class="field-label" for="nik">NIK (Nomor Induk Kependudukan)</label>
-                            <input type="text" id="nik" name="nik" class="field-input" placeholder="16 Digit NIK" maxlength="16" autocomplete="off" oninput="onlyDigits(this); validateField(this, v => /^\d{16}$/.test(v))">
-                        </div>
-
-                        <div class="field-row required">
-                            <div class="field-group">
-                                <label class="field-label" for="tanggalLahir">Tanggal Lahir</label>
-                                <input type="date" id="tanggalLahir" name="tanggal_lahir" class="field-input" onchange="validateField(this, v => v !== '')">
-                            </div>
-                            <div class="field-group">
-                                <label class="field-label" for="golDarah">Gol. Darah</label>
-                                <select id="golDarah" name="gol_darah" class="field-select" onchange="onSelectChange(this)">
-                                    <option value="O" selected>O</option>
-                                    <option value="A">A</option>
-                                    <option value="B">B</option>
-                                    <option value="AB">AB</option>
-                                </select>
-                            </div>
-                        </div>
+            <div class="form-grid">
+                <div class="form-col">
+                    <div class="col-header">
+                        <span class="col-header-title">Identitas Dasar</span>
                     </div>
 
-                    <div class="form-col">
-                        <div class="col-header">
-                            <span class="col-header-title">Informasi Lanjutan</span>
-                        </div>
+                    <div class="field-group required">
+                        <label class="field-label" for="namaLengkap">Nama Lengkap</label>
+                        <input type="text" id="namaLengkap" name="nama_lengkap" class="field-input"
+                            placeholder="Nama Lengkap" value="{{ old('nama_lengkap', $draft->nama ?? '') }}"
+                            autocomplete="off" oninput="validateField(this, v => v.trim().length >= 3)">
+                    </div>
 
-                        <div class="field-group required">
-                            <label class="field-label" for="agama">Agama</label>
-                            <select id="agama" name="agama" class="field-select" onchange="onSelectChange(this); toggleSuratBaptis(this.value)">
-                                <option value="" selected disabled>Pilih Agama</option>
-                                <option value="kristen">Kristen</option>
-                                <option value="katolik">Katolik</option>
-                                <option value="islam">Islam</option>
-                                <option value="buddha">Buddha</option>
-                                <option value="hindu">Hindu</option>
-                                <option value="konghucu">Konghucu</option>
+                    <div class="field-group required">
+                        <label class="field-label" for="nik">NIK (Nomor Induk Kependudukan)</label>
+                        <input type="text" id="nik" name="nik" class="field-input" placeholder="16 Digit NIK"
+                            maxlength="16" value="{{ old('nik', $draft->nik ?? '') }}" autocomplete="off"
+                            oninput="onlyDigits(this); validateField(this, v => /^\d{16}$/.test(v))">
+                    </div>
+
+                    <div class="field-row required">
+                        <div class="field-group">
+                            <label class="field-label" for="tanggalLahir">Tanggal Lahir</label>
+                            <input type="date" id="tanggalLahir" name="tanggal_lahir" class="field-input"
+                                value="{{ old('tanggal_lahir', $draft->tanggal_lahir ?? '') }}"
+                                onchange="validateField(this, v => v !== '')">
+                        </div>
+                        <div class="field-group">
+                            <label class="field-label" for="golDarah">Gol. Darah</label>
+                            <select id="golDarah" name="gol_darah" class="field-select" onchange="onSelectChange(this)">
+                                @php($golDarahValue = old('gol_darah', $draft->golongan_darah ?? 'O'))
+                                <option value="O" {{ $golDarahValue == 'O' ? 'selected' : '' }}>O</option>
+                                <option value="A" {{ $golDarahValue == 'A' ? 'selected' : '' }}>A</option>
+                                <option value="B" {{ $golDarahValue == 'B' ? 'selected' : '' }}>B</option>
+                                <option value="AB" {{ $golDarahValue == 'AB' ? 'selected' : '' }}>AB</option>
                             </select>
                         </div>
+                    </div>
+                </div>
 
-                        <div class="field-group required">
-                            <div class="alamat-header">
-                                <label class="field-label" for="alamat">Alamat Domisili Anak</label>
-                                <button type="button" class="samakan-btn" onclick="samakanAlamat()">
-                                    Samakan dengan Alamat Ortu
-                                </button>
+                <div class="form-col">
+                    <div class="col-header">
+                        <span class="col-header-title">Informasi Lanjutan</span>
+                    </div>
+
+                    <div class="field-group required">
+                        <label class="field-label" for="agama">Agama</label>
+                        <select id="agama" name="agama" class="field-select"
+                            onchange="onSelectChange(this); toggleSuratBaptis(this.value)">
+                            @php($agamaValue = old('agama', $draft->agama ?? ''))
+                            <option value="" {{ $agamaValue == '' ? 'selected' : '' }} disabled>Pilih Agama</option>
+                            <option value="kristen" {{ $agamaValue == 'kristen' ? 'selected' : '' }}>Kristen</option>
+                            <option value="katolik" {{ $agamaValue == 'katolik' ? 'selected' : '' }}>Katolik</option>
+                            <option value="islam" {{ $agamaValue == 'islam' ? 'selected' : '' }}>Islam</option>
+                            <option value="buddha" {{ $agamaValue == 'buddha' ? 'selected' : '' }}>Buddha</option>
+                            <option value="hindu" {{ $agamaValue == 'hindu' ? 'selected' : '' }}>Hindu</option>
+                            <option value="konghucu" {{ $agamaValue == 'konghucu' ? 'selected' : '' }}>Konghucu</option>
+                        </select>
+                    </div>
+
+                    <div class="field-group required">
+                        <div class="alamat-header">
+                            <label class="field-label" for="alamat">Alamat Domisili Anak</label>
+                            <button type="button" class="samakan-btn" onclick="samakanAlamat()">
+                                Samakan dengan Alamat Ortu
+                            </button>
+                        </div>
+                        <textarea id="alamat" name="alamat" class="field-textarea"
+                            placeholder="Masukkan alamat lengkap tempat tinggal anak..."
+                            oninput="validateField(this, v => v.trim().length >= 5)">{{ old('alamat', $draft->alamat ?? '') }}</textarea>
+                    </div>
+
+                    <div class="field-group required">
+                        <label class="field-label" for="tempat-lahir">Tempat Lahir Anak</label>
+                        <input type="text" id="tempat-lahir" name="tempat_lahir" class="field-input"
+                            placeholder="Masukkan kota tempat lahir anak..."
+                            value="{{ old('tempat_lahir', $draft->tempat_lahir ?? '') }}"
+                            oninput="validateField(this, v => v.trim().length >= 3)">
+                    </div>
+
+                    <div class="field-group">
+                        <span class="upload-label">Upload Berkas Fisik</span>
+                        <div class="upload-grid">
+                            <div class="upload-item required" id="item-kk" onclick="triggerUpload('file-kk')">
+                                <div class="upload-left"><span class="upload-name">Kartu Keluarga</span></div>
+                                <div class="upload-actions">
+                                    <button type="button" id="btn-prev-file-kk"
+                                        class="upload-action-btn btn-preview-disabled" title="Preview"
+                                        onclick="previewDoc(event,'file-kk','Kartu Keluarga')">👁</button>
+                                    <button type="button" class="upload-action-btn" title="Upload"
+                                        onclick="triggerUpload('file-kk', event)">↑</button>
+                                </div>
+                                <input type="file" id="file-kk" name="kartu_keluarga" class="upload-file-input"
+                                    accept=".jpg,.jpeg,.png,.pdf"
+                                    onchange="onUpload(this,'item-kk','btn-prev-file-kk')">
                             </div>
-                            <textarea id="alamat" name="alamat" class="field-textarea" placeholder="Masukkan alamat lengkap tempat tinggal anak..." oninput="validateField(this, v => v.trim().length >= 5)"></textarea>
-                        </div>
 
-                        <div class="field-group required">
-                            <label class="field-label" for="tempat-lahir">Tempat Lahir Anak</label>
-                            <input type="text" id="tempat-lahir" name="tempat_lahir" class="field-input" placeholder="Masukkan kota tempat lahir anak..." oninput="validateField(this, v => v.trim().length >= 3)">
-                        </div>
-
-                        <div class="field-group">
-                            <span class="upload-label">Upload Berkas Fisik</span>
-                            <div class="upload-grid">
-                                <div class="upload-item required" id="item-kk" onclick="triggerUpload('file-kk')">
-                                    <div class="upload-left"><span class="upload-name">Kartu Keluarga</span></div>
-                                    <div class="upload-actions">
-                                        <button type="button" id="btn-prev-file-kk" class="upload-action-btn btn-preview-disabled" title="Preview" onclick="previewDoc(event,'file-kk','Kartu Keluarga')">👁</button>
-                                        <button type="button" class="upload-action-btn" title="Upload" onclick="triggerUpload('file-kk', event)">↑</button>
-                                    </div>
-                                    <input type="file" id="file-kk" class="upload-file-input" accept="image/*,.pdf" onchange="onUpload(this,'item-kk','btn-prev-file-kk')">
+                            <div class="upload-item required" id="item-akte" onclick="triggerUpload('file-akte')">
+                                <div class="upload-left"><span class="upload-name">Akte Kelahiran</span></div>
+                                <div class="upload-actions">
+                                    <button type="button" id="btn-prev-file-akte"
+                                        class="upload-action-btn btn-preview-disabled" title="Preview"
+                                        onclick="previewDoc(event,'file-akte','Akte Kelahiran')">👁</button>
+                                    <button type="button" class="upload-action-btn" title="Upload"
+                                        onclick="triggerUpload('file-akte', event)">↑</button>
                                 </div>
+                                <input type="file" id="file-akte" name="akte_kelahiran" class="upload-file-input"
+                                    accept=".jpg,.jpeg,.png,.pdf"
+                                    onchange="onUpload(this,'item-akte','btn-prev-file-akte')">
+                            </div>
 
-                                <div class="upload-item required" id="item-akte" onclick="triggerUpload('file-akte')">
-                                    <div class="upload-left"><span class="upload-name">Akte Kelahiran</span></div>
-                                    <div class="upload-actions">
-                                        <button type="button" id="btn-prev-file-akte" class="upload-action-btn btn-preview-disabled" title="Preview" onclick="previewDoc(event,'file-akte','Akte Kelahiran')">👁</button>
-                                        <button type="button" class="upload-action-btn" title="Upload" onclick="triggerUpload('file-akte', event)">↑</button>
-                                    </div>
-                                    <input type="file" id="file-akte" class="upload-file-input" accept="image/*,.pdf" onchange="onUpload(this,'item-akte','btn-prev-file-akte')">
+                            <div class="upload-item required" id="item-ktp" onclick="triggerUpload('file-ktp')">
+                                <div class="upload-left"><span class="upload-name">E-KTP Orang Tua</span></div>
+                                <div class="upload-actions">
+                                    <button type="button" id="btn-prev-file-ktp"
+                                        class="upload-action-btn btn-preview-disabled" title="Preview"
+                                        onclick="previewDoc(event,'file-ktp','E-KTP Orang Tua')">👁</button>
+                                    <button type="button" class="upload-action-btn" title="Upload"
+                                        onclick="triggerUpload('file-ktp', event)">↑</button>
                                 </div>
+                                <input type="file" id="file-ktp" name="ktp_ortu" class="upload-file-input"
+                                    accept=".jpg,.jpeg,.png,.pdf"
+                                    onchange="onUpload(this,'item-ktp','btn-prev-file-ktp')">
+                            </div>
 
-                                <div class="upload-item required" id="item-ktp" onclick="triggerUpload('file-ktp')">
-                                    <div class="upload-left"><span class="upload-name">E-KTP Orang Tua</span></div>
-                                    <div class="upload-actions">
-                                        <button type="button" id="btn-prev-file-ktp" class="upload-action-btn btn-preview-disabled" title="Preview" onclick="previewDoc(event,'file-ktp','E-KTP Orang Tua')">👁</button>
-                                        <button type="button" class="upload-action-btn" title="Upload" onclick="triggerUpload('file-ktp', event)">↑</button>
-                                    </div>
-                                    <input type="file" id="file-ktp" class="upload-file-input" accept="image/*,.pdf" onchange="onUpload(this,'item-ktp','btn-prev-file-ktp')">
+                            <div class="upload-item required" id="item-foto" onclick="triggerUpload('file-foto')">
+                                <div class="upload-left"><span class="upload-name">Pas Foto (3x4)</span></div>
+                                <div class="upload-actions">
+                                    <button type="button" id="btn-prev-file-foto"
+                                        class="upload-action-btn btn-preview-disabled" title="Preview"
+                                        onclick="previewDoc(event,'file-foto','Pas Foto 3x4')">👁</button>
+                                    <button type="button" class="upload-action-btn" title="Upload"
+                                        onclick="triggerUpload('file-foto', event)">↑</button>
                                 </div>
+                                <input type="file" id="file-foto" name="pas_foto" class="upload-file-input"
+                                    accept=".jpg,.jpeg,.png" onchange="onUpload(this,'item-foto','btn-prev-file-foto')">
+                            </div>
 
-                                <div class="upload-item required" id="item-foto" onclick="triggerUpload('file-foto')">
-                                    <div class="upload-left"><span class="upload-name">Pas Foto (3x4)</span></div>
-                                    <div class="upload-actions">
-                                        <button type="button" id="btn-prev-file-foto" class="upload-action-btn btn-preview-disabled" title="Preview" onclick="previewDoc(event,'file-foto','Pas Foto 3x4')">👁</button>
-                                        <button type="button" class="upload-action-btn" title="Upload" onclick="triggerUpload('file-foto', event)">↑</button>
-                                    </div>
-                                    <input type="file" id="file-foto" class="upload-file-input" accept="image/*" onchange="onUpload(this,'item-foto','btn-prev-file-foto')">
+                            <div class="upload-item" id="item-baptis" style="grid-column: span 2; display: none;"
+                                onclick="triggerUpload('file-baptis')">
+                                <div class="upload-left">
+                                    <span class="upload-doc-icon">📄</span>
+                                    <span class="upload-name">Surat Baptis</span>
+                                    <span class="upload-wajib">Wajib</span>
                                 </div>
-
-                                <div class="upload-item" id="item-baptis" style="grid-column: span 2; display: none;" onclick="triggerUpload('file-baptis')">
-                                    <div class="upload-left">
-                                        <span class="upload-doc-icon">📄</span>
-                                        <span class="upload-name">Surat Baptis</span>
-                                        <span class="upload-wajib">Wajib</span>
-                                    </div>
-                                    <div class="upload-actions">
-                                        <button type="button" id="btn-prev-file-baptis" class="upload-action-btn btn-preview-disabled" title="Preview" onclick="previewDoc(event,'file-baptis','Surat Baptis')">👁</button>
-                                        <button type="button" class="upload-action-btn" title="Upload" onclick="triggerUpload('file-baptis', event)">↑</button>
-                                    </div>
-                                    <input type="file" id="file-baptis" class="upload-file-input" accept="image/*,.pdf" onchange="onUpload(this,'item-baptis','btn-prev-file-baptis')">
+                                <div class="upload-actions">
+                                    <button type="button" id="btn-prev-file-baptis"
+                                        class="upload-action-btn btn-preview-disabled" title="Preview"
+                                        onclick="previewDoc(event,'file-baptis','Surat Baptis')">👁</button>
+                                    <button type="button" class="upload-action-btn" title="Upload"
+                                        onclick="triggerUpload('file-baptis', event)">↑</button>
                                 </div>
+                                <input type="file" id="file-baptis" name="surat_baptis" class="upload-file-input"
+                                    accept=".jpg,.jpeg,.png,.pdf"
+                                    onchange="onUpload(this,'item-baptis','btn-prev-file-baptis')">
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="bottom-bar">
-                <a href="{{ route('profil.ortu') }}" class="back-link" id="btnLinkKembali">← Kembali ke Profil Ortu</a>
-                <div class="bottom-actions">
-                    <button type="button" class="btn-draft" id="btnDraft" onclick="saveDraft(this, event)">
-                        SIMPAN DRAFT
-                    </button>
-                    <button type="submit" class="btn-submit" id="btnSubmit">
-                        SUBMIT SEKARANG <span class="arrow">›</span>
-                    </button>
-                </div>
+        <div class="bottom-bar">
+            <a href="{{ route('profil.ortu') }}" class="back-link" id="btnLinkKembali">← Kembali ke Profil Ortu</a>
+            <div class="bottom-actions">
+                <button type="button" class="btn-draft" id="btnDraft" onclick="saveDraft(this, event)">
+                    SIMPAN DRAFT
+                </button>
+                <button type="submit" class="btn-submit" id="btnSubmit">
+                    SUBMIT SEKARANG <span class="arrow">›</span>
+                </button>
             </div>
-        </form>
+        </div>
+    </form>
     </div>
 
     <div id="errorModal" class="modal-overlay">
         <div class="modal-box">
             <div class="modal-icon"><i class="fa-solid fa-circle-exclamation"></i></div>
             <h3 class="modal-title">Data Belum Lengkap</h3>
-            <p class="modal-desc">Mohon periksa kembali. Seluruh bidang data bertanda bintang (*) dan berkas wajib harus diisi sebelum melanjutkan.</p>
+            <p class="modal-desc">Mohon periksa kembali. Seluruh bidang data bertanda bintang (*) dan berkas wajib harus
+                diisi sebelum melanjutkan.</p>
             <button type="button" id="closeModalBtn" class="modal-btn-close">Mengerti</button>
         </div>
     </div>
 
     <div id="previewModal" class="modal-overlay">
         <div class="modal-box modal-box-large">
-            <h3 class="modal-title" id="previewModalTitle" style="margin-bottom: 12px; text-align: left;">Pratinjau Berkas</h3>
+            <h3 class="modal-title" id="previewModalTitle" style="margin-bottom: 12px; text-align: left;">Pratinjau
+                Berkas</h3>
             <div class="preview-viewport-content" id="previewViewport"></div>
             <button type="button" id="closePreviewModalBtn" class="modal-btn-close">Tutup Pratinjau</button>
         </div>
@@ -1001,10 +1175,12 @@
         <div class="modal-box">
             <div class="modal-icon modal-icon-warn"><i class="fa-solid fa-triangle-exclamation"></i></div>
             <h3 class="modal-title">Tinggalkan Halaman?</h3>
-            <p class="modal-desc">Data pendaftaran calon murid belum disimpan ke sistem. Apakah Anda yakin ingin keluar dan membuang perubahan?</p>
+            <p class="modal-desc">Data pendaftaran calon murid belum disimpan ke sistem. Apakah Anda yakin ingin keluar
+                dan membuang perubahan?</p>
             <div class="modal-btn-group">
                 <button type="button" id="btnCancelLeave" class="modal-btn-close modal-btn-cancel">Batal</button>
-                <button type="button" id="btnConfirmLeave" class="modal-btn-close" style="background: var(--red);">Ya, Keluar</button>
+                <button type="button" id="btnConfirmLeave" class="modal-btn-close" style="background: var(--red);">Ya,
+                    Keluar</button>
             </div>
         </div>
     </div>
@@ -1102,7 +1278,12 @@
         ============================================================ */
         function samakanAlamat() {
             const ta = document.getElementById('alamat');
-            ta.value = "Jl. Jend. Sudirman No. 45, Yogyakarta";
+            const alamatOrtu = @json($orangTua->alamat ?? '');
+            if (!alamatOrtu) {
+                showToast('⚠️ Alamat orang tua belum tersedia. Lengkapi profil orang tua terlebih dahulu.');
+                return;
+            }
+            ta.value = alamatOrtu;
             ta.classList.remove('is-invalid');
             ta.classList.add('is-valid');
             showToast('🏠 Alamat disalin dari data orang tua');
@@ -1140,13 +1321,13 @@
 
         function previewDoc(e, inputId, labelName) {
             e.stopPropagation(); // Matikan bubbling klik agar dialog upload tidak terbuka ganda
-            
+
             const fileInput = document.getElementById(inputId);
             if (!fileInput.files || !fileInput.files[0]) return;
 
             const file = fileInput.files[0];
             const fileType = file.type;
-            
+
             previewModalTitle.textContent = `Pratinjau Berkas: ${labelName}`;
             previewViewport.innerHTML = ''; // Reset DOM viewport render
 
@@ -1158,7 +1339,7 @@
                 const iframe = document.createElement('iframe');
                 iframe.src = blobURL;
                 previewViewport.appendChild(iframe);
-            } 
+            }
             // Skenario 2: Jika berkas berupa gambar/citra biner murni
             else if (fileType.startsWith("image/")) {
                 reader.onload = function (event) {
@@ -1185,25 +1366,75 @@
         ============================================================ */
         function saveDraft(btn, e) {
             if (e) addRipple(btn, e);
-            
-            const namaField = document.getElementById('namaLengkap');
 
-            // Proteksi alasan kegagalan: Berikan keterangan field minimal pendaftaran draf
+            const form = document.getElementById('formPesertaDidik');
+            const namaField = document.getElementById('namaLengkap');
+            const nikField = document.getElementById('nik');
+            const tanggalField = document.getElementById('tanggalLahir');
+            const agamaField = document.getElementById('agama');
+            const alamatField = document.getElementById('alamat');
+            const tempatField = document.getElementById('tempat-lahir');
+
             if (!namaField.value || namaField.value.trim().length < 3) {
-                showToast('⚠️ Gagal menyimpan draf: Data tidak lengkap.');
+                showToast('⚠️ Gagal menyimpan draf: Nama Lengkap wajib diisi minimal 3 karakter.');
                 namaField.classList.add('is-invalid');
+                return;
+            }
+
+            if (!/^\d{16}$/.test(nikField.value) || !tanggalField.value || !agamaField.value || alamatField.value.trim().length < 5 || tempatField.value.trim().length < 3) {
+                showToast('⚠️ Draft butuh data identitas dasar lengkap, tetapi berkas belum wajib.');
                 return;
             }
 
             btn.disabled = true;
             btn.textContent = 'Menyimpan...';
-            
-            setTimeout(() => {
-                btn.innerHTML = 'Draft Tersimpan';
-                showToast('💾 data formulir anak berhasil disimpan dalam draft!');
-                namaField.classList.remove('is-invalid');
-                setTimeout(() => { btn.innerHTML = 'SIMPAN DRAFT'; btn.disabled = false; }, 2000);
-            }, 1000);
+
+            fetch("{{ route('form.daftar.draft') }}", {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                },
+                body: new FormData(form)
+            })
+                .then(async response => {
+                    const data = await response.json().catch(() => ({}));
+
+                    if (!response.ok || !data.success) {
+                        let message = data.message || 'Draft gagal disimpan. Periksa kembali data yang wajib diisi.';
+
+                        if (data.errors) {
+                            const firstKey = Object.keys(data.errors)[0];
+                            if (firstKey && data.errors[firstKey] && data.errors[firstKey][0]) {
+                                message = data.errors[firstKey][0];
+                            }
+                        }
+
+                        throw new Error(message);
+                    }
+
+                    btn.innerHTML = 'Draft Tersimpan';
+                    showToast('💾 Draft data formulir anak berhasil disimpan ke database!');
+                    namaField.classList.remove('is-invalid');
+
+                    setTimeout(() => {
+                        btn.innerHTML = 'SIMPAN DRAFT';
+                        btn.disabled = false;
+                    }, 1800);
+                })
+                .catch(error => {
+                    btn.innerHTML = 'SIMPAN DRAFT';
+                    btn.disabled = false;
+                    showToast('❌ ' + error.message);
+                });
+        }
+
+        /* ============================================================
+            TOMBOL TAMBAH ANAK
+        ============================================================ */
+        function tambahAnak(btn, e) {
+            if (e) addRipple(btn, e);
+            showToast('ℹ️ Untuk saat ini, satu form digunakan untuk satu calon siswa. Setelah submit, Anda bisa menambahkan anak lagi dari dashboard.');
         }
 
         /* ============================================================
@@ -1240,7 +1471,7 @@
         const btnLinkKembali = document.getElementById('btnLinkKembali');
         const btnCancelLeave = document.getElementById('btnCancelLeave');
         const btnConfirmLeave = document.getElementById('btnConfirmLeave');
-        
+
         let targetLeaveUrl = "";
 
         function checkUnsavedChanges(e, targetUrl) {
@@ -1256,7 +1487,7 @@
             }
         }
 
-        btnLinkKembali.addEventListener('click', function(e) {
+        btnLinkKembali.addEventListener('click', function (e) {
             checkUnsavedChanges(e, this.getAttribute('href'));
         });
 
@@ -1279,7 +1510,7 @@
         const closeModalBtn = document.getElementById("closeModalBtn");
 
         form.addEventListener("submit", function (event) {
-            event.preventDefault(); 
+            event.preventDefault();
             let isFormValid = true;
 
             const fieldsToValidate = [
@@ -1293,19 +1524,19 @@
 
             fieldsToValidate.forEach(({ id, check }) => {
                 const el = document.getElementById(id);
-                if (!check(el.value)) { isFormValid = false; el.classList.add('is-invalid'); } 
+                if (!check(el.value)) { isFormValid = false; el.classList.add('is-invalid'); }
                 else { el.classList.remove('is-invalid'); }
             });
 
             ['item-kk', 'item-akte', 'item-ktp', 'item-foto'].forEach(id => {
                 const item = document.getElementById(id);
-                if (!item.classList.contains('uploaded')) { isFormValid = false; item.classList.add('is-invalid'); } 
+                if (!item.classList.contains('uploaded')) { isFormValid = false; item.classList.add('is-invalid'); }
                 else { item.classList.remove('is-invalid'); }
             });
 
             if (isKatolik) {
                 const baptisItem = document.getElementById('item-baptis');
-                if (!baptisItem.classList.contains('uploaded')) { isFormValid = false; baptisItem.classList.add('is-invalid'); } 
+                if (!baptisItem.classList.contains('uploaded')) { isFormValid = false; baptisItem.classList.add('is-invalid'); }
                 else { baptisItem.classList.remove('is-invalid'); }
             }
 
@@ -1315,10 +1546,17 @@
                 return;
             }
 
-            form.submit();
+            HTMLFormElement.prototype.submit.call(form);
         });
 
         closeModalBtn.addEventListener("click", () => modal.classList.remove("show"));
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const agamaSelect = document.getElementById('agama');
+            if (agamaSelect && agamaSelect.value === 'katolik') {
+                toggleSuratBaptis('katolik');
+            }
+        });
         document.addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); saveDraft(document.getElementById('btnDraft'), null); } });
     </script>
 </body>
