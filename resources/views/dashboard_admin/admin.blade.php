@@ -792,9 +792,16 @@
                 </div>
                 <i class="fas fa-chevron-down" style="color:var(--gray-400);font-size:.75rem;"></i>
             </div>
-            <button class="nav-logout" onclick="handleLogout()" title="Logout">
-                <i class="fas fa-arrow-right-from-bracket"></i>
-            </button>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: inline;">
+    @csrf
+    
+    <button type="button" class="btn-logout" title="Keluar" 
+           onclick="handleLogout()"
+            style="border: none; background: none; cursor: pointer;">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+    </button>
+</form>
+            
         </div>
     </nav>
 
@@ -1510,8 +1517,7 @@ function handleLogout() {
     closeModal('modal-profile');
     toast('info', '<i class="fas fa-arrow-right-from-bracket"></i> Sedang logout...');
     setTimeout(() => {
-        // In Laravel, this would be: window.location.href = '/logout';
-        // For demo purposes:
+     href = '{{ route("logout") }}'; // Redirect ke halaman login (ganti dengan URL sebenarnya)
         alert('Logout berhasil! (Redirect ke halaman login)');
     }, 1200);
 }

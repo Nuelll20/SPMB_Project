@@ -47,21 +47,22 @@
         }   
 
         /* ===================== TOPBAR / NAVBAR ===================== */
-       .topbar-wrapper {
+        .topbar-wrapper {
             width: 100%;
             background: var(--bg);
-            padding-top: 24px;
+            padding-top: 16px; /* Jarak dari paling atas layar dikurangi agar lebih presisi */
             animation: fadeIn 0.6s ease forwards;
         }
 
         .topbar {
             background: var(--surface);
-            border-radius: var(--radius-md);
+            border-radius: 16px; /* DIUBAH LANGSUNG KE ANGKA: Biar langsung rounded sempurna tanpa variabel gaib */
             padding: 14px 28px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             box-shadow: 0 4px 20px rgba(0, 43, 91, 0.04);
+            border: 1px solid var(--border); /* Ditambahkan border tipis agar senada dengan main-card */
         }
 
         .topbar-brand {
@@ -148,7 +149,7 @@
             color: var(--navy);
         }
 
-        /* Indikator Titik Emas Aktif Berpindah Ke Riwayat */
+        /* Indikator Titik Emas Aktif */
         .nav-link.active .nav-dot {
             width: 5px;
             height: 5px;
@@ -196,6 +197,7 @@
             justify-content: center;
             cursor: pointer;
             transition: all 0.2s ease;
+            text-decoration: none;
         }
 
         .btn-logout:hover {
@@ -225,7 +227,6 @@
                 opacity: 0;
                 transform: translateY(16px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -495,13 +496,8 @@
         }
 
         @keyframes spin {
-            from {
-                transform: rotate(0deg);
-            }
-
-            to {
-                transform: rotate(360deg);
-            }
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         .btn-antrian {
@@ -521,7 +517,13 @@
             text-transform: uppercase;
             transition: all 0.2s;
             white-space: nowrap;
+            min-width: 120px;
+            justify-content: center;
         }
+
+        /* REVISI CSS: Tambahkan status warna agar selaras saat filter if else bekerja */
+        .btn-antrian.approved-style { background: var(--green) !important; }
+        .btn-antrian.rejected-style { background: var(--red) !important; }
 
         .btn-antrian:hover {
             background: #111c50;
@@ -543,82 +545,132 @@
         }
 
         /* ==================== TOAST ==================== */
-        #toast {
+       #toast {
             position: fixed;
             bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%) translateY(70px);
+            right: 30px; /* Memindahkan posisi dari tengah ke kanan */
             background: var(--navy);
             color: white;
-            padding: 12px 28px;
-            border-radius: 40px;
+            padding: 14px 28px;
+            border-radius: 12px;
             font-size: 13.5px;
             font-weight: 600;
             opacity: 0;
             pointer-events: none;
+            transform: translateX(30px); /* Efek animasi transisi masuk dari kanan */
             transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s;
             z-index: 9999;
-            white-space: nowrap;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+            box-shadow: 0 10px 25px -5px rgba(26, 42, 108, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         #toast.show {
             opacity: 1;
-            transform: translateX(-50%) translateY(0);
+            transform: translateX(0);
         }
 
-        /* ==================== RESPONSIVE ==================== */
-        @media (max-width: 900px) {
-            .page-body {
-                padding: 28px 20px;
-            }
+        /* ===================== CUSTOM POP-UP MODAL OVERLAY ===================== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(26, 42, 108, 0.4);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
 
-            .topbar {
-                padding: 0 20px;
-            }
+        .modal-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
 
-            .brand-uid {
-                display: none;
-            }
+        .modal-box {
+            background: var(--surface);
+            padding: 32px;
+            border-radius: 24px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
 
-            .main-card {
-                padding: 28px 24px 32px;
-            }
+        .modal-overlay.show .modal-box { transform: scale(1); }
 
-            .card-title {
-                font-size: 26px;
-            }
+        .modal-icon {
+            width: 56px;
+            height: 56px;
+            background: #fff5f5;
+            color: var(--red);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin: 0 auto 16px auto;
+        }
+
+        .modal-title { font-size: 18px; font-weight: 800; color: var(--navy); margin-bottom: 8px; }
+        .modal-desc { font-size: 14px; color: var(--muted); line-height: 1.5; margin-bottom: 24px; }
+        
+        .modal-btn-close {
+            background: var(--navy);
+            color: var(--surface);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+        }
+        .modal-btn-close:hover { background: #111c44; }
+        .modal-btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .modal-btn-cancel { background: var(--surface2); color: #1a1f36; border: 1px solid var(--border); }
+        .modal-btn-cancel:hover { background: #e2e8f0; }
+
+        /* ==================== RESPONSIVE (MEDIA QUERIES) ==================== */
+        @media (max-width: 1024px) {
+            .page-body { padding: 32px 24px; }
+            .main-card { padding: 32px; }
+        }
+
+        @media (max-width: 768px) {
+            .topbar { padding: 12px 20px; }
+            .topbar-nav { gap: 16px; }
+            .card-title { font-size: 28px; }
+            .student-card { padding: 16px 20px; }
         }
 
         @media (max-width: 640px) {
-            .topbar-nav {
-                display: none;
-            }
-
-            .card-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .btn-daftarkan {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .student-card {
-                flex-wrap: wrap;
-                gap: 14px;
-            }
-
-            .student-actions {
-                width: 100%;
-            }
-
-            .btn-verifikasi,
-            .btn-antrian {
-                flex: 1;
-                justify-content: center;
-            }
+            .topbar { flex-direction: column; gap: 16px; padding: 16px; text-align: center; }
+            .topbar-brand { flex-direction: column; gap: 6px; }
+            .topbar-nav { width: 100%; justify-content: center; gap: 20px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 10px 0; }
+            .topbar-right { width: 100%; justify-content: space-between; padding-top: 4px; }
+            .user-info { text-align: left; }
+            .card-header { flex-direction: column; align-items: stretch; gap: 16px; }
+            .card-header-left { align-items: center; text-align: center; }
+            .status-badge { justify-content: center; width: 100%; }
+            .btn-daftarkan { width: 100%; justify-content: center; }
+            .student-card { flex-direction: column; align-items: center; text-align: center; gap: 16px; padding: 24px 16px; }
+            .student-card::before { left: 0; right: 0; top: 0; bottom: auto; width: auto; height: 4px; }
+            .student-meta { justify-content: center; gap: 12px; }
+            .student-actions { width: 100%; flex-direction: column; gap: 8px; }
+            .btn-verifikasi, .btn-antrian { width: 100%; justify-content: center; }
+            #toast { bottom: 20px; right: 20px; left: 20px; transform: translateY(50px); white-space: normal; text-align: center; justify-content: center; }
+            #toast.show { transform: translateY(0); }
         }
     </style>
 </head>
@@ -649,12 +701,14 @@
 
                 <nav class="topbar-nav">
                     <a class="nav-link active" href="{{ route('dashboard') }}">
-                         Dashboard <span class="nav-dot"></span>
+                        <i class=""></i> Dashboard <span class="nav-dot"></span>
                     </a>
                     <a class="nav-link" href="{{ route('riwayat') }}">
-                         Riwayat 
+                        <i class=""></i> Riwayat 
                     </a>
-                    <a class="nav-link" href="#"> Pusat Bantuan</a>
+                    <a class="nav-link" href="{{ route('pusat_bantuan') }}">
+                        <i class=""></i> Pusat Bantuan
+                    </a>
                 </nav>
 
                 <div class="topbar-right">
@@ -662,9 +716,12 @@
                         <div class="user-name">Ortu Demo</div>
                         <div class="user-branch">Cabang Global</div>
                     </div>
-                    <button class="btn-logout" title="Keluar">
+                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        @csrf
+                     </form>
+                     <button type="button" class="btn-logout" title="Keluar" onclick="openLogoutModal()" style="border: none; background: none; cursor: pointer;">
                         <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                    </button>
+                     </button>
                 </div>
             </header>
         </div>
@@ -676,7 +733,6 @@
                 <div class="card-header-left">
                     <h1 class="card-title">Portal Orang Tua</h1>
                     <div class="status-badge">
-                        <span class="status-badge-icon">✦</span>
                         <span class="status-badge-text">Status: Batch 1 (Gelombang Utama)</span>
                         <span class="status-badge-dot"></span>
                         <span class="status-badge-text">Sisa Kuota: 23</span>
@@ -702,15 +758,12 @@
                             </svg>
                         </div>
 
-
-
                         <div class="student-info">
                             <div class="student-name">
                                 {{ $siswa->nama }}
                             </div>
 
                             <div class="student-meta">
-
                                 <div class="meta-item">
                                     <span class="meta-icon">📍</span>
                                     {{ $siswa->tempat_lahir }}
@@ -725,22 +778,31 @@
                                     <span class="meta-icon">🔖</span>
                                     {{ $siswa->nomor_registrasi }}
                                 </div>
-
                             </div>
                         </div>
-
 
                         <div class="student-actions">
                             <a href="{{ route('verifikasi.berkas', $siswa->uid) }}" class="btn-verifikasi">
                                 <span class="spin-icon">◌</span> VERIFIKASI BERKAS
                             </a>
-                            <button class="btn-antrian">
+                            
+                            @php
+                                $statusLower = strtolower($siswa->status);
+                                $extraClass = '';
+                                if(in_array($statusLower, ['approved', 'accepted', 'diterima'])) {
+                                    $extraClass = 'approved-style';
+                                } elseif(in_array($statusLower, ['rejected', 'ditolak'])) {
+                                    $extraClass = 'rejected-style';
+                                }
+                            @endphp
+                            <button type="button" class="btn-antrian {{ $extraClass }}" 
+                                    onclick="handleStatusAction('{{ $statusLower }}', '{{ $siswa->nama }}')">
                                 {{ strtoupper($siswa->status) }}
                             </button>
                         </div>
                     </div>
                 @empty
-                    <p>Tidak ada data siswa yang ditemukan.</p>
+                    <p style="text-align: center; padding: 24px; color: var(--muted); font-weight: 600;">Tidak ada data siswa yang ditemukan.</p>
                 @endforelse
             </div>
         </div>
@@ -750,21 +812,88 @@
         Yayasan Kanisius © 2026 &nbsp;·&nbsp; Admisi Terintegrasi
     </footer>
 
+    <div id="logoutModal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-icon" style="background: #fff5f5; color: var(--red);"><i class="fa-solid fa-arrow-right-from-bracket"></i></div>
+            <h3 class="modal-title">Mengakhiri Sesi?</h3>
+            <p class="modal-desc">Apakah Anda yakin ingin keluar dari SAKTI Portal? Sesi Anda akan dihapus demi keamanan akun.</p>
+            <div class="modal-btn-group">
+                <button type="button" onclick="closeLogoutModal()" class="modal-btn-close modal-btn-cancel">Batal</button>
+                <button type="button" onclick="handleLogout()" class="modal-btn-close" style="background: var(--navy);">Ya, Keluar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="rejectedModal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-icon"><i class="fa-solid fa-circle-xclamation"></i></div>
+            <h3 class="modal-title" id="rejectTitle">Berkas Ditolak</h3>
+            <p class="modal-desc" id="rejectDesc">Mohon maaf, berkas pendaftaran calon murid perlu diperbaiki. Silakan periksa kembali kelengkapan dokumen Kartu Keluarga (KK) dan Akte Kelahiran yang buram / tidak terbaca sistem.</p>
+            <button type="button" onclick="closeRejectedModal()" class="modal-btn-close" style="background: var(--red);">Perbaiki Berkas</button>
+        </div>
+    </div>
+
     <div id="toast"></div>
 
     <script>
+        // 1. Sempurnakan fungsi showToast agar bisa menerima HTML Icon
         function showToast(msg, dur = 3000) {
             const t = document.getElementById('toast');
-            t.textContent = msg;
+            if (!t) return;
+            t.innerHTML = msg; 
             t.classList.add('show');
             clearTimeout(t._timer);
             t._timer = setTimeout(() => t.classList.remove('show'), dur);
         }
 
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', function () {
-                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-                this.classList.add('active');
+        /* ============================================================
+            MODAL LOGOUT CONTROLLERS
+        ============================================================ */
+        const logModal = document.getElementById('logoutModal');
+        function openLogoutModal() { logModal.classList.add('show'); }
+        function closeLogoutModal() { logModal.classList.remove('show'); }
+
+        function handleLogout() {
+            closeLogoutModal();
+            showToast('<i class="fas fa-arrow-right-from-bracket"></i> Mengakhiri Sesi...');
+            setTimeout(() => {
+                const logoutForm = document.getElementById('logout-form');
+                if (logoutForm) logoutForm.submit();
+            }, 800); 
+        }
+
+        /* ============================================================
+            REVISI JAVASCRIPT: CORE LOGIC CONDITIONAL HANDLING STATUS BUTTON
+        ============================================================ */
+        const rejModal = document.getElementById('rejectedModal');
+        function closeRejectedModal() { rejModal.classList.remove('show'); }
+
+        function handleStatusAction(status, studentName) {
+            // Evaluasi if-else kondisional penanganan status pendaftaran
+            if (status === 'rejected' || status === 'ditolak') {
+                document.getElementById('rejectTitle').innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Berkas ${studentName} Ditolak`;
+                rejModal.classList.add('show');
+            } 
+            else if (status === 'approved' || status === 'accepted' || status === 'diterima') {
+                showToast(`<i class="fa-solid fa-file-pdf"></i> Mengunduh Invoice Admisi untuk ${studentName}...`);
+                
+                // Mengalihkan atau mensimulasikan link download invoice asli (bisa kamu ganti lokasinya nanti)
+                setTimeout(() => {
+                    alert(`Invoice Pendaftaran Siswa atas nama ${studentName} berhasil digenerate! (Simulasi Dokumen Unduhan)`);
+                }, 1000);
+            } 
+            else {
+                // Skenario Default (Pending/Verifikasi/Proses Sesi Berjalan)
+                showToast(`<i class="fa-solid fa-spinner fa-spin"></i> Pendaftaran ${studentName} sedang diproses tim panitia admisi.`);
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function () {
+                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                });
             });
         });
     </script>
