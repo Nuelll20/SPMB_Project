@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
@@ -126,10 +127,146 @@ class AdminController extends Controller
                 'invoice_url' => route('admin.pendaftaran.invoice', $row->pendaftaran_uid),
             ];
         })->values();
+$batch = DB::table('batch_pendaftaran')
+    ->orderByDesc('uid')
+    ->first();
+$jumlahPerBatch = DB::table('pendaftaran')
+    ->select('id_batch_pendaftaran', DB::raw('COUNT(*) as total_pendaftar'))
+    ->groupBy('id_batch_pendaftaran');
 
-        return view('dashboard_admin.admin', compact('dataSiswa'));
+$batchList = DB::table('batch_pendaftaran as b')
+    ->leftJoinSub($jumlahPerBatch, 'j', function ($join) {
+        $join->on('j.id_batch_pendaftaran', '=', 'b.uid');
+    })
+    ->select(
+        'b.uid',
+        'b.nama_batch',
+        'b.tanggal_buka',
+        'b.tanggal_tutup',
+        'b.kuota',
+        'b.is_active',
+        DB::raw('COALESCE(j.total_pendaftar, 0) as total_pendaftar'),
+        DB::raw('GREATEST(b.kuota - COALESCE(j.total_pendaftar, 0), 0) as sisa_kuota')
+    )
+    ->orderBy('b.uid')
+    ->get();
+
+return view('dashboard_admin.admin', compact(
+    'dataSiswa',
+    'batch',
+    'batchList'
+));
+    }
+public function saveBatch(Request $request)
+{
+    $this->checkAdmin();
+
+    $validated = $request->validate([
+        'uid' => 'nullable|integer',
+        'nama_batch' => 'required|string|max:255',
+        'tanggal_buka' => 'required|date',
+        'tanggal_tutup' => 'required|date|after_or_equal:tanggal_buka',
+        'kuota' => 'required|integer|min:0',
+        'is_active' => 'required|in:0,1',
+    ]);
+
+    $isActive = (int) $validated['is_active'];
+    $batchId = $validated['uid'] ?? null;
+
+    // Kalau batch ini aktif, batch lain otomatis nonaktif
+    if ($isActive === 1) {
+        $query = DB::table('batch_pendaftaran');
+
+        if ($batchId) {
+            $query->where('uid', '!=', $batchId);
+        }
+
+        $query->update([
+            'is_active' => 0,
+        ]);
     }
 
+    $data = [
+        'nama_batch' => $validated['nama_batch'],
+        'tanggal_buka' => $validated['tanggal_buka'],
+        'tanggal_tutup' => $validated['tanggal_tutup'],
+        'kuota' => $validated['kuota'],
+        'is_active' => $isActive,
+        'dibuat_oleh' => session('email') ?? 'Admin',
+    ];
+
+    if ($batchId) {
+        DB::table('batch_pendaftaran')
+            ->where('uid', $batchId)
+            ->update($data);
+
+        $message = 'Batch berhasil diperbarui.';
+    } else {
+        $data['cabang'] = 'Cabang Global';
+        $data['created_at'] = now();
+
+        $batchId = DB::table('batch_pendaftaran')->insertGetId($data);
+
+        $message = 'Batch baru berhasil ditambahkan.';
+    }
+
+    $totalPendaftar = DB::table('pendaftaran')
+        ->where('id_batch_pendaftaran', $batchId)
+        ->count();
+
+    $sisaKuota = max(0, (int) $validated['kuota'] - $totalPendaftar);
+
+    return response()->json([
+        'success' => true,
+        'message' => $message,
+        'batch' => [
+            'uid' => $batchId,
+            'nama_batch' => $validated['nama_batch'],
+            'tanggal_buka' => $validated['tanggal_buka'],
+            'tanggal_tutup' => $validated['tanggal_tutup'],
+            'kuota' => (int) $validated['kuota'],
+            'is_active' => $isActive,
+            'total_pendaftar' => $totalPendaftar,
+            'sisa_kuota' => $sisaKuota,
+        ],
+    ]);
+}
+
+public function deleteBatch($uid)
+{
+    $this->checkAdmin();
+
+    $batch = DB::table('batch_pendaftaran')
+        ->where('uid', $uid)
+        ->first();
+
+    if (! $batch) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Batch tidak ditemukan.',
+        ], 404);
+    }
+
+    $jumlahPendaftar = DB::table('pendaftaran')
+        ->where('id_batch_pendaftaran', $uid)
+        ->count();
+
+    if ($jumlahPendaftar > 0) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Batch tidak bisa dihapus karena sudah memiliki pendaftar.',
+        ], 422);
+    }
+
+    DB::table('batch_pendaftaran')
+        ->where('uid', $uid)
+        ->delete();
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Batch berhasil dihapus.',
+    ]);
+}
     public function approve($uid)
     {
         $this->checkAdmin();
@@ -385,5 +522,110 @@ class AdminController extends Controller
             'message' => 'Tagihan berhasil disimpan ke database.',
             'tagihan_id' => $tagihanId,
         ]);
+
     }
+
+    public function showVerifikasi($uid)
+{
+    $this->checkAdmin();
+
+    $pendaftaran = DB::table('pendaftaran')
+        ->join('calon_siswa', 'calon_siswa.uid', '=', 'pendaftaran.calon_siswa_id')
+        ->leftJoin('orang_tua', 'orang_tua.uid', '=', 'calon_siswa.uid_orangtua')
+        ->where('pendaftaran.uid', $uid)
+        ->select(
+            'pendaftaran.uid as pendaftaran_uid',
+            'pendaftaran.no_pendaftaran',
+            'pendaftaran.tanggal_daftar',
+
+            'calon_siswa.uid as calon_siswa_uid',
+            'calon_siswa.nama',
+            'calon_siswa.nik',
+            'calon_siswa.tanggal_lahir',
+            'calon_siswa.tempat_lahir',
+            'calon_siswa.alamat',
+            'calon_siswa.agama',
+            'calon_siswa.golongan_darah',
+            'calon_siswa.nomor_registrasi',
+
+            'orang_tua.nama as nama_ortu',
+            'orang_tua.no_telp',
+            'orang_tua.pendidikan',
+            'orang_tua.gaji',
+            'orang_tua.alamat as alamat_ortu'
+        )
+        ->first();
+
+    if (!$pendaftaran) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Data pendaftaran tidak ditemukan.'
+        ], 404);
+    }
+
+    $berkasSiswa = DB::table('berkas')
+        ->where('id_pendaftar', $uid)
+        ->get();
+
+    $berkasMap = [
+        'kartu_keluarga' => null,
+        'akte_kelahiran' => null,
+        'ktp_orang_tua' => null,
+        'pas_foto' => null,
+        'surat_baptis' => null,
+    ];
+
+    foreach ($berkasSiswa as $item) {
+        $url = asset('storage/' . $item->file_url);
+
+        if ($item->jenis_berkas === 'Kartu Keluarga') {
+            $berkasMap['kartu_keluarga'] = $url;
+        }
+
+        if ($item->jenis_berkas === 'Akte Kelahiran') {
+            $berkasMap['akte_kelahiran'] = $url;
+        }
+
+        if ($item->jenis_berkas === 'E-KTP Orang Tua') {
+            $berkasMap['ktp_orang_tua'] = $url;
+        }
+
+        if ($item->jenis_berkas === 'Pas Foto') {
+            $berkasMap['pas_foto'] = $url;
+        }
+
+        if ($item->jenis_berkas === 'Surat Baptis') {
+            $berkasMap['surat_baptis'] = $url;
+        }
+    }
+
+    return response()->json([
+        'success' => true,
+        'reg' => $pendaftaran->no_pendaftaran
+            ?? $pendaftaran->nomor_registrasi
+            ?? 'REG-' . $pendaftaran->pendaftaran_uid,
+
+        'siswa' => [
+            'nama_lengkap' => $pendaftaran->nama ?? '-',
+            'nik' => $pendaftaran->nik ?? '-',
+            'tanggal_lahir' => $pendaftaran->tanggal_lahir ?? '-',
+            'tempat_lahir' => $pendaftaran->tempat_lahir ?? '-',
+            'alamat' => $pendaftaran->alamat ?? '-',
+            'agama' => $pendaftaran->agama ?? '-',
+            'gol_darah' => $pendaftaran->golongan_darah ?? '-',
+        ],
+
+        'orang_tua' => [
+            'nama' => $pendaftaran->nama_ortu ?? '-',
+            'no_telp' => $pendaftaran->no_telp ?? '-',
+            'pendidikan' => $pendaftaran->pendidikan ?? '-',
+            'gaji' => $pendaftaran->gaji ?? '-',
+            'alamat' => $pendaftaran->alamat_ortu ?? '-',
+        ],
+
+        'berkas' => $berkasMap,
+    ]);
+}
+
+
 }

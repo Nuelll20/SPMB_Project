@@ -23,8 +23,29 @@ class DashboardOrtuController extends Controller
             ->where('uid_orangtua', $orangTua->uid)
             ->orderByDesc('uid')
             ->get();
+$batch = DB::table('batch_pendaftaran')
+    ->where('is_active', 1)
+    ->orderByDesc('tanggal_buka')
+    ->first();
 
-        return view('dashboard_user.dashboard_ortu', compact('dataSiswa', 'orangTua'));
+$jumlahPendaftar = 0;
+$sisaKuota = 0;
+$batchAktif = false;
+
+if ($batch) {
+    $jumlahPendaftar = DB::table('pendaftaran')->count();
+
+    $sisaKuota = max(0, (int) $batch->kuota - $jumlahPendaftar);
+    $batchAktif = $sisaKuota > 0;
+}
+
+        return view('dashboard_user.dashboard_ortu', compact(
+            'dataSiswa',
+            'orangTua',
+            'batch',
+            'sisaKuota',
+            'batchAktif'
+        ));
     }
 
     private function getOrangTua()

@@ -101,3 +101,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/verifikasi-berkas/{uid}', [VerifikasiBerkasController::class, 'show'])
         ->name('verifikasi.berkas');
 });
+
+Route::get('/admin/verifikasi-berkas/{uid}', [AdminController::class, 'showVerifikasi'])
+    ->name('admin.verifikasi.show');
+
+Route::post('/admin/batch/save', [AdminController::class, 'saveBatch'])
+    ->name('admin.batch.save');
+
+    Route::post('/admin/batch/save', [AdminController::class, 'saveBatch'])
+    ->name('admin.batch.save');
+
+    Route::delete('/admin/batch/{uid}', [AdminController::class, 'deleteBatch'])
+    ->name('admin.batch.delete');

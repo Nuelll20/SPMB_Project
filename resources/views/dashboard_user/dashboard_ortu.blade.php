@@ -311,6 +311,31 @@
             padding: 7px 16px;
             width: fit-content;
         }
+        .status-badge-active {
+    background: rgba(22, 163, 74, 0.1);
+    border: 1px solid rgba(22, 163, 74, 0.25);
+}
+
+.status-badge-active .status-badge-text {
+    color: var(--green);
+}
+
+.status-badge-active .status-badge-dot {
+    background: var(--green);
+}
+
+.status-badge-closed {
+    background: rgba(220, 38, 38, 0.1);
+    border: 1px solid rgba(220, 38, 38, 0.25);
+}
+
+.status-badge-closed .status-badge-text {
+    color: var(--red);
+}
+
+.status-badge-closed .status-badge-dot {
+    background: var(--red);
+}
 
         .status-badge-icon {
             font-size: 14px;
@@ -525,6 +550,33 @@
             min-width: 120px;
             justify-content: center;
         }
+
+        .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 35px;
+}
+
+.btn-tambah-anak {
+    background: #18296b;
+    color: #ffffff;
+    padding: 13px 24px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 14px;
+    border: none;
+    box-shadow: 0 8px 18px rgba(24, 41, 107, 0.22);
+    transition: 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-tambah-anak:hover {
+    background: #101f57;
+    transform: translateY(-1px);
+}
 
         /* REVISI CSS: Tambahkan status warna agar selaras saat filter if else bekerja */
         .btn-antrian.approved-style { background: var(--green) !important; }
@@ -752,17 +804,43 @@
         @endif
 
         <div class="main-card">
-            <div class="card-header">
-                <div class="card-header-left">
-                    <h1 class="card-title">Portal Orang Tua</h1>
-                    <div class="status-badge">
-                        <span class="status-badge-text">Status: Batch 1 (Gelombang Utama)</span>
-                        <span class="status-badge-dot"></span>
-                        <span class="status-badge-text">Sisa Kuota: 23</span>
-                    </div>
-                </div>
-            </div>
+  <div class="card-header">
+    <div class="card-header-left">
+        <h1 class="card-title">Portal Orang Tua</h1>
 
+        @if($batchAktif)
+            <div class="status-badge status-badge-active">
+                <span class="status-badge-text">
+                    Status: {{ strtoupper($batch->nama_batch ?? 'BATCH AKTIF') }}
+                </span>
+
+                <span class="status-badge-dot"></span>
+
+                <span class="status-badge-text">
+                    Sisa Kuota: {{ $sisaKuota }}
+                </span>
+            </div>
+        @else
+            <div class="status-badge status-badge-closed">
+                <span class="status-badge-text">
+                    Status: Batch Tutup
+                </span>
+
+                <span class="status-badge-dot"></span>
+
+                <span class="status-badge-text">
+                    Sisa Kuota: 0
+                </span>
+            </div>
+        @endif
+    </div>
+
+    @if($batchAktif)
+        <a href="{{ route('form.daftar') }}" class="btn-tambah-anak">
+            + Tambah Anak
+        </a>
+    @endif
+</div>
             <div class="student-list" id="studentList">
                 @forelse($dataSiswa as $siswa)
                     <div class="student-card">
@@ -798,26 +876,33 @@
                             </div>
                         </div>
 
-                        <div class="student-actions">
-                            <a href="{{ route('verifikasi.berkas', $siswa->pendaftaran_uid ?? $siswa->uid) }}" class="btn-verifikasi">
-                                <span class="spin-icon">◌</span> VERIFIKASI BERKAS
-                            </a>
-                            
-                            @php
-                                $statusText = $siswa->status ?? 'pending';
-                                $statusLower = strtolower($statusText);
-                                $extraClass = '';
-                                if (in_array($statusLower, ['approved', 'accepted', 'diterima'])) {
-                                    $extraClass = 'approved-style';
-                                } elseif (in_array($statusLower, ['rejected', 'ditolak'])) {
-                                    $extraClass = 'rejected-style';
-                                }
-                            @endphp
-                            <button type="button" class="btn-antrian {{ $extraClass }}" 
-                                    onclick="handleStatusAction('{{ $statusLower }}', '{{ $siswa->nama ?? '-' }}')">
-                                {{ strtoupper($statusText) }}
-                            </button>
-                        </div>
+                       <div class="student-actions">
+
+    @php
+        $statusText = $siswa->status ?? 'pending';
+        $statusLower = strtolower(trim($statusText));
+
+        $extraClass = '';
+
+        if (in_array($statusLower, ['approved', 'accepted', 'diterima'])) {
+            $extraClass = 'approved-style';
+        } elseif (in_array($statusLower, ['rejected', 'ditolak'])) {
+            $extraClass = 'rejected-style';
+        }
+    @endphp
+
+    @if($statusLower === 'pending')
+        <a href="{{ route('verifikasi.berkas', $siswa->pendaftaran_uid ?? $siswa->uid) }}" class="btn-verifikasi">
+            <span class="spin-icon">◌</span> VERIFIKASI BERKAS
+        </a>
+    @endif
+
+    <button type="button" class="btn-antrian {{ $extraClass }}" 
+            onclick="handleStatusAction('{{ $statusLower }}', '{{ $siswa->nama ?? '-' }}')">
+        {{ strtoupper($statusText) }}
+    </button>
+
+</div>
                     </div>
                 @empty
                     <p style="text-align: center; padding: 24px; color: var(--muted); font-weight: 600;">Tidak ada data siswa yang ditemukan.</p>

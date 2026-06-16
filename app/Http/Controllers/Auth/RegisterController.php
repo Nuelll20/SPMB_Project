@@ -23,17 +23,17 @@ class RegisterController extends Controller
                 'required',
                 'email',
                 'max:255',
-                Rule::unique('user', 'email'),
+                Rule::unique('users', 'email'),
             ],
             'password' => 'required|min:8|confirmed',
         ]);
 
-        DB::table('user')->insert([
-            'uid_user' => 0,
+        DB::table('users')->insert([
+            'name' => $request->name,
             'email' => $request->email,
-            'hash_password' => Hash::make($request->password),
-            'role' => 'user',
-            'create_at' => now(),
+            'password' => Hash::make($request->password),
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
         return redirect()->route('login')
