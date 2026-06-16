@@ -8,6 +8,10 @@ use App\Http\Controllers\DashboardOrtuController;
 use App\Http\Controllers\FormDaftarController;
 use App\Http\Controllers\RiwayatController;
 use App\Http\Controllers\VerifikasiBerkasController;
+use App\Http\Controllers\BerkasController;
+use App\Http\Controllers\BatchPendaftaranController;
+use App\Http\Controllers\CalonSiswaController;
+use App\Http\Controllers\KomponenTagihanController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -68,6 +72,20 @@ Route::get('/admin/pendaftaran/{uid}/invoice', [AdminController::class, 'invoice
 
 Route::post('/admin/pendaftaran/{uid}/tagihan/save', [AdminController::class, 'saveTagihan'])
     ->name('admin.pendaftaran.tagihan.save');
+// Batch Pendaftaran
+Route::get('/admin/batch', [BatchPendaftaranController::class, 'index'])->name('admin.batch.index');
+Route::post('/admin/batch', [BatchPendaftaranController::class, 'store'])->name('admin.batch.store');
+Route::put('/admin/batch/{id}', [BatchPendaftaranController::class, 'update'])->name('admin.batch.update');
+Route::delete('/admin/batch/{id}', [BatchPendaftaranController::class, 'destroy'])->name('admin.batch.destroy');
+
+// Komponen Tagihan
+Route::get('/admin/komponen-tagihan/{uid_tagihan}', [KomponenTagihanController::class, 'index'])->name('admin.komponen.index');
+Route::post('/admin/komponen-tagihan', [KomponenTagihanController::class, 'store'])->name('admin.komponen.store');
+Route::put('/admin/komponen-tagihan/{id}', [KomponenTagihanController::class, 'update'])->name('admin.komponen.update');
+Route::delete('/admin/komponen-tagihan/{id}', [KomponenTagihanController::class, 'destroy'])->name('admin.komponen.destroy');
+
+// Berkas Admin
+Route::post('/admin/berkas/validasi/{id}/{status}', [BerkasController::class, 'validasi'])->name('admin.berkas.validasi');
 
 
 // ===================== ORANG TUA / USER ROUTES =====================
@@ -100,6 +118,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/verifikasi-berkas/{uid}', [VerifikasiBerkasController::class, 'show'])
         ->name('verifikasi.berkas');
+<<<<<<< HEAD
 });
 
 Route::get('/admin/verifikasi-berkas/{uid}', [AdminController::class, 'showVerifikasi'])
@@ -113,3 +132,18 @@ Route::post('/admin/batch/save', [AdminController::class, 'saveBatch'])
 
     Route::delete('/admin/batch/{uid}', [AdminController::class, 'deleteBatch'])
     ->name('admin.batch.delete');
+=======
+Route::get('/verifikasi-berkas/{uid}', [VerifikasiBerkasController::class, 'show'])
+        ->name('verifikasi.berkas');
+
+    // Berkas Orang Tua
+    Route::post('/berkas/upload', [BerkasController::class, 'upload'])->name('berkas.upload');
+    Route::get('/berkas/{id_pendaftar}', [BerkasController::class, 'index'])->name('berkas.index');
+
+    // Calon Siswa
+    Route::get('/calon-siswa', [CalonSiswaController::class, 'index'])->name('calon.siswa.index');
+    Route::post('/calon-siswa', [CalonSiswaController::class, 'store'])->name('calon.siswa.store');
+    Route::put('/calon-siswa/{id}', [CalonSiswaController::class, 'update'])->name('calon.siswa.update');
+    Route::delete('/calon-siswa/{id}', [CalonSiswaController::class, 'destroy'])->name('calon.siswa.destroy');
+});
+>>>>>>> dde89cb215a5004b5ea1cc193d90ca21da0067ac
