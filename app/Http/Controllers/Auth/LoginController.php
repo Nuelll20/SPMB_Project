@@ -13,8 +13,16 @@ class LoginController extends Controller
 {
     public function showLoginForm()
     {
+        // Saat tombol dari landing page membuka login, jangan otomatis masuk ke dashboard admin.
+        // Session admin lama dibersihkan supaya halaman login tetap menjadi pintu masuk utama.
         if (session('role') === 'admin') {
-            return redirect()->route('admin.dashboard');
+            session()->forget([
+                'staff_login',
+                'login_id',
+                'uid_user',
+                'email',
+                'role',
+            ]);
         }
 
         if (auth()->check()) {

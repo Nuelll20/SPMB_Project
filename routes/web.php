@@ -9,22 +9,80 @@ use App\Http\Controllers\FormDaftarController;
 use App\Http\Controllers\RiwayatController;
 use App\Http\Controllers\VerifikasiBerkasController;
 use App\Http\Controllers\BerkasController;
-use App\Http\Controllers\BatchPendaftaranController;
-use App\Http\Controllers\CalonSiswaController;
 use App\Http\Controllers\KomponenTagihanController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
+/*
+|--------------------------------------------------------------------------
+| Landing Page Publik
+|--------------------------------------------------------------------------
+| Halaman utama tidak boleh mengarahkan otomatis ke dashboard admin/user.
+| User luar hanya melihat landing page, lalu masuk lewat tombol login/register.
+*/
 Route::get('/', function () {
-    if (session('role') === 'admin') {
-        return redirect()->route('admin.dashboard');
+    $landingInfo = [
+        'batch' => null,
+        'batch_list' => collect(),
+        'total_pendaftar' => 0,
+        'approved' => 0,
+        'rejected' => 0,
+        'proses' => 0,
+        'sisa_kuota' => 0,
+        'is_open' => false,
+    ];
+
+    try {
+        if (Schema::hasTable('pendaftaran')) {
+            $landingInfo['total_pendaftar'] = DB::table('pendaftaran')->count();
+            $landingInfo['approved'] = DB::table('pendaftaran')->where('status_pendaftaran', 'approved')->count();
+            $landingInfo['rejected'] = DB::table('pendaftaran')->where('status_pendaftaran', 'rejected')->count();
+            $landingInfo['proses'] = DB::table('pendaftaran')
+                ->where(function ($query) {
+                    $query->whereNull('status_pendaftaran')
+                        ->orWhereIn('status_pendaftaran', ['pending', 'proses', 'draft']);
+                })
+                ->count();
+        }
+
+        if (Schema::hasTable('batch_pendaftaran')) {
+            $batch = DB::table('batch_pendaftaran')
+                ->where('is_active', 1)
+                ->orderByDesc('tanggal_buka')
+                ->orderByDesc('uid')
+                ->first();
+
+            if (! $batch) {
+                $batch = DB::table('batch_pendaftaran')
+                    ->orderByDesc('tanggal_buka')
+                    ->orderByDesc('uid')
+                    ->first();
+            }
+
+            $landingInfo['batch'] = $batch;
+
+            if ($batch) {
+                $jumlahBatch = Schema::hasTable('pendaftaran')
+                    ? DB::table('pendaftaran')->where('id_batch_pendaftaran', $batch->uid)->count()
+                    : 0;
+
+                $landingInfo['sisa_kuota'] = max(0, (int) ($batch->kuota ?? 0) - $jumlahBatch);
+                $landingInfo['is_open'] = (int) ($batch->is_active ?? 0) === 1 && $landingInfo['sisa_kuota'] > 0;
+            }
+
+            $landingInfo['batch_list'] = DB::table('batch_pendaftaran')
+                ->orderByDesc('tanggal_buka')
+                ->orderByDesc('uid')
+                ->limit(3)
+                ->get();
+        }
+    } catch (\Throwable $e) {
+        // Landing page tetap bisa dibuka walaupun database belum siap.
     }
 
-    if (auth()->check()) {
-        return redirect()->route('dashboard');
-    }
-
-    return redirect()->route('login');
-});
+    return view('landing', compact('landingInfo'));
+})->name('landing');
 
 
 // ===================== LOGIN / REGISTER =====================
@@ -51,45 +109,50 @@ Route::middleware('guest')->group(function () {
 
 
 // ===================== LOGOUT =====================
-// Logout wajib di luar middleware auth karena admin login pakai session
 Route::post('/logout', [LoginController::class, 'logout'])
     ->name('logout');
 
 
 // ===================== ADMIN ROUTES =====================
-// Jangan masukkan ke middleware auth karena admin login pakai session('role')
-Route::get('/dashboard-admin', [AdminController::class, 'index'])
-    ->name('admin.dashboard');
+// Semua route admin wajib melewati session role admin.
+Route::middleware('admin.session')->group(function () {
+    Route::get('/dashboard-admin', [AdminController::class, 'index'])
+        ->name('admin.dashboard');
 
-Route::post('/admin/pendaftaran/{uid}/approve', [AdminController::class, 'approve'])
-    ->name('admin.pendaftaran.approve');
+    Route::post('/admin/pendaftaran/{uid}/approve', [AdminController::class, 'approve'])
+        ->name('admin.pendaftaran.approve');
 
-Route::post('/admin/pendaftaran/{uid}/reject', [AdminController::class, 'reject'])
-    ->name('admin.pendaftaran.reject');
+    Route::post('/admin/pendaftaran/{uid}/reject', [AdminController::class, 'reject'])
+        ->name('admin.pendaftaran.reject');
 
-Route::get('/admin/pendaftaran/{uid}/invoice', [AdminController::class, 'invoice'])
-    ->name('admin.pendaftaran.invoice');
+    Route::get('/admin/pendaftaran/{uid}/invoice', [AdminController::class, 'invoice'])
+        ->name('admin.pendaftaran.invoice');
 
-Route::post('/admin/pendaftaran/{uid}/tagihan/save', [AdminController::class, 'saveTagihan'])
-    ->name('admin.pendaftaran.tagihan.save');
-// Batch Pendaftaran
-Route::get('/admin/batch', [BatchPendaftaranController::class, 'index'])->name('admin.batch.index');
-Route::post('/admin/batch', [BatchPendaftaranController::class, 'store'])->name('admin.batch.store');
-Route::put('/admin/batch/{id}', [BatchPendaftaranController::class, 'update'])->name('admin.batch.update');
-Route::delete('/admin/batch/{id}', [BatchPendaftaranController::class, 'destroy'])->name('admin.batch.destroy');
+    Route::post('/admin/pendaftaran/{uid}/tagihan/save', [AdminController::class, 'saveTagihan'])
+        ->name('admin.pendaftaran.tagihan.save');
 
-// Komponen Tagihan
-Route::get('/admin/komponen-tagihan/{uid_tagihan}', [KomponenTagihanController::class, 'index'])->name('admin.komponen.index');
-Route::post('/admin/komponen-tagihan', [KomponenTagihanController::class, 'store'])->name('admin.komponen.store');
-Route::put('/admin/komponen-tagihan/{id}', [KomponenTagihanController::class, 'update'])->name('admin.komponen.update');
-Route::delete('/admin/komponen-tagihan/{id}', [KomponenTagihanController::class, 'destroy'])->name('admin.komponen.destroy');
+    // Komponen Tagihan
+    Route::get('/admin/komponen-tagihan/{uid_tagihan}', [KomponenTagihanController::class, 'index'])->name('admin.komponen.index');
+    Route::post('/admin/komponen-tagihan', [KomponenTagihanController::class, 'store'])->name('admin.komponen.store');
+    Route::put('/admin/komponen-tagihan/{id}', [KomponenTagihanController::class, 'update'])->name('admin.komponen.update');
+    Route::delete('/admin/komponen-tagihan/{id}', [KomponenTagihanController::class, 'destroy'])->name('admin.komponen.destroy');
 
-// Berkas Admin
-Route::post('/admin/berkas/validasi/{id}/{status}', [BerkasController::class, 'validasi'])->name('admin.berkas.validasi');
+    // Berkas Admin
+    Route::post('/admin/berkas/validasi/{id}/{status}', [BerkasController::class, 'validasi'])->name('admin.berkas.validasi');
+
+    Route::get('/admin/verifikasi-berkas/{uid}', [AdminController::class, 'showVerifikasi'])
+        ->name('admin.verifikasi.show');
+
+    Route::post('/admin/batch/save', [AdminController::class, 'saveBatch'])
+        ->name('admin.batch.save');
+
+    Route::delete('/admin/batch/{uid}', [AdminController::class, 'deleteBatch'])
+        ->name('admin.batch.delete');
+});
 
 
 // ===================== ORANG TUA / USER ROUTES =====================
-// Ini khusus akun orang tua dari tabel users
+// Ini khusus akun orang tua dari tabel users.
 Route::middleware('auth')->group(function () {
     Route::get('/profil-ortu', [FormOrtuController::class, 'index'])
         ->name('profil.ortu');
@@ -118,32 +181,4 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/verifikasi-berkas/{uid}', [VerifikasiBerkasController::class, 'show'])
         ->name('verifikasi.berkas');
-<<<<<<< HEAD
 });
-
-Route::get('/admin/verifikasi-berkas/{uid}', [AdminController::class, 'showVerifikasi'])
-    ->name('admin.verifikasi.show');
-
-Route::post('/admin/batch/save', [AdminController::class, 'saveBatch'])
-    ->name('admin.batch.save');
-
-    Route::post('/admin/batch/save', [AdminController::class, 'saveBatch'])
-    ->name('admin.batch.save');
-
-    Route::delete('/admin/batch/{uid}', [AdminController::class, 'deleteBatch'])
-    ->name('admin.batch.delete');
-=======
-Route::get('/verifikasi-berkas/{uid}', [VerifikasiBerkasController::class, 'show'])
-        ->name('verifikasi.berkas');
-
-    // Berkas Orang Tua
-    Route::post('/berkas/upload', [BerkasController::class, 'upload'])->name('berkas.upload');
-    Route::get('/berkas/{id_pendaftar}', [BerkasController::class, 'index'])->name('berkas.index');
-
-    // Calon Siswa
-    Route::get('/calon-siswa', [CalonSiswaController::class, 'index'])->name('calon.siswa.index');
-    Route::post('/calon-siswa', [CalonSiswaController::class, 'store'])->name('calon.siswa.store');
-    Route::put('/calon-siswa/{id}', [CalonSiswaController::class, 'update'])->name('calon.siswa.update');
-    Route::delete('/calon-siswa/{id}', [CalonSiswaController::class, 'destroy'])->name('calon.siswa.destroy');
-});
->>>>>>> dde89cb215a5004b5ea1cc193d90ca21da0067ac
