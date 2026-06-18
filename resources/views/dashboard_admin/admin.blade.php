@@ -2388,7 +2388,7 @@
                 <div class="inspeksi-title-block">
                     <div class="inspeksi-icon-badge"><i class="fas fa-shield-halved"></i></div>
                     <div class="inspeksi-title-text">
-                        <h2>Verivikasi Berkas</h2>
+                        <h2>Verifikasi Berkas</h2>
                         <p id="det-reg-id">ADMINISTRATIVE DATA REVIEW • REG-MOCK-PARENT-001</p>
                     </div>
                 </div>
@@ -2476,7 +2476,7 @@
                 <!-- SISI KANAN: PREVIEW BERKAS DIGITAL (AMBIL DATA DARI DATABASE) -->
                 <div>
                     <div class="inspeksi-section-title"><i class="fas fa-cloud-arrow-up"></i> Preview Berkas Digital
-                        (Cloud View)</div>
+                        </div>
 
                     <!-- Berkas Grid - ID link diubah agar dapat disuntik URL Database melalui JS -->
                     <div class="berkas-grid">

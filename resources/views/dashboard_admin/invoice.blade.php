@@ -244,6 +244,20 @@
             background: #111c50;
         }
 
+        .final-lock-banner {
+            margin: 18px 0 22px;
+            padding: 14px 16px;
+            border-radius: 18px;
+            background: #e9fbf5;
+            border: 1px solid #bff1df;
+            color: #0f7c61;
+            font-size: 13px;
+            font-weight: 800;
+            line-height: 1.55;
+        }
+
+        .final-lock-banner i { margin-right: 8px; }
+
         /* Divider Penanda Preview */
         .preview-title-divider {
             font-size: 13px;
@@ -721,6 +735,18 @@
                 <span class="badge-admin">Workspace Kerja</span>
             </div>
 
+            @if($invoiceFinal ?? false)
+                <div class="final-lock-banner">
+                    <i class="fa-solid fa-lock"></i>
+                    Invoice ini sudah menjadi <b>final approval kepala sekolah</b>. Admin SPMB hanya bisa melihat/mencetak, tidak bisa mengubah komponen atau nominal invoice lagi.
+                </div>
+            @else
+                <div class="final-lock-banner" style="background:#fff8e4;border-color:#ffe2a3;color:#9d6500;">
+                    <i class="fa-solid fa-hourglass-half"></i>
+                    Invoice yang disimpan admin akan masuk ke antrian kepala sekolah. Status terbit baru aktif setelah kepala sekolah melakukan final approval.
+                </div>
+            @endif
+
             <div class="meta-input-grid">
                 <div class="form-group">
                     <label>Nama Calon Siswa</label>
@@ -813,14 +839,12 @@
                 </div>
                 <div class="form-group">
                     <label>Validasi Status Pembayaran</label>
-                    <select id="inStatus" class="admin-input" onchange="executeMirroringLoop()"
-                        style="cursor: pointer;">
-                        <option value="pending" {{ ($tagihan->status_tagihan ?? 'pending') === 'pending' ? 'selected' : '' }}>
-                            PENDING (Belum Valid)
-                        </option>
-                        <option value="valid" {{ ($tagihan->status_tagihan ?? '') === 'valid' ? 'selected' : '' }}>
-                            VALID / LUNAS (Terbitkan Kuitansi)
-                        </option>
+                    <select id="inStatus" class="admin-input" onchange="executeMirroringLoop()" style="cursor: pointer;">
+                        @if($invoiceFinal ?? false)
+                            <option value="valid" selected>FINAL KEPSEK / TERBIT</option>
+                        @else
+                            <option value="pending" selected>MENUNGGU APPROVAL KEPSEK</option>
+                        @endif
                     </select>
                 </div>
             </div>
@@ -834,7 +858,7 @@
                         <i class="fa-solid fa-arrow-left"></i> Kembali
                     </button>
                     <button type="button" class="btn-action-save" onclick="simulateSaveAndPrint()"><i
-                            class="fa-solid fa-print"></i> Simpan & Cetak PDF Dokumen</button>
+                            class="fa-solid fa-print"></i> {{ ($invoiceFinal ?? false) ? 'Cetak PDF Dokumen' : 'Simpan Draft & Cetak PDF' }}</button>
                 </div>
             </div>
         </div>
@@ -1092,8 +1116,14 @@
         }
 
         const saveTagihanUrl = @json(route('admin.pendaftaran.tagihan.save', $pendaftaran->uid));
+        const invoiceFinal = @json($invoiceFinal ?? false);
 
         function simulateSaveAndPrint() {
+            if (invoiceFinal) {
+                showToast('🔒 Invoice sudah final oleh kepala sekolah. Membuka cetak PDF tanpa menyimpan perubahan.');
+                setTimeout(() => window.print(), 500);
+                return;
+            }
             const rows = document.querySelectorAll('.admin-item-row');
             const items = [];
 
@@ -1119,7 +1149,7 @@
             const payload = {
                 diskon: parseFloat(document.getElementById('inDiskon').value) || 0,
                 admin_pembuat: document.getElementById('inAdminPembuat').value || 'Admin',
-                status_tagihan: document.getElementById('inStatus').value,
+                status_tagihan: 'pending',
                 items: items
             };
 
@@ -1172,6 +1202,15 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             executeMirroringLoop();
+
+            if (invoiceFinal) {
+                document.querySelectorAll('.admin-panel-card .admin-input, .admin-panel-card select, .btn-delete-row-action, .btn-add-row-action')
+                    .forEach(el => {
+                        el.disabled = true;
+                        el.style.cursor = 'not-allowed';
+                        el.style.opacity = '.72';
+                    });
+            }
         });
     </script>
 </body>

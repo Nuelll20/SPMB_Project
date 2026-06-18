@@ -808,6 +808,76 @@
             line-height: 1.5;
         }
 
+        .invoice-payment-guide {
+            margin-top: 18px;
+            padding-top: 18px;
+            border-top: 1px solid var(--border);
+        }
+
+        .invoice-payment-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--navy);
+            font-size: 16px;
+            font-weight: 900;
+            margin: 0 0 12px;
+        }
+
+        .invoice-va-card {
+            background: #f3f6fc;
+            border: 1px solid #dbe3f5;
+            border-left: 4px solid var(--blue);
+            border-radius: 14px;
+            padding: 16px 18px;
+            margin-bottom: 16px;
+        }
+
+        .invoice-va-bank {
+            font-size: 11px;
+            font-weight: 900;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-bottom: 6px;
+        }
+
+        .invoice-va-number {
+            font-family: 'DM Mono', monospace;
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--blue);
+            letter-spacing: 1.4px;
+            word-break: break-word;
+            line-height: 1.25;
+        }
+
+        .invoice-va-name {
+            margin-top: 8px;
+            font-size: 12.5px;
+            color: var(--text-dark);
+            font-weight: 700;
+            line-height: 1.4;
+        }
+
+        .invoice-va-name strong {
+            color: var(--navy);
+            text-transform: uppercase;
+        }
+
+        .invoice-step-list {
+            margin: 0;
+            padding-left: 22px;
+            color: var(--text-dark);
+            font-size: 12.5px;
+            line-height: 1.75;
+            font-weight: 650;
+        }
+
+        .invoice-step-list li {
+            margin-bottom: 6px;
+        }
+
         .invoice-modal-actions {
             margin-top: 20px;
             display: flex;
@@ -1577,6 +1647,10 @@
 
                             @if(in_array($statusLower, ['approved', 'accepted', 'diterima']))
                                 @php
+                                    $invoiceStatusLower = strtolower(trim((string) ($siswa->status_tagihan ?? '')));
+                                    $invoiceApprovedByKepsek = !empty($siswa->tagihan_disetujui_oleh ?? null);
+                                    $isInvoiceFinal = in_array($invoiceStatusLower, ['valid', 'terbit', 'approved'], true) && $invoiceApprovedByKepsek;
+
                                     $komponenInvoice = collect($siswa->komponen_tagihan ?? [])->map(function ($item) {
                                         $qty = (float) ($item->qty ?? 0);
                                         $nominal = (float) ($item->nominal ?? 0);
@@ -1590,7 +1664,7 @@
                                     })->values();
 
                                     $invoicePayload = [
-                                        'has_tagihan' => !empty($siswa->tagihan_uid),
+                                        'has_tagihan' => !empty($siswa->tagihan_uid) && $isInvoiceFinal,
                                         'nama_siswa' => $siswa->nama ?? '-',
                                         'no_pendaftaran' => $siswa->no_pendaftaran ?? $siswa->nomor_registrasi ?? '-',
                                         'nomor_tagihan' => $siswa->nomor_tagihan ?? '-',
@@ -1602,13 +1676,24 @@
                                         'subtotal_tagihan' => (float) ($siswa->subtotal_tagihan ?? 0),
                                         'diskon_tagihan' => (float) ($siswa->diskon_tagihan ?? 0),
                                         'total_tagihan' => (float) ($siswa->total_tagihan ?? 0),
+                                        'bank_name' => 'Bank CIMB Niaga',
+                                        'kode_bank' => '022',
+                                        'va_number_display' => '9888 3471 2345 6789',
+                                        'va_number_raw' => '9888347123456789',
+                                        'va_name' => 'SAKTI KANISIUS - ' . strtoupper($siswa->nama ?? '-'),
                                         'items' => $komponenInvoice,
                                     ];
                                 @endphp
 
-                                <button type="button" class="btn-invoice" onclick="openInvoiceModal(@js($invoicePayload))">
-                                    <i class="fa-solid fa-file-invoice-dollar"></i> Invoice
-                                </button>
+                                @if($isInvoiceFinal)
+                                    <button type="button" class="btn-invoice" onclick="openInvoiceModal(@js($invoicePayload))">
+                                        <i class="fa-solid fa-file-invoice-dollar"></i> Invoice Final
+                                    </button>
+                                @elseif(!empty($siswa->tagihan_uid))
+                                    <button type="button" class="btn-invoice" disabled style="opacity:.65;cursor:not-allowed;">
+                                        <i class="fa-solid fa-hourglass-half"></i> Menunggu Final Kepsek
+                                    </button>
+                                @endif
                             @endif
 
                         </div>
@@ -1779,6 +1864,50 @@
             }).format(numberValue);
         }
 
+        function getInvoicePaymentInfo(data) {
+            const studentName = data?.nama_siswa || '-';
+            return {
+                bankName: data?.bank_name || 'Bank CIMB Niaga',
+                bankCode: data?.kode_bank || '022',
+                vaNumberDisplay: data?.va_number_display || '9888 3471 2345 6789',
+                vaNumberRaw: data?.va_number_raw || '9888347123456789',
+                vaName: data?.va_name || `SAKTI KANISIUS - ${studentName}`.toUpperCase(),
+                totalText: formatRupiah(data?.total_tagihan)
+            };
+        }
+
+        function buildPaymentGuideSection(data, usePrintClass = false) {
+            const payment = getInvoicePaymentInfo(data);
+            const sectionClass = usePrintClass ? 'payment-page' : 'invoice-payment-guide';
+            const titleClass = usePrintClass ? 'payment-title' : 'invoice-payment-title';
+            const cardClass = usePrintClass ? 'va-card' : 'invoice-va-card';
+            const bankClass = usePrintClass ? 'va-bank' : 'invoice-va-bank';
+            const numberClass = usePrintClass ? 'va-number' : 'invoice-va-number';
+            const nameClass = usePrintClass ? 'va-name' : 'invoice-va-name';
+            const stepsClass = usePrintClass ? 'step-list' : 'invoice-step-list';
+
+            return `
+                <div class="${sectionClass}">
+                    <h3 class="${titleClass}"><i class="fa-solid fa-money-check-dollar"></i> Rekening Virtual Account (VA)</h3>
+                    <div class="${cardClass}">
+                        <div class="${bankClass}">${escapeHtml(payment.bankName)} (Kode Bank: ${escapeHtml(payment.bankCode)})</div>
+                        <div class="${numberClass}">${escapeHtml(payment.vaNumberDisplay)}</div>
+                        <div class="${nameClass}">Atas Nama: <strong>${escapeHtml(payment.vaName)}</strong></div>
+                    </div>
+
+                    <h3 class="${titleClass}"><i class="fa-solid fa-list-check"></i> Petunjuk Tatacara Transfer Resmi</h3>
+                    <ol class="${stepsClass}">
+                        <li>Buka aplikasi <strong>Mobile Banking</strong>, Internet Banking, atau datangi mesin ATM terdekat.</li>
+                        <li>Pilih menu <strong>Transfer</strong>, kemudian pilih opsi <strong>Transfer ke Bank Lain / CIMB Niaga</strong>.</li>
+                        <li>Masukkan Kode Bank <strong>${escapeHtml(payment.bankCode)}</strong> diikuti Nomor Virtual Account: <strong>${escapeHtml(payment.vaNumberRaw)}</strong>.</li>
+                        <li>Pastikan pada layar konfirmasi tujuan muncul nama penerima yang valid: <strong>${escapeHtml(payment.vaName)}</strong>.</li>
+                        <li>Masukkan nominal transfer sama persis dengan angka tagihan: <strong>${escapeHtml(payment.totalText)}</strong>.</li>
+                        <li>Simpan PDF resmi ini sebagai bukti pembayaran digital dari portal admisi.</li>
+                    </ol>
+                </div>
+            `;
+        }
+
         function openInvoiceModal(data) {
             if (!invoiceModal) return;
             currentInvoiceData = data || null;
@@ -1880,6 +2009,8 @@
                         </div>
                     </div>
                 </div>
+
+                ${buildPaymentGuideSection(data)}
             `;
 
             invoiceModal.classList.add('show');
@@ -1933,6 +2064,15 @@
         .summary-row { display: flex; justify-content: space-between; gap: 14px; padding: 7px 0; font-weight: 800; }
         .total { border-top: 1px dashed #dfe3ef; margin-top: 6px; padding-top: 12px; color: #1a2a6c; font-size: 18px; }
         .note { margin-top: 18px; font-size: 12px; color: #64748b; line-height: 1.6; }
+        .payment-page { margin-top: 22px; padding-top: 20px; border-top: 3px solid #1a2a6c; page-break-before: always; }
+        .payment-title { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; font-size: 19px; color: #1a2a6c; }
+        .va-card { background: #f3f6fc; border: 1px solid #dbe3f5; border-left: 5px solid #0057c2; border-radius: 14px; padding: 18px 22px; margin: 12px 0 28px; }
+        .va-bank { color: #747b9a; text-transform: uppercase; font-size: 12px; font-weight: 800; margin-bottom: 7px; }
+        .va-number { font-family: 'Courier New', monospace; color: #0057c2; font-size: 28px; font-weight: 900; letter-spacing: 2px; line-height: 1.25; }
+        .va-name { margin-top: 8px; color: #334155; font-size: 13px; font-weight: 700; }
+        .va-name strong { color: #1a2a6c; text-transform: uppercase; }
+        .step-list { margin: 0; padding-left: 24px; color: #334155; font-size: 14px; line-height: 1.9; font-weight: 600; }
+        .step-list li { margin-bottom: 7px; }
         @media print {
             body { background: #fff; padding: 0; }
             .sheet { border: none; border-radius: 0; max-width: none; padding: 0; }
@@ -1978,6 +2118,8 @@
         <div class="note">
             Dokumen ini dibuat dari data tagihan yang tersimpan di database SPMB. Gunakan dialog cetak browser lalu pilih <strong>Save as PDF</strong> untuk menyimpan file.
         </div>
+
+        ${buildPaymentGuideSection(data, true)}
     </div>
 </body>
 </html>`;

@@ -10,6 +10,7 @@ use App\Http\Controllers\RiwayatController;
 use App\Http\Controllers\VerifikasiBerkasController;
 use App\Http\Controllers\BerkasController;
 use App\Http\Controllers\KomponenTagihanController;
+use App\Http\Controllers\KepsekController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -148,6 +149,23 @@ Route::middleware('admin.session')->group(function () {
 
     Route::delete('/admin/batch/{uid}', [AdminController::class, 'deleteBatch'])
         ->name('admin.batch.delete');
+});
+
+
+// ===================== KEPALA SEKOLAH ROUTES =====================
+// Khusus akun staff role kepsek dari tabel user.
+Route::middleware('kepsek.session')->group(function () {
+    Route::get('/dashboard-kepsek', [KepsekController::class, 'index'])
+        ->name('kepsek.dashboard');
+
+    Route::post('/kepsek/staf-spmb', [KepsekController::class, 'storeStaff'])
+        ->name('kepsek.staf.store');
+
+    Route::post('/kepsek/invoice/{uid}/approve', [KepsekController::class, 'approveInvoice'])
+        ->name('kepsek.invoice.approve');
+
+    Route::get('/kepsek/laporan-siswa/cetak', [KepsekController::class, 'printStudentReport'])
+        ->name('kepsek.laporan.siswa');
 });
 
 

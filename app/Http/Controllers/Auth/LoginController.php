@@ -15,7 +15,7 @@ class LoginController extends Controller
     {
         // Saat tombol dari landing page membuka login, jangan otomatis masuk ke dashboard admin.
         // Session admin lama dibersihkan supaya halaman login tetap menjadi pintu masuk utama.
-        if (session('role') === 'admin') {
+        if (in_array(session('role'), ['admin', 'kepsek'], true)) {
             session()->forget([
                 'staff_login',
                 'login_id',
@@ -51,22 +51,23 @@ class LoginController extends Controller
             ->first();
 
         if ($staff && Hash::check($validated['password'], $staff->hash_password)) {
+            $role = strtolower(trim((string) $staff->role));
+            $role = in_array($role, ['kepsek', 'kepala_sekolah', 'kepala sekolah'], true) ? 'kepsek' : $role;
+
             session([
                 'staff_login' => true,
                 'login_id' => $staff->uid,
                 'uid_user' => $staff->uid_user,
                 'email' => $staff->email,
-                'role' => $staff->role,
+                'role' => $role,
             ]);
 
-            if ($staff->role === 'admin') {
+            if ($role === 'admin') {
                 return redirect()->route('admin.dashboard');
             }
 
-            if ($staff->role === 'kepsek') {
-                return redirect()->route('login')->withErrors([
-                    'email' => 'Dashboard kepsek belum dibuat.',
-                ]);
+            if ($role === 'kepsek') {
+                return redirect()->route('kepsek.dashboard');
             }
 
             return redirect()->route('login')->withErrors([

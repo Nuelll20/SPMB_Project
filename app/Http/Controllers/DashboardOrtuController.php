@@ -22,6 +22,7 @@ class DashboardOrtuController extends Controller
         $hasTagihan = Schema::hasTable('tagihan');
         $hasKomponenTagihan = Schema::hasTable('komponen_tagihan');
         $hasJenisPenolakan = Schema::hasColumn('pendaftaran', 'jenis_penolakan');
+        $hasDisetujuiOleh = $hasTagihan && Schema::hasColumn('tagihan', 'disetujui_oleh');
 
         $select = [
             'cs.*',
@@ -48,6 +49,10 @@ class DashboardOrtuController extends Controller
                 't.tanggal_tagihan',
                 't.dibuat_oleh as tagihan_dibuat_oleh',
             ]);
+
+            $select[] = $hasDisetujuiOleh
+                ? 't.disetujui_oleh as tagihan_disetujui_oleh'
+                : DB::raw('NULL as tagihan_disetujui_oleh');
         } else {
             $select = array_merge($select, [
                 DB::raw('NULL as tagihan_uid'),
@@ -58,6 +63,7 @@ class DashboardOrtuController extends Controller
                 DB::raw('NULL as status_tagihan'),
                 DB::raw('NULL as tanggal_tagihan'),
                 DB::raw('NULL as tagihan_dibuat_oleh'),
+                DB::raw('NULL as tagihan_disetujui_oleh'),
             ]);
         }
 

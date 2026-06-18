@@ -527,8 +527,12 @@ class AdminController extends Controller
             ->first();
 
         $komponenTagihan = collect();
+        $invoiceFinal = false;
 
         if ($tagihan) {
+            $invoiceFinal = in_array(strtolower((string) $tagihan->status_tagihan), ['valid', 'terbit', 'approved'], true)
+                && (! Schema::hasColumn('tagihan', 'disetujui_oleh') || ! empty($tagihan->disetujui_oleh));
+
             $komponenTagihan = DB::table('komponen_tagihan')
                 ->where('uid_tagihan', $tagihan->uid)
                 ->orderBy('urutan')
@@ -538,7 +542,8 @@ class AdminController extends Controller
         return view('dashboard_admin.invoice', compact(
             'pendaftaran',
             'tagihan',
-            'komponenTagihan'
+            'komponenTagihan',
+            'invoiceFinal'
         ));
     }
 
@@ -549,7 +554,7 @@ class AdminController extends Controller
         $validated = $request->validate([
             'diskon' => 'nullable|numeric|min:0',
             'admin_pembuat' => 'required|string|max:255',
-            'status_tagihan' => 'required|in:pending,valid',
+            'status_tagihan' => 'nullable|in:pending',
             'items' => 'required|array|min:1',
             'items.*.nama_komponen' => 'required|string|max:255',
             'items.*.qty' => 'required|numeric|min:1',
@@ -582,6 +587,24 @@ class AdminController extends Controller
             ], 403);
         }
 
+        $existingFinalTagihanQuery = DB::table('tagihan')
+            ->where('uid_pendaftaran', $uid)
+            ->whereIn('status_tagihan', ['valid', 'terbit', 'approved']);
+
+        if (Schema::hasColumn('tagihan', 'disetujui_oleh')) {
+            $existingFinalTagihanQuery->whereNotNull('disetujui_oleh')
+                ->where('disetujui_oleh', '<>', '');
+        }
+
+        $existingFinalTagihan = $existingFinalTagihanQuery->first();
+
+        if ($existingFinalTagihan) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invoice sudah menjadi final approval kepala sekolah. Admin SPMB tidak dapat mengubah invoice ini lagi.',
+            ], 403);
+        }
+
         $subtotalTagihan = 0;
 
         foreach ($validated['items'] as $item) {
@@ -607,7 +630,9 @@ class AdminController extends Controller
                 'subtotal_tagihan' => $subtotalTagihan,
                 'diskon_tagihan' => $diskon,
                 'total_tagihan' => $totalTagihan,
-                'status_tagihan' => $validated['status_tagihan'],
+                // Admin hanya boleh mengirim draft invoice ke antrian kepala sekolah.
+                // Status final/terbit hanya boleh ditetapkan dari dashboard kepala sekolah.
+                'status_tagihan' => 'pending',
                 'tanggal_tagihan' => now(),
                 'dibuat_oleh' => $validated['admin_pembuat'],
                 'updated_at' => now(),

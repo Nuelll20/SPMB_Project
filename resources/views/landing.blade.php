@@ -519,7 +519,7 @@
                                     <span>{{ $item->tanggal_buka ?? '-' }} – {{ $item->tanggal_tutup ?? '-' }} · Kuota {{ $item->kuota ?? 0 }}</span>
                                 </div>
                                 <div class="tiny-pill {{ (int)($item->is_active ?? 0) === 1 ? 'pill-on' : 'pill-off' }}">
-                                    {{ (int)($item->is_active ?? 0) === 1 ? 'Aktif' : 'Nonaktif' }}
+                                    {{ (int)($item->is_active ?? 0) === 1 ? 'Buka' : 'Tutup' }}
                                 </div>
                             </div>
                         @empty
