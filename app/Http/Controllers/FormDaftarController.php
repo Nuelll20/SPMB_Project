@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\OrangTuaResolver;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -14,14 +14,13 @@ class FormDaftarController extends Controller
 {
     public function index()
     {
-        $orangTua = $this->getOrangTua();
+        $orangTua = app(OrangTuaResolver::class)->current();
 
         if (!$orangTua) {
             return redirect()->route('profil.ortu')
                 ->with('warning', 'Lengkapi profil orang tua terlebih dahulu.');
         }
 
-        session(['uid_orangtua' => $orangTua->uid]);
 
         $draft = DB::table('calon_siswa as cs')
             ->leftJoin('pendaftaran as p', 'p.calon_siswa_id', '=', 'cs.uid')
@@ -89,7 +88,7 @@ class FormDaftarController extends Controller
             'anak.*.surat_baptis' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ]);
 
-        $orangTua = $this->getOrangTua();
+        $orangTua = app(OrangTuaResolver::class)->current();
 
         if (!$orangTua) {
             return redirect()->route('profil.ortu')
@@ -386,7 +385,7 @@ class FormDaftarController extends Controller
     }
     public function saveDraft(Request $request)
     {
-        $orangTua = $this->getOrangTua();
+        $orangTua = app(OrangTuaResolver::class)->current();
 
         if (!$orangTua) {
             return response()->json([
@@ -476,27 +475,5 @@ class FormDaftarController extends Controller
     private function generateNoPendaftar(int $uidCalonSiswa): string
     {
         return 'REG-' . now()->format('Ymd') . '-' . str_pad($uidCalonSiswa, 5, '0', STR_PAD_LEFT);
-    }
-
-    private function getOrangTua()
-    {
-        $user = Auth::user();
-
-        if (!$user) {
-            return null;
-        }
-
-        if (session()->has('uid_orangtua')) {
-            $orangTua = DB::table('orang_tua')->where('uid', session('uid_orangtua'))->first();
-            if ($orangTua) {
-                return $orangTua;
-            }
-        }
-
-        if (Schema::hasColumn('orang_tua', 'user_id')) {
-            return DB::table('orang_tua')->where('user_id', $user->id)->first();
-        }
-
-        return DB::table('orang_tua')->where('nama', $user->name)->first();
     }
 }
