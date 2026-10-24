@@ -95,47 +95,90 @@ class FormDaftarController extends Controller
                 ->with('warning', 'Lengkapi profil orang tua terlebih dahulu.');
         }
 
-        $batch = DB::table('batch_pendaftaran')
-            ->where('is_active', 1)
-            ->orderByDesc('uid')
-            ->first();
-
-        if (!$batch) {
-            throw ValidationException::withMessages([
-                'batch_pendaftaran' => 'Batch pendaftaran aktif belum tersedia.',
-            ]);
-        }
-
-        $batchId = $batch->uid;
-
-        $jumlahPendaftar = DB::table('pendaftaran')
-            ->where('id_batch_pendaftaran', $batchId)
-            ->count();
-
-        $batchPenuh = $jumlahPendaftar >= (int) $batch->kuota;
-
         $daftarAnak = $this->buildDaftarAnak($request);
 
         $this->validasiNikGandaDalamForm($daftarAnak);
         $this->validasiSuratBaptis($request, $daftarAnak);
 
-        DB::transaction(function () use ($request, $daftarAnak, $orangTua, $batchId, $batchPenuh) {
+        DB::transaction(function () use ($request, $daftarAnak, $orangTua) {
+            $batchAktif = null;
+
             foreach ($daftarAnak as $anak) {
-                $existing = DB::table('calon_siswa')
-                    ->where('nik', $anak['nik'])
+                $existing = DB::table('calon_siswa as cs')
+                    ->leftJoin(
+                        'pendaftaran as p',
+                        'p.calon_siswa_id',
+                        '=',
+                        'cs.uid'
+                    )
+                    ->where('cs.nik', $anak['nik'])
+                    ->select([
+                        'cs.*',
+                        'cs.status as status_siswa',
+                        'p.uid as pendaftaran_uid',
+                        'p.no_pendaftaran',
+                        'p.id_batch_pendaftaran',
+                        'p.status_pendaftaran',
+                        'p.jenis_penolakan',
+                        'p.tanggal_daftar',
+                    ])
+                    ->orderByDesc('p.uid')
+                    ->lockForUpdate()
                     ->first();
 
-                if ($existing && (int) $existing->uid_orangtua !== (int) $orangTua->uid) {
+                if (
+                    $existing
+                    && (int) $existing->uid_orangtua
+                    !== (int) $orangTua->uid
+                ) {
                     throw ValidationException::withMessages([
-                        $anak['error_key'] . '.nik' => 'NIK ' . $anak['nik'] . ' sudah digunakan oleh pendaftar lain.',
+                        $anak['error_key'] . '.nik'
+                        => 'NIK ' . $anak['nik']
+                            . ' sudah digunakan oleh pendaftar lain.',
                     ]);
                 }
 
-                if ($existing && ($existing->status ?? null) !== 'draft') {
+                $isDraft = $existing
+                    && ($existing->status_siswa ?? null) === 'draft'
+                    && (
+                        empty($existing->pendaftaran_uid)
+                        || ($existing->status_pendaftaran ?? null) === 'draft'
+                    );
+
+                $isRevisiBerkas = $existing
+                    && ($existing->status_pendaftaran ?? null) === 'rejected'
+                    && ($existing->jenis_penolakan ?? null) === 'berkas';
+
+                if ($existing && !$isDraft && !$isRevisiBerkas) {
                     throw ValidationException::withMessages([
-                        $anak['error_key'] . '.nik' => 'NIK ' . $anak['nik'] . ' sudah pernah disubmit. Silakan cek halaman riwayat pendaftaran.',
+                        $anak['error_key'] . '.nik'
+                        => 'NIK ' . $anak['nik']
+                            . ' sudah pernah disubmit. '
+                            . 'Silakan cek halaman riwayat pendaftaran.',
                     ]);
                 }
+
+                if ($isRevisiBerkas) {
+                    $batchId = (int) $existing->id_batch_pendaftaran;
+                    $batchPenuh = false;
+                } else {
+                    if (!$batchAktif) {
+                        $batchAktif = $this->getBatchAktif();
+                    }
+
+                    $batchId = (int) $batchAktif->uid;
+
+                    $jumlahPendaftar = DB::table('pendaftaran')
+                        ->where('id_batch_pendaftaran', $batchId)
+                        ->count();
+
+                    $batchPenuh = $jumlahPendaftar
+                        >= (int) $batchAktif->kuota;
+                }
+
+                $statusPendaftaran = $batchPenuh
+                    ? 'rejected'
+                    : 'pending';
 
                 $dataCalonSiswa = [
                     'nama' => $anak['nama_lengkap'],
@@ -146,7 +189,7 @@ class FormDaftarController extends Controller
                     'alamat' => $anak['alamat'],
                     'tempat_lahir' => $anak['tempat_lahir'],
                     'uid_orangtua' => $orangTua->uid,
-                    'status' => $batchPenuh ? 'rejected' : 'pending',
+                    'status' => $statusPendaftaran,
                 ];
 
                 if ($existing) {
@@ -154,12 +197,25 @@ class FormDaftarController extends Controller
                         ->where('uid', $existing->uid)
                         ->update($dataCalonSiswa);
 
-                    $uidCalonSiswa = $existing->uid;
+                    $uidCalonSiswa = (int) $existing->uid;
                 } else {
-                    $uidCalonSiswa = DB::table('calon_siswa')->insertGetId($dataCalonSiswa);
+                    $uidCalonSiswa = DB::table('calon_siswa')
+                        ->insertGetId($dataCalonSiswa);
                 }
 
-                $noPendaftaran = $this->generateNoPendaftar($uidCalonSiswa);
+                $noPendaftaran = $isRevisiBerkas
+                    ? (
+                        $existing->no_pendaftaran
+                        ?? $existing->nomor_registrasi
+                        ?? null
+                    )
+                    : null;
+
+                if (!$noPendaftaran) {
+                    $noPendaftaran = $this->generateNoPendaftar(
+                        $uidCalonSiswa
+                    );
+                }
 
                 DB::table('calon_siswa')
                     ->where('uid', $uidCalonSiswa)
@@ -167,31 +223,38 @@ class FormDaftarController extends Controller
                         'nomor_registrasi' => $noPendaftaran,
                     ]);
 
-                $pendaftaran = DB::table('pendaftaran')
-                    ->where('calon_siswa_id', $uidCalonSiswa)
-                    ->first();
-
                 $dataPendaftaran = [
                     'no_pendaftaran' => $noPendaftaran,
                     'id_batch_pendaftaran' => $batchId,
-                    'status_pendaftaran' => $batchPenuh ? 'rejected' : 'pending',
-                    'jenis_penolakan' => $batchPenuh ? 'batch_penuh' : null,
+                    'status_pendaftaran' => $statusPendaftaran,
+                    'jenis_penolakan' => $batchPenuh
+                        ? 'batch_penuh'
+                        : null,
                     'diverifikasi_oleh' => null,
                     'alasan_penolakan' => $batchPenuh
                         ? 'Mohon maaf, batch pendaftaran sudah penuh.'
                         : null,
-                    'tanggal_daftar' => now()->toDateString(),
+                    'tanggal_daftar' => $isRevisiBerkas
+                        ? (
+                            $existing->tanggal_daftar
+                            ?? now()->toDateString()
+                        )
+                        : now()->toDateString(),
                     'calon_siswa_id' => $uidCalonSiswa,
                 ];
 
-                if ($pendaftaran) {
+                if (
+                    $existing
+                    && !empty($existing->pendaftaran_uid)
+                ) {
                     DB::table('pendaftaran')
-                        ->where('uid', $pendaftaran->uid)
+                        ->where('uid', $existing->pendaftaran_uid)
                         ->update($dataPendaftaran);
 
-                    $uidPendaftaran = $pendaftaran->uid;
+                    $uidPendaftaran = (int) $existing->pendaftaran_uid;
                 } else {
-                    $uidPendaftaran = DB::table('pendaftaran')->insertGetId($dataPendaftaran);
+                    $uidPendaftaran = DB::table('pendaftaran')
+                        ->insertGetId($dataPendaftaran);
                 }
 
                 $this->replaceBerkas(
@@ -368,20 +431,22 @@ class FormDaftarController extends Controller
         return "berkas/{$userId}-{$userName}/{$namaFolder}-{$nikFolder}/pendaftaran-{$uidPendaftaran}";
     }
 
-    private function getBatchPendaftaranId(): int
+    private function getBatchAktif(): object
     {
-        $batchId = DB::table('batch_pendaftaran')
+        $batch = DB::table('batch_pendaftaran')
             ->where('is_active', 1)
             ->orderByDesc('uid')
-            ->value('uid');
+            ->lockForUpdate()
+            ->first();
 
-        if (!$batchId) {
+        if (!$batch) {
             throw ValidationException::withMessages([
-                'batch_pendaftaran' => 'Batch pendaftaran aktif belum tersedia. Silakan buat batch pendaftaran terlebih dahulu.',
+                'batch_pendaftaran'
+                => 'Batch pendaftaran aktif belum tersedia.',
             ]);
         }
 
-        return (int) $batchId;
+        return $batch;
     }
     public function saveDraft(Request $request)
     {
