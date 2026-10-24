@@ -132,7 +132,7 @@ class FormDaftarController extends Controller
                     !== (int) $orangTua->uid
                 ) {
                     throw ValidationException::withMessages([
-                        $anak['error_key'] . '.nik'
+                        $this->fieldKey($anak, 'nik')
                         => 'NIK ' . $anak['nik']
                             . ' sudah digunakan oleh pendaftar lain.',
                     ]);
@@ -151,7 +151,7 @@ class FormDaftarController extends Controller
 
                 if ($existing && !$isDraft && !$isRevisiBerkas) {
                     throw ValidationException::withMessages([
-                        $anak['error_key'] . '.nik'
+                        $this->fieldKey($anak, 'nik')
                         => 'NIK ' . $anak['nik']
                             . ' sudah pernah disubmit. '
                             . 'Silakan cek halaman riwayat pendaftaran.',
@@ -278,7 +278,6 @@ class FormDaftarController extends Controller
         // Anak pertama, karena field-nya masih name biasa
         $daftarAnak[] = [
             'index' => 0,
-            'error_key' => 'nama_lengkap',
             'file_prefix' => null,
             'nama_lengkap' => $request->input('nama_lengkap'),
             'nik' => $request->input('nik'),
@@ -293,7 +292,6 @@ class FormDaftarController extends Controller
         foreach ($request->input('anak', []) as $index => $anak) {
             $daftarAnak[] = [
                 'index' => $index,
-                'error_key' => "anak.$index",
                 'file_prefix' => "anak.$index",
                 'nama_lengkap' => $anak['nama_lengkap'] ?? null,
                 'nik' => $anak['nik'] ?? null,
@@ -308,6 +306,13 @@ class FormDaftarController extends Controller
         return $daftarAnak;
     }
 
+    private function fieldKey(array $anak, string $field): string
+    {
+        return $anak['file_prefix']
+            ? $anak['file_prefix'] . '.' . $field
+            : $field;
+    }
+
     private function validasiNikGandaDalamForm(array $daftarAnak): void
     {
         $nikList = [];
@@ -315,7 +320,7 @@ class FormDaftarController extends Controller
         foreach ($daftarAnak as $anak) {
             if (in_array($anak['nik'], $nikList)) {
                 throw ValidationException::withMessages([
-                    $anak['error_key'] . '.nik' => 'NIK tidak boleh sama antar data anak dalam satu formulir.',
+                    $this->fieldKey($anak, 'nik') => 'NIK tidak boleh sama antar data anak dalam satu formulir.',
                 ]);
             }
 
@@ -336,7 +341,7 @@ class FormDaftarController extends Controller
 
             if (!$request->hasFile($fieldSuratBaptis)) {
                 throw ValidationException::withMessages([
-                    $anak['error_key'] . '.surat_baptis' => 'Surat Baptis wajib diupload untuk calon murid Katolik.',
+                   $this->fieldKey($anak, 'surat_baptis') => 'Surat Baptis wajib diupload untuk calon murid Katolik.',
                 ]);
             }
         }
