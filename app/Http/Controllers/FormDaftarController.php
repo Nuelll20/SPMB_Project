@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Throwable;
 
 class FormDaftarController extends Controller
 {
@@ -65,34 +66,54 @@ class FormDaftarController extends Controller
             'alamat' => 'required|string|min:5|max:250',
             'tempat_lahir' => 'required|string|min:3|max:255',
 
-            'kartu_keluarga' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            'akte_kelahiran' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            'ktp_ortu' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            'pas_foto' => 'required|file|mimes:jpg,jpeg,png|max:2048',
-            'surat_baptis' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'kartu_keluarga'
+            => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'akte_kelahiran'
+            => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'ktp_ortu'
+            => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'pas_foto'
+            => 'required|file|mimes:jpg,jpeg,png|max:2048',
+            'surat_baptis'
+            => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
 
             // Anak tambahan
             'anak' => 'nullable|array',
-            'anak.*.nama_lengkap' => 'required|string|min:3|max:255',
-            'anak.*.nik' => 'required|digits:16',
-            'anak.*.tanggal_lahir' => 'required|date',
-            'anak.*.gol_darah' => 'nullable|string|max:3',
-            'anak.*.agama' => 'required|string|max:50',
-            'anak.*.alamat' => 'required|string|min:5|max:250',
-            'anak.*.tempat_lahir' => 'required|string|min:3|max:255',
+            'anak.*.nama_lengkap'
+            => 'required|string|min:3|max:255',
+            'anak.*.nik'
+            => 'required|digits:16',
+            'anak.*.tanggal_lahir'
+            => 'required|date',
+            'anak.*.gol_darah'
+            => 'nullable|string|max:3',
+            'anak.*.agama'
+            => 'required|string|max:50',
+            'anak.*.alamat'
+            => 'required|string|min:5|max:250',
+            'anak.*.tempat_lahir'
+            => 'required|string|min:3|max:255',
 
-            'anak.*.kartu_keluarga' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            'anak.*.akte_kelahiran' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            'anak.*.ktp_ortu' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            'anak.*.pas_foto' => 'required|file|mimes:jpg,jpeg,png|max:2048',
-            'anak.*.surat_baptis' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'anak.*.kartu_keluarga'
+            => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'anak.*.akte_kelahiran'
+            => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'anak.*.ktp_ortu'
+            => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'anak.*.pas_foto'
+            => 'required|file|mimes:jpg,jpeg,png|max:2048',
+            'anak.*.surat_baptis'
+            => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ]);
 
         $orangTua = app(OrangTuaResolver::class)->current();
 
         if (!$orangTua) {
             return redirect()->route('profil.ortu')
-                ->with('warning', 'Lengkapi profil orang tua terlebih dahulu.');
+                ->with(
+                    'warning',
+                    'Lengkapi profil orang tua terlebih dahulu.'
+                );
         }
 
         $daftarAnak = $this->buildDaftarAnak($request);
@@ -100,175 +121,215 @@ class FormDaftarController extends Controller
         $this->validasiNikGandaDalamForm($daftarAnak);
         $this->validasiSuratBaptis($request, $daftarAnak);
 
-        DB::transaction(function () use ($request, $daftarAnak, $orangTua) {
-            $batchAktif = null;
+        $uploadedPaths = [];
 
-            foreach ($daftarAnak as $anak) {
-                $existing = DB::table('calon_siswa as cs')
-                    ->leftJoin(
-                        'pendaftaran as p',
-                        'p.calon_siswa_id',
-                        '=',
-                        'cs.uid'
-                    )
-                    ->where('cs.nik', $anak['nik'])
-                    ->select([
-                        'cs.*',
-                        'cs.status as status_siswa',
-                        'p.uid as pendaftaran_uid',
-                        'p.no_pendaftaran',
-                        'p.id_batch_pendaftaran',
-                        'p.status_pendaftaran',
-                        'p.jenis_penolakan',
-                        'p.tanggal_daftar',
-                    ])
-                    ->orderByDesc('p.uid')
-                    ->lockForUpdate()
-                    ->first();
+        try {
+            DB::transaction(function () use ($request, $daftarAnak, $orangTua, &$uploadedPaths) {
+                $batchAktif = null;
 
-                if (
-                    $existing
-                    && (int) $existing->uid_orangtua
-                    !== (int) $orangTua->uid
-                ) {
-                    throw ValidationException::withMessages([
-                        $this->fieldKey($anak, 'nik')
-                        => 'NIK ' . $anak['nik']
-                            . ' sudah digunakan oleh pendaftar lain.',
-                    ]);
-                }
+                foreach ($daftarAnak as $anak) {
+                    $existing = DB::table('calon_siswa as cs')
+                        ->leftJoin(
+                            'pendaftaran as p',
+                            'p.calon_siswa_id',
+                            '=',
+                            'cs.uid'
+                        )
+                        ->where('cs.nik', $anak['nik'])
+                        ->select([
+                            'cs.*',
+                            'cs.status as status_siswa',
+                            'p.uid as pendaftaran_uid',
+                            'p.no_pendaftaran',
+                            'p.id_batch_pendaftaran',
+                            'p.status_pendaftaran',
+                            'p.jenis_penolakan',
+                            'p.tanggal_daftar',
+                        ])
+                        ->orderByDesc('p.uid')
+                        ->lockForUpdate()
+                        ->first();
 
-                $isDraft = $existing
-                    && ($existing->status_siswa ?? null) === 'draft'
-                    && (
-                        empty($existing->pendaftaran_uid)
-                        || ($existing->status_pendaftaran ?? null) === 'draft'
-                    );
-
-                $isRevisiBerkas = $existing
-                    && ($existing->status_pendaftaran ?? null) === 'rejected'
-                    && ($existing->jenis_penolakan ?? null) === 'berkas';
-
-                if ($existing && !$isDraft && !$isRevisiBerkas) {
-                    throw ValidationException::withMessages([
-                        $this->fieldKey($anak, 'nik')
-                        => 'NIK ' . $anak['nik']
-                            . ' sudah pernah disubmit. '
-                            . 'Silakan cek halaman riwayat pendaftaran.',
-                    ]);
-                }
-
-                if ($isRevisiBerkas) {
-                    $batchId = (int) $existing->id_batch_pendaftaran;
-                    $batchPenuh = false;
-                } else {
-                    if (!$batchAktif) {
-                        $batchAktif = $this->getBatchAktif();
+                    if (
+                        $existing
+                        && (int) $existing->uid_orangtua
+                        !== (int) $orangTua->uid
+                    ) {
+                        throw ValidationException::withMessages([
+                            $this->fieldKey($anak, 'nik')
+                            => 'NIK ' . $anak['nik']
+                                . ' sudah digunakan oleh pendaftar lain.',
+                        ]);
                     }
 
-                    $batchId = (int) $batchAktif->uid;
+                    $isDraft = $existing
+                        && ($existing->status_siswa ?? null) === 'draft'
+                        && (
+                            empty($existing->pendaftaran_uid)
+                            || ($existing->status_pendaftaran ?? null)
+                            === 'draft'
+                        );
 
-                    $jumlahPendaftar = DB::table('pendaftaran')
-                        ->where('id_batch_pendaftaran', $batchId)
-                        ->count();
+                    $isRevisiBerkas = $existing
+                        && ($existing->status_pendaftaran ?? null)
+                        === 'rejected'
+                        && ($existing->jenis_penolakan ?? null)
+                        === 'berkas';
 
-                    $batchPenuh = $jumlahPendaftar
-                        >= (int) $batchAktif->kuota;
-                }
+                    if (
+                        $existing
+                        && !$isDraft
+                        && !$isRevisiBerkas
+                    ) {
+                        throw ValidationException::withMessages([
+                            $this->fieldKey($anak, 'nik')
+                            => 'NIK ' . $anak['nik']
+                                . ' sudah pernah disubmit. '
+                                . 'Silakan cek halaman riwayat pendaftaran.',
+                        ]);
+                    }
 
-                $statusPendaftaran = $batchPenuh
-                    ? 'rejected'
-                    : 'pending';
+                    if ($isRevisiBerkas) {
+                        $batchId = (int) $existing->id_batch_pendaftaran;
 
-                $dataCalonSiswa = [
-                    'nama' => $anak['nama_lengkap'],
-                    'nik' => $anak['nik'],
-                    'tanggal_lahir' => $anak['tanggal_lahir'],
-                    'golongan_darah' => $anak['gol_darah'] ?? null,
-                    'agama' => $anak['agama'],
-                    'alamat' => $anak['alamat'],
-                    'tempat_lahir' => $anak['tempat_lahir'],
-                    'uid_orangtua' => $orangTua->uid,
-                    'status' => $statusPendaftaran,
-                ];
+                        $batchPenuh = false;
+                    } else {
+                        if (!$batchAktif) {
+                            $batchAktif = $this->getBatchAktif();
+                        }
 
-                if ($existing) {
+                        $batchId = (int) $batchAktif->uid;
+
+                        $jumlahPendaftar = DB::table('pendaftaran')
+                            ->where(
+                                'id_batch_pendaftaran',
+                                $batchId
+                            )
+                            ->count();
+
+                        $batchPenuh = $jumlahPendaftar
+                            >= (int) $batchAktif->kuota;
+                    }
+
+                    $statusPendaftaran = $batchPenuh
+                        ? 'rejected'
+                        : 'pending';
+
+                    $dataCalonSiswa = [
+                        'nama' => $anak['nama_lengkap'],
+                        'nik' => $anak['nik'],
+                        'tanggal_lahir' => $anak['tanggal_lahir'],
+                        'golongan_darah'
+                        => $anak['gol_darah'] ?? null,
+                        'agama' => $anak['agama'],
+                        'alamat' => $anak['alamat'],
+                        'tempat_lahir' => $anak['tempat_lahir'],
+                        'uid_orangtua' => $orangTua->uid,
+                        'status' => $statusPendaftaran,
+                    ];
+
+                    if ($existing) {
+                        DB::table('calon_siswa')
+                            ->where('uid', $existing->uid)
+                            ->update($dataCalonSiswa);
+
+                        $uidCalonSiswa = (int) $existing->uid;
+                    } else {
+                        $uidCalonSiswa = DB::table(
+                            'calon_siswa'
+                        )->insertGetId($dataCalonSiswa);
+                    }
+
+                    $noPendaftaran = $isRevisiBerkas
+                        ? (
+                            $existing->no_pendaftaran
+                            ?? $existing->nomor_registrasi
+                            ?? null
+                        )
+                        : null;
+
+                    if (!$noPendaftaran) {
+                        $noPendaftaran =
+                            $this->generateNoPendaftar(
+                                $uidCalonSiswa
+                            );
+                    }
+
                     DB::table('calon_siswa')
-                        ->where('uid', $existing->uid)
-                        ->update($dataCalonSiswa);
+                        ->where('uid', $uidCalonSiswa)
+                        ->update([
+                            'nomor_registrasi'
+                            => $noPendaftaran,
+                        ]);
 
-                    $uidCalonSiswa = (int) $existing->uid;
-                } else {
-                    $uidCalonSiswa = DB::table('calon_siswa')
-                        ->insertGetId($dataCalonSiswa);
-                }
+                    $dataPendaftaran = [
+                        'no_pendaftaran' => $noPendaftaran,
+                        'id_batch_pendaftaran' => $batchId,
+                        'status_pendaftaran'
+                        => $statusPendaftaran,
+                        'jenis_penolakan' => $batchPenuh
+                            ? 'batch_penuh'
+                            : null,
+                        'diverifikasi_oleh' => null,
+                        'alasan_penolakan' => $batchPenuh
+                            ? 'Mohon maaf, batch pendaftaran '
+                            . 'sudah penuh.'
+                            : null,
+                        'tanggal_daftar' => $isRevisiBerkas
+                            ? (
+                                $existing->tanggal_daftar
+                                ?? now()->toDateString()
+                            )
+                            : now()->toDateString(),
+                        'calon_siswa_id' => $uidCalonSiswa,
+                    ];
 
-                $noPendaftaran = $isRevisiBerkas
-                    ? (
-                        $existing->no_pendaftaran
-                        ?? $existing->nomor_registrasi
-                        ?? null
-                    )
-                    : null;
+                    if (
+                        $existing
+                        && !empty($existing->pendaftaran_uid)
+                    ) {
+                        DB::table('pendaftaran')
+                            ->where(
+                                'uid',
+                                $existing->pendaftaran_uid
+                            )
+                            ->update($dataPendaftaran);
 
-                if (!$noPendaftaran) {
-                    $noPendaftaran = $this->generateNoPendaftar(
-                        $uidCalonSiswa
+                        $uidPendaftaran = (int) $existing->pendaftaran_uid;
+                    } else {
+                        $uidPendaftaran = DB::table(
+                            'pendaftaran'
+                        )->insertGetId($dataPendaftaran);
+                    }
+
+                    $this->replaceBerkas(
+                        $request,
+                        $uidPendaftaran,
+                        $anak['file_prefix'],
+                        $anak['nama_lengkap'],
+                        $anak['nik'],
+                        $uploadedPaths
                     );
                 }
-
-                DB::table('calon_siswa')
-                    ->where('uid', $uidCalonSiswa)
-                    ->update([
-                        'nomor_registrasi' => $noPendaftaran,
-                    ]);
-
-                $dataPendaftaran = [
-                    'no_pendaftaran' => $noPendaftaran,
-                    'id_batch_pendaftaran' => $batchId,
-                    'status_pendaftaran' => $statusPendaftaran,
-                    'jenis_penolakan' => $batchPenuh
-                        ? 'batch_penuh'
-                        : null,
-                    'diverifikasi_oleh' => null,
-                    'alasan_penolakan' => $batchPenuh
-                        ? 'Mohon maaf, batch pendaftaran sudah penuh.'
-                        : null,
-                    'tanggal_daftar' => $isRevisiBerkas
-                        ? (
-                            $existing->tanggal_daftar
-                            ?? now()->toDateString()
-                        )
-                        : now()->toDateString(),
-                    'calon_siswa_id' => $uidCalonSiswa,
-                ];
-
-                if (
-                    $existing
-                    && !empty($existing->pendaftaran_uid)
-                ) {
-                    DB::table('pendaftaran')
-                        ->where('uid', $existing->pendaftaran_uid)
-                        ->update($dataPendaftaran);
-
-                    $uidPendaftaran = (int) $existing->pendaftaran_uid;
-                } else {
-                    $uidPendaftaran = DB::table('pendaftaran')
-                        ->insertGetId($dataPendaftaran);
-                }
-
-                $this->replaceBerkas(
-                    $request,
-                    $uidPendaftaran,
-                    $anak['file_prefix'],
-                    $anak['nama_lengkap'],
-                    $anak['nik']
+            });
+        } catch (Throwable $exception) {
+            foreach (
+                array_unique($uploadedPaths)
+                as $uploadedPath
+            ) {
+                Storage::disk('public')->delete(
+                    $uploadedPath
                 );
             }
-        });
+
+            throw $exception;
+        }
 
         return redirect()->route('dashboard')
-            ->with('success', 'Data pendaftaran berhasil dikirim.');
+            ->with(
+                'success',
+                'Data pendaftaran berhasil dikirim.'
+            );
     }
 
     private function buildDaftarAnak(Request $request): array
@@ -341,7 +402,7 @@ class FormDaftarController extends Controller
 
             if (!$request->hasFile($fieldSuratBaptis)) {
                 throw ValidationException::withMessages([
-                   $this->fieldKey($anak, 'surat_baptis') => 'Surat Baptis wajib diupload untuk calon murid Katolik.',
+                    $this->fieldKey($anak, 'surat_baptis') => 'Surat Baptis wajib diupload untuk calon murid Katolik.',
                 ]);
             }
         }
@@ -350,23 +411,21 @@ class FormDaftarController extends Controller
     private function replaceBerkas(
         Request $request,
         int $uidPendaftaran,
-        ?string $filePrefix = null,
-        ?string $namaAnak = null,
-        ?string $nikAnak = null
+        ?string $filePrefix,
+        ?string $namaAnak,
+        ?string $nikAnak,
+        array &$uploadedPaths
     ): void {
         $oldBerkas = DB::table('berkas')
             ->where('id_pendaftar', $uidPendaftaran)
             ->get();
 
-        foreach ($oldBerkas as $berkas) {
-            if (!empty($berkas->file_url)) {
-                Storage::disk('public')->delete($berkas->file_url);
-            }
-        }
-
-        DB::table('berkas')
-            ->where('id_pendaftar', $uidPendaftaran)
-            ->delete();
+        $oldPaths = $oldBerkas
+            ->pluck('file_url')
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
 
         $files = [
             'kartu_keluarga' => 'Kartu Keluarga',
@@ -376,7 +435,13 @@ class FormDaftarController extends Controller
             'surat_baptis' => 'Surat Baptis',
         ];
 
-        $folder = $this->buildBerkasFolder($uidPendaftaran, $namaAnak, $nikAnak);
+        $folder = $this->buildBerkasFolder(
+            $uidPendaftaran,
+            $namaAnak,
+            $nikAnak
+        );
+
+        $newBerkas = [];
 
         foreach ($files as $inputName => $jenisBerkas) {
             $fieldName = $filePrefix
@@ -388,10 +453,19 @@ class FormDaftarController extends Controller
             }
 
             $file = $request->file($fieldName);
-            $extension = strtolower($file->getClientOriginalExtension());
+            $extension = strtolower(
+                $file->getClientOriginalExtension()
+            );
 
-            $namaFileSlug = Str::slug($namaAnak ?? 'calon-siswa');
-            $nikFileSlug = preg_replace('/\D/', '', $nikAnak ?? 'tanpa-nik');
+            $namaFileSlug = Str::slug(
+                $namaAnak ?? 'calon-siswa'
+            );
+
+            $nikFileSlug = preg_replace(
+                '/\D/',
+                '',
+                $nikAnak ?? 'tanpa-nik'
+            );
 
             $fileName = Str::slug($jenisBerkas)
                 . '-'
@@ -405,18 +479,42 @@ class FormDaftarController extends Controller
                 . '.'
                 . $extension;
 
-            $path = $file->storeAs($folder, $fileName, 'public');
+            $path = $file->storeAs(
+                $folder,
+                $fileName,
+                'public'
+            );
 
-            if (method_exists($this, 'compressImageIfNeeded')) {
-                $this->compressImageIfNeeded($path);
+            if (!$path) {
+                throw new \RuntimeException(
+                    'Berkas gagal disimpan ke penyimpanan.'
+                );
             }
 
-            DB::table('berkas')->insert([
+            $uploadedPaths[] = $path;
+
+            $newBerkas[] = [
                 'id_pendaftar' => $uidPendaftaran,
                 'jenis_berkas' => $jenisBerkas,
                 'file_url' => $path,
                 'is_valid' => 0,
-            ]);
+            ];
+        }
+
+        DB::table('berkas')
+            ->where('id_pendaftar', $uidPendaftaran)
+            ->delete();
+
+        if ($newBerkas !== []) {
+            DB::table('berkas')->insert($newBerkas);
+        }
+
+        if ($oldPaths !== []) {
+            DB::afterCommit(function () use ($oldPaths) {
+                foreach ($oldPaths as $oldPath) {
+                    Storage::disk('public')->delete($oldPath);
+                }
+            });
         }
     }
 
