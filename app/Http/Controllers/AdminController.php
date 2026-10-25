@@ -8,11 +8,44 @@ use Illuminate\Support\Facades\Schema;
 
 class AdminController extends Controller
 {
-    private function checkAdmin()
+
+    private const BERKAS_KEY_BY_TYPE = [
+        'Kartu Keluarga' => 'kartu_keluarga',
+        'Akte Kelahiran' => 'akte_kelahiran',
+        'E-KTP Orang Tua' => 'ktp_orang_tua',
+        'Pas Foto' => 'pas_foto',
+        'Surat Baptis' => 'surat_baptis',
+    ];
+    private function checkAdmin(): void
     {
         if (session('role') !== 'admin') {
             abort(403, 'Akses ditolak.');
         }
+    }
+
+    private function mapBerkas(
+        iterable $berkasSiswa,
+        ?string $defaultValue = null
+    ): array {
+        $berkasMap = array_fill_keys(
+            array_values(self::BERKAS_KEY_BY_TYPE),
+            $defaultValue
+        );
+
+        foreach ($berkasSiswa as $item) {
+            $key = self::BERKAS_KEY_BY_TYPE[$item->jenis_berkas] ?? null;
+
+            if ($key === null) {
+                continue;
+            }
+
+            $berkasMap[$key] = route('admin.berkas.show', [
+                'uid' => $item->uid,
+                'filename' => basename((string) $item->file_url),
+            ]);
+        }
+
+        return $berkasMap;
     }
 
     public function index()
@@ -70,40 +103,7 @@ class AdminController extends Controller
 
             $berkasSiswa = $berkas->get($row->pendaftaran_uid, collect());
 
-            $berkasMap = [
-                'kartu_keluarga' => '',
-                'akte_kelahiran' => '',
-                'ktp_orang_tua' => '',
-                'pas_foto' => '',
-                'surat_baptis' => '',
-            ];
-
-            foreach ($berkasSiswa as $item) {
-                $url = route('admin.berkas.show', [
-                    'uid' => $item->uid,
-                    'filename' => basename((string) $item->file_url),
-                ]);
-
-                if ($item->jenis_berkas === 'Kartu Keluarga') {
-                    $berkasMap['kartu_keluarga'] = $url;
-                }
-
-                if ($item->jenis_berkas === 'Akte Kelahiran') {
-                    $berkasMap['akte_kelahiran'] = $url;
-                }
-
-                if ($item->jenis_berkas === 'E-KTP Orang Tua') {
-                    $berkasMap['ktp_orang_tua'] = $url;
-                }
-
-                if ($item->jenis_berkas === 'Pas Foto') {
-                    $berkasMap['pas_foto'] = $url;
-                }
-
-                if ($item->jenis_berkas === 'Surat Baptis') {
-                    $berkasMap['surat_baptis'] = $url;
-                }
-            }
+            $berkasMap = $this->mapBerkas($berkasSiswa, '');
 
             return [
                 'pendaftaran_uid' => $row->pendaftaran_uid,
@@ -727,40 +727,7 @@ class AdminController extends Controller
             ->where('id_pendaftar', $uid)
             ->get();
 
-        $berkasMap = [
-            'kartu_keluarga' => null,
-            'akte_kelahiran' => null,
-            'ktp_orang_tua' => null,
-            'pas_foto' => null,
-            'surat_baptis' => null,
-        ];
-
-        foreach ($berkasSiswa as $item) {
-            $url = route('admin.berkas.show', [
-                'uid' => $item->uid,
-                'filename' => basename((string) $item->file_url),
-            ]);
-
-            if ($item->jenis_berkas === 'Kartu Keluarga') {
-                $berkasMap['kartu_keluarga'] = $url;
-            }
-
-            if ($item->jenis_berkas === 'Akte Kelahiran') {
-                $berkasMap['akte_kelahiran'] = $url;
-            }
-
-            if ($item->jenis_berkas === 'E-KTP Orang Tua') {
-                $berkasMap['ktp_orang_tua'] = $url;
-            }
-
-            if ($item->jenis_berkas === 'Pas Foto') {
-                $berkasMap['pas_foto'] = $url;
-            }
-
-            if ($item->jenis_berkas === 'Surat Baptis') {
-                $berkasMap['surat_baptis'] = $url;
-            }
-        }
+        $berkasMap = $this->mapBerkas($berkasSiswa);
 
         return response()->json([
             'success' => true,
