@@ -2733,18 +2733,18 @@
                                 data-tanggal-buka="{{ $item->tanggal_buka }}" data-tanggal-tutup="{{ $item->tanggal_tutup }}"
                                 data-kuota="{{ $item->kuota }}" data-active="{{ $item->is_active }}"
                                 style="
-                                                                                                                                                                                                                                                        display:flex;
-                                                                                                                                                                                                                                                        justify-content:space-between;
-                                                                                                                                                                                                                                                        align-items:center;
-                                                                                                                                                                                                                                                        padding:12px 14px;
-                                                                                                                                                                                                                                                        border:1px solid #e2e8f0;
-                                                                                                                                                                                                                                                        border-radius:12px;
-                                                                                                                                                                                                                                                        margin-bottom:8px;
-                                                                                                                                                                                                                                                        background:#f8fafc;
-                                                                                                                                                                                                                                                        gap:12px;
-                                                                                                                                                                                                                                                        cursor:pointer;
-                                                                                                                                                                                                                                                        transition:0.2s;
-                                                                                                                                                                                                                                                    ">
+                                                                                                                                                                                                                                                                                                display:flex;
+                                                                                                                                                                                                                                                                                                justify-content:space-between;
+                                                                                                                                                                                                                                                                                                align-items:center;
+                                                                                                                                                                                                                                                                                                padding:12px 14px;
+                                                                                                                                                                                                                                                                                                border:1px solid #e2e8f0;
+                                                                                                                                                                                                                                                                                                border-radius:12px;
+                                                                                                                                                                                                                                                                                                margin-bottom:8px;
+                                                                                                                                                                                                                                                                                                background:#f8fafc;
+                                                                                                                                                                                                                                                                                                gap:12px;
+                                                                                                                                                                                                                                                                                                cursor:pointer;
+                                                                                                                                                                                                                                                                                                transition:0.2s;
+                                                                                                                                                                                                                                                                                            ">
                                 <div>
                                     <div class="batch-title" style="font-weight:800; color:#1e293b;">
                                         {{ $item->nama_batch }}
@@ -2769,29 +2769,29 @@
                                     @if((int) $item->total_pendaftar === 0)
                                         <button type="button" onclick="event.stopPropagation(); deleteBatch('{{ $item->uid }}')"
                                             style="
-                                                                                                                                                                                                                                                                                                                                                                                            border:none;
-                                                                                                                                                                                                                                                                                                                                                                                            background:#fee2e2;
-                                                                                                                                                                                                                                                                                                                                                                                            color:#dc2626;
-                                                                                                                                                                                                                                                                                                                                                                                            width:34px;
-                                                                                                                                                                                                                                                                                                                                                                                            height:34px;
-                                                                                                                                                                                                                                                                                                                                                                                            border-radius:10px;
-                                                                                                                                                                                                                                                                                                                                                                                            cursor:pointer;
-                                                                                                                                                                                                                                                                                                                                                                                            font-weight:800;
-                                                                                                                                                                                                                                                                                                                                                                                        "
+                                                                                                                                                                                                                                                                                                                                                                                                                                                        border:none;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                        background:#fee2e2;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                        color:#dc2626;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                        width:34px;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                        height:34px;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                        border-radius:10px;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                        cursor:pointer;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                        font-weight:800;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                    "
                                             title="Hapus batch">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     @else
                                         <button type="button" disabled
                                             style="
-                                                                                                                                                                                                                                                                                                                                                                                            border:none;
-                                                                                                                                                                                                                                                                                                                                                                                            background:#e5e7eb;
-                                                                                                                                                                                                                                                                                                                                                                                            color:#9ca3af;
-                                                                                                                                                                                                                                                                                                                                                                                            width:34px;
-                                                                                                                                                                                                                                                                                                                                                                                            height:34px;
-                                                                                                                                                                                                                                                                                                                                                                                            border-radius:10px;
-                                                                                                                                                                                                                                                                                                                                                                                            cursor:not-allowed;
-                                                                                                                                                                                                                                                                                                                                                                                        "
+                                                                                                                                                                                                                                                                                                                                                                                                                                                        border:none;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                        background:#e5e7eb;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                        color:#9ca3af;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                        width:34px;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                        height:34px;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                        border-radius:10px;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                        cursor:not-allowed;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                    "
                                             title="Tidak bisa dihapus karena sudah ada pendaftar">
                                             <i class="fas fa-lock"></i>
                                         </button>
@@ -2808,7 +2808,7 @@
                     Batal
                 </button>
 
-                <button class="btn btn-primary" onclick="saveBatch()">
+                <button type="button" class="btn btn-primary" id="batch-save-button" onclick="saveBatch()">
                     <i class="fas fa-save"></i>
                     Simpan
                 </button>
@@ -2947,6 +2947,40 @@
             updateStats();
             renderRiwayatTable();
         });
+
+        function showToast(message, type = 'success', duration = 3000) {
+            const container = document.getElementById('toastContainer');
+
+            if (!container) {
+                console.error('Toast container tidak ditemukan:', message);
+                return;
+            }
+
+            const toast = document.createElement('div');
+            const icon = document.createElement('i');
+            const text = document.createElement('span');
+
+            const toastType = type === 'error'
+                ? 'error'
+                : 'success';
+
+            toast.className = `toast ${toastType}`;
+            toast.setAttribute('role', 'status');
+
+            icon.className = toastType === 'error'
+                ? 'fas fa-circle-exclamation'
+                : 'fas fa-circle-check';
+
+            text.textContent = message;
+
+            toast.appendChild(icon);
+            toast.appendChild(text);
+            container.appendChild(toast);
+
+            window.setTimeout(() => {
+                toast.remove();
+            }, duration);
+        }
 
         function handleLogout() {
             openModal('modal-logout');
@@ -3622,76 +3656,148 @@
 
             showToast("Berkas berhasil disimpan ke komputer.", "success");
         }
-        function saveBatch() {
-            const batchId = document.getElementById('batch-id')?.value || '';
-            const batchName = document.getElementById('batch-name')?.value || '';
-            const batchOpen = document.getElementById('batch-open')?.value || '';
-            const batchClose = document.getElementById('batch-close')?.value || '';
-            const batchQuota = parseInt(document.getElementById('batch-quota')?.value || '0', 10);
-            const batchStatus = document.getElementById('batch-status')?.value || '1';
+        async function saveBatch() {
+            const saveButton = document.getElementById(
+                'batch-save-button'
+            );
 
-            if (!batchName.trim()) {
-                return showToast('Nama batch wajib diisi.', 'error');
+            if (!saveButton || saveButton.disabled) {
+                return;
+            }
+
+            const batchId =
+                document.getElementById('batch-id')?.value || '';
+
+            const batchName =
+                document.getElementById('batch-name')?.value.trim() || '';
+
+            const batchOpen =
+                document.getElementById('batch-open')?.value || '';
+
+            const batchClose =
+                document.getElementById('batch-close')?.value || '';
+
+            const batchQuota = Number.parseInt(
+                document.getElementById('batch-quota')?.value || '0',
+                10
+            );
+
+            const batchStatus =
+                document.getElementById('batch-status')?.value || '0';
+
+            if (!batchName) {
+                showToast('Nama batch wajib diisi.', 'error');
+                return;
             }
 
             if (!batchOpen || !batchClose) {
-                return showToast('Tanggal buka dan tanggal tutup wajib diisi.', 'error');
+                showToast(
+                    'Tanggal buka dan tanggal tutup wajib diisi.',
+                    'error'
+                );
+                return;
             }
 
-            if (!Number.isFinite(batchQuota) || batchQuota < 0) {
-                return showToast('Kuota tidak valid.', 'error');
+            if (batchClose < batchOpen) {
+                showToast(
+                    'Tanggal tutup tidak boleh sebelum tanggal buka.',
+                    'error'
+                );
+                return;
             }
 
-            fetch("{{ route('admin.batch.save') }}", {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    uid: batchId || null,
-                    nama_batch: batchName,
-                    tanggal_buka: batchOpen,
-                    tanggal_tutup: batchClose,
-                    kuota: batchQuota,
-                    is_active: batchStatus
-                })
-            })
-                .then(async response => {
-                    const data = await response.json();
+            if (!Number.isInteger(batchQuota) || batchQuota < 1) {
+                showToast(
+                    'Kuota harus berupa angka minimal 1.',
+                    'error'
+                );
+                return;
+            }
 
-                    if (!response.ok || !data.success) {
-                        throw new Error(data.message || 'Gagal menyimpan batch.');
+            const originalButtonContent = saveButton.innerHTML;
+            let saveSucceeded = false;
+
+            saveButton.disabled = true;
+            saveButton.innerHTML = `
+        <i class="fas fa-spinner fa-spin"></i>
+        Menyimpan...
+    `;
+
+            try {
+                const response = await fetch(
+                    "{{ route('admin.batch.save') }}",
+                    {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document
+                                .querySelector('meta[name="csrf-token"]')
+                                .content,
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            uid: batchId || null,
+                            nama_batch: batchName,
+                            tanggal_buka: batchOpen,
+                            tanggal_tutup: batchClose,
+                            kuota: batchQuota,
+                            is_active: batchStatus
+                        })
+                    }
+                );
+
+                const responseText = await response.text();
+                let data = {};
+
+                try {
+                    data = responseText
+                        ? JSON.parse(responseText)
+                        : {};
+                } catch (parseError) {
+                    data = {};
+                }
+
+                if (!response.ok || !data.success) {
+                    let errorMessage =
+                        data.message || 'Gagal menyimpan batch.';
+
+                    if (data.errors) {
+                        const validationMessages =
+                            Object.values(data.errors).flat();
+
+                        if (validationMessages.length > 0) {
+                            errorMessage = validationMessages[0];
+                        }
                     }
 
-                    const batch = data.batch;
-                    const card = document.getElementById(`batch-card-${batch.uid}`);
+                    throw new Error(errorMessage);
+                }
 
-                    if (card) {
-                        card.dataset.nama = batch.nama_batch;
-                        card.dataset.tanggalBuka = batch.tanggal_buka;
-                        card.dataset.tanggalTutup = batch.tanggal_tutup;
-                        card.dataset.kuota = batch.kuota;
-                        card.dataset.active = batch.is_active;
+                saveSucceeded = true;
 
-                        const title = card.querySelector('.batch-title');
-                        const date = card.querySelector('.batch-date');
-                        const quota = card.querySelector('.batch-quota');
-                        const sisa = card.querySelector('.batch-sisa');
+                closeModal('modal-batch');
 
-                        if (title) title.innerText = batch.nama_batch;
-                        if (date) date.innerText = `${batch.tanggal_buka} s/d ${batch.tanggal_tutup}`;
-                        if (quota) quota.innerText = `${batch.total_pendaftar} / ${batch.kuota}`;
-                        if (sisa) sisa.innerText = `Sisa: ${batch.sisa_kuota}`;
-                    }
+                showToast(
+                    data.message || 'Batch berhasil disimpan.',
+                    'success'
+                );
 
-                    showToast(data.message || 'Batch berhasil disimpan.', 'success');
-                })
-                .catch(error => {
-                    showToast(error.message, 'error');
-                });
+                window.setTimeout(() => {
+                    window.location.reload();
+                }, 1200);
+            } catch (error) {
+                showToast(
+                    error.message || 'Terjadi kesalahan saat menyimpan batch.',
+                    'error'
+                );
+            } finally {
+                if (!saveSucceeded) {
+                    saveButton.disabled = false;
+                    saveButton.innerHTML = originalButtonContent;
+                }
+            }
         }
+
         function editBatchFromCard(card) {
             document.getElementById('batch-id').value = card.dataset.uid || '';
             document.getElementById('batch-name').value = card.dataset.nama || '';

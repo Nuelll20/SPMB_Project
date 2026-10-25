@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\BatchPendaftaranController;
 use App\Http\Controllers\BerkasController;
 use App\Http\Controllers\KomponenTagihanController;
 use Illuminate\Support\Facades\Route;
@@ -88,12 +89,12 @@ Route::middleware('admin.session')->group(function () {
 
     Route::post(
         '/admin/batch/save',
-        [AdminController::class, 'saveBatch']
+        [BatchPendaftaranController::class, 'save']
     )->name('admin.batch.save');
 
     Route::delete(
         '/admin/batch/{uid}',
-        [AdminController::class, 'deleteBatch']
+        [BatchPendaftaranController::class, 'destroy']
     )
         ->whereNumber('uid')
         ->name('admin.batch.delete');
