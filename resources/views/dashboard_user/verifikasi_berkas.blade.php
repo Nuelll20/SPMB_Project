@@ -9,13 +9,9 @@
 
     <link
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap"
-        rel="stylesheet"
-    >
+        rel="stylesheet">
 
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    >
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         :root {
@@ -660,11 +656,7 @@
         <div class="container">
             <div class="topbar">
                 <div class="brand">
-                    <img
-                        class="brand-image"
-                        src="{{ asset('img/E-Kanisius 1.png') }}"
-                        alt="Logo Kanisius"
-                    >
+                    <img class="brand-image" src="{{ asset('img/E-Kanisius 1.png') }}" alt="Logo Kanisius">
 
                     <div>
                         <div class="brand-title">SAKTI Portal</div>
@@ -698,11 +690,7 @@
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
 
-                        <button
-                            class="logout-button"
-                            type="submit"
-                            title="Keluar"
-                        >
+                        <button class="logout-button" type="submit" title="Keluar">
                             <i class="fa-solid fa-right-from-bracket"></i>
                         </button>
                     </form>
@@ -770,9 +758,9 @@
                         <div class="detail-label">Tempat, Tanggal Lahir</div>
                         <div class="detail-value">
                             {{ $siswa->tempat_lahir ?? '-' }},
-                            {{ ! empty($siswa->tanggal_lahir)
-                                ? \Carbon\Carbon::parse($siswa->tanggal_lahir)->format('d/m/Y')
-                                : '-' }}
+                            {{ !empty($siswa->tanggal_lahir)
+    ? \Carbon\Carbon::parse($siswa->tanggal_lahir)->format('d/m/Y')
+    : '-' }}
                         </div>
                     </div>
 
@@ -822,63 +810,61 @@
                 @if($berkas->isNotEmpty())
                     <div class="documents-list">
                         @foreach($berkas as $file)
-                            @php
-                                $extension = pathinfo(
-                                    $file->file_url,
-                                    PATHINFO_EXTENSION
-                                );
+                                        @php
+                                            $extension = pathinfo(
+                                                $file->file_url,
+                                                PATHINFO_EXTENSION
+                                            );
 
-                                $isValid = (int) $file->is_valid === 1;
+                                            $isValid = (int) $file->is_valid === 1;
 
-                                if ($isValid) {
-                                    $fileStatus = 'Valid';
-                                    $fileStatusClass = 'file-valid';
-                                } elseif ($status === 'rejected') {
-                                    $fileStatus = 'Perlu diperbaiki';
-                                    $fileStatusClass = 'file-revision';
-                                } else {
-                                    $fileStatus = 'Menunggu verifikasi';
-                                    $fileStatusClass = 'file-waiting';
-                                }
-                            @endphp
+                                            if ($isValid) {
+                                                $fileStatus = 'Valid';
+                                                $fileStatusClass = 'file-valid';
+                                            } elseif ($status === 'rejected') {
+                                                $fileStatus = 'Perlu diperbaiki';
+                                                $fileStatusClass = 'file-revision';
+                                            } else {
+                                                $fileStatus = 'Menunggu verifikasi';
+                                                $fileStatusClass = 'file-waiting';
+                                            }
+                                        @endphp
 
-                            <article class="document-item">
-                                <div class="document-info">
-                                    <div class="document-icon">
-                                        @if(strtolower($extension) === 'pdf')
-                                            <i class="fa-solid fa-file-pdf"></i>
-                                        @else
-                                            <i class="fa-solid fa-file-image"></i>
-                                        @endif
-                                    </div>
+                                        <article class="document-item">
+                                            <div class="document-info">
+                                                <div class="document-icon">
+                                                    @if(strtolower($extension) === 'pdf')
+                                                        <i class="fa-solid fa-file-pdf"></i>
+                                                    @else
+                                                        <i class="fa-solid fa-file-image"></i>
+                                                    @endif
+                                                </div>
 
-                                    <div>
-                                        <div class="document-name">
-                                            {{ $file->jenis_berkas }}
-                                        </div>
+                                                <div>
+                                                    <div class="document-name">
+                                                        {{ $file->jenis_berkas }}
+                                                    </div>
 
-                                        <div class="document-meta">
-                                            <span class="file-extension">
-                                                {{ $extension ?: 'FILE' }}
-                                            </span>
+                                                    <div class="document-meta">
+                                                        <span class="file-extension">
+                                                            {{ $extension ?: 'FILE' }}
+                                                        </span>
 
-                                            <span class="file-status {{ $fileStatusClass }}">
-                                                {{ $fileStatus }}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
+                                                        <span class="file-status {{ $fileStatusClass }}">
+                                                            {{ $fileStatus }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
 
-                                <a
-                                    class="view-file-button"
-                                    href="{{ asset('storage/'.$file->file_url) }}"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    <i class="fa-solid fa-eye"></i>
-                                    Lihat Berkas
-                                </a>
-                            </article>
+                                            <a class="view-file-button" href="{{ route('berkas.show', [
+                                'uid' => $file->uid,
+                                'filename' => basename((string) $file->file_url),
+                            ]) }}" target="_blank" rel="noopener noreferrer">
+                                                <i class="fa-solid fa-eye"></i>
+                                                Lihat Berkas
+                                            </a>
+                                        </article>
                         @endforeach
                     </div>
                 @else

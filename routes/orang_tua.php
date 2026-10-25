@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\FormOrtuController;
+use App\Http\Controllers\BerkasController;
 use App\Http\Controllers\DashboardOrtuController;
 use App\Http\Controllers\FormDaftarController;
 use App\Http\Controllers\RiwayatController;
@@ -34,6 +35,18 @@ Route::middleware('auth')->group(function () {
         return view('dashboard_user.pusat_bantuan');
     })->name('pusat_bantuan');
 
-    Route::get('/verifikasi-berkas/{uid}', [VerifikasiBerkasController::class, 'show'])
+    Route::get(
+        '/berkas/{uid}/lihat/{filename?}',
+        [BerkasController::class, 'showForOrangTua']
+    )
+        ->whereNumber('uid')
+        ->where('filename', '[^/]+')
+        ->name('berkas.show');
+
+    Route::get(
+        '/verifikasi-berkas/{uid}',
+        [VerifikasiBerkasController::class, 'show']
+    )
+        ->whereNumber('uid')
         ->name('verifikasi.berkas');
 });

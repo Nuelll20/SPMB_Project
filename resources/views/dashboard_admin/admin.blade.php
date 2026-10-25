@@ -1611,6 +1611,7 @@
         }
 
         @media (max-width: 900px) {
+
             .riwayat-toolbar,
             .riwayat-summary-grid,
             .riwayat-detail-grid {
@@ -1954,6 +1955,7 @@
         }
 
         @media (max-width: 980px) {
+
             .admin-help-hero,
             .admin-help-grid {
                 grid-template-columns: 1fr;
@@ -1987,7 +1989,6 @@
                 padding-left: 0;
             }
         }
-
     </style>
 </head>
 
@@ -2139,14 +2140,16 @@
                     <div class="riwayat-toolbar">
                         <div class="riwayat-search">
                             <i class="fas fa-search"></i>
-                            <input type="text" id="riwayatSearchInput" placeholder="Cari nama, NIK, atau nomor registrasi..."
-                                oninput="renderRiwayatTable()">
+                            <input type="text" id="riwayatSearchInput"
+                                placeholder="Cari nama, NIK, atau nomor registrasi..." oninput="renderRiwayatTable()">
                         </div>
 
                         <select class="riwayat-filter" id="riwayatBatchFilter" onchange="renderRiwayatTable()">
                             <option value="semua">Semua Gelombang</option>
                             @foreach(($batchList ?? collect()) as $batchItem)
-                                <option value="{{ $batchItem->uid }}">{{ $batchItem->nama_batch ?? ('Batch ' . $batchItem->uid) }}</option>
+                                <option value="{{ $batchItem->uid }}">
+                                    {{ $batchItem->nama_batch ?? ('Batch ' . $batchItem->uid) }}
+                                </option>
                             @endforeach
                             <option value="tanpa_batch">Tanpa Batch</option>
                         </select>
@@ -2243,7 +2246,8 @@
                                     <div class="admin-faq-answer">
                                         Buka menu Dashboard, klik tombol detail pada calon peserta, periksa data siswa,
                                         identitas, berkas, dan informasi tagihan. Setelah valid, pilih Approve. Jika ada
-                                        berkas yang belum sesuai, pilih Rejected dan tuliskan alasan penolakan dengan jelas.
+                                        berkas yang belum sesuai, pilih Rejected dan tuliskan alasan penolakan dengan
+                                        jelas.
                                     </div>
                                 </div>
 
@@ -2253,8 +2257,10 @@
                                         Kapan admin harus memilih Rejected?
                                     </div>
                                     <div class="admin-faq-answer">
-                                        Gunakan Rejected jika berkas tidak sesuai, data identitas tidak valid, dokumen tidak
-                                        terbaca, atau batch sudah penuh. Alasan rejected akan menjadi informasi untuk orang tua
+                                        Gunakan Rejected jika berkas tidak sesuai, data identitas tidak valid, dokumen
+                                        tidak
+                                        terbaca, atau batch sudah penuh. Alasan rejected akan menjadi informasi untuk
+                                        orang tua
                                         agar mereka memahami tindak lanjut yang perlu dilakukan.
                                     </div>
                                 </div>
@@ -2277,8 +2283,10 @@
                                         Di mana melihat riwayat approval dan rejection?
                                     </div>
                                     <div class="admin-faq-answer">
-                                        Masuk ke menu Riwayat untuk melihat nama siswa, tanggal submit, tanggal approve atau
-                                        rejected, admin verifikator, status, batch, alasan penolakan, dan total nominal invoice.
+                                        Masuk ke menu Riwayat untuk melihat nama siswa, tanggal submit, tanggal approve
+                                        atau
+                                        rejected, admin verifikator, status, batch, alasan penolakan, dan total nominal
+                                        invoice.
                                     </div>
                                 </div>
                             </div>
@@ -2292,22 +2300,26 @@
                                 <div class="admin-guide-card">
                                     <div class="admin-guide-icon"><i class="fa-solid fa-eye"></i></div>
                                     <div class="admin-guide-title">Cek Detail Pendaftar</div>
-                                    <div class="admin-guide-desc">Gunakan ikon mata pada tabel untuk membuka data lengkap dan dokumen siswa.</div>
+                                    <div class="admin-guide-desc">Gunakan ikon mata pada tabel untuk membuka data
+                                        lengkap dan dokumen siswa.</div>
                                 </div>
                                 <div class="admin-guide-card">
                                     <div class="admin-guide-icon"><i class="fa-solid fa-check"></i></div>
                                     <div class="admin-guide-title">Approve Berkas</div>
-                                    <div class="admin-guide-desc">Approve hanya jika data, dokumen, batch, dan invoice sudah sesuai.</div>
+                                    <div class="admin-guide-desc">Approve hanya jika data, dokumen, batch, dan invoice
+                                        sudah sesuai.</div>
                                 </div>
                                 <div class="admin-guide-card">
                                     <div class="admin-guide-icon"><i class="fa-solid fa-xmark"></i></div>
                                     <div class="admin-guide-title">Reject Berkas</div>
-                                    <div class="admin-guide-desc">Berikan alasan spesifik agar orang tua tahu dokumen mana yang perlu diperbaiki.</div>
+                                    <div class="admin-guide-desc">Berikan alasan spesifik agar orang tua tahu dokumen
+                                        mana yang perlu diperbaiki.</div>
                                 </div>
                                 <div class="admin-guide-card">
                                     <div class="admin-guide-icon"><i class="fa-solid fa-receipt"></i></div>
                                     <div class="admin-guide-title">Invoice</div>
-                                    <div class="admin-guide-desc">Invoice muncul untuk data yang sudah disetujui dan dapat dicek melalui detail riwayat.</div>
+                                    <div class="admin-guide-desc">Invoice muncul untuk data yang sudah disetujui dan
+                                        dapat dicek melalui detail riwayat.</div>
                                 </div>
                             </div>
                         </div>
@@ -2326,7 +2338,8 @@
                                     <div>
                                         <div class="admin-contact-title">Operator SPMB</div>
                                         <div class="admin-contact-sub">
-                                            WhatsApp: <a href="https://wa.me/6281234567890" target="_blank" rel="noopener">+62 812-3456-7890</a><br>
+                                            WhatsApp: <a href="https://wa.me/6281234567890" target="_blank"
+                                                rel="noopener">+62 812-3456-7890</a><br>
                                             Gunakan untuk koordinasi kendala verifikasi, batch, dan data pendaftar.
                                         </div>
                                     </div>
@@ -2358,14 +2371,17 @@
                                     </div>
                                 </div>
 
-                                <a href="https://wa.me/6281234567890" target="_blank" rel="noopener" class="admin-btn-operator">
+                                <a href="https://wa.me/6281234567890" target="_blank" rel="noopener"
+                                    class="admin-btn-operator">
                                     <i class="fa-solid fa-headset"></i> Hubungi Operator
                                 </a>
                             </div>
 
                             <div class="admin-note-card">
-                                <strong>Catatan:</strong> Halaman bantuan ini khusus role admin. Menu ini tidak membuka akses
-                                publik ke dashboard admin dan tidak mengubah sistem login, register, batch, approve, atau reject.
+                                <strong>Catatan:</strong> Halaman bantuan ini khusus role admin. Menu ini tidak membuka
+                                akses
+                                publik ke dashboard admin dan tidak mengubah sistem login, register, batch, approve,
+                                atau reject.
                             </div>
                         </div>
                     </div>
@@ -2476,7 +2492,7 @@
                 <!-- SISI KANAN: PREVIEW BERKAS DIGITAL (AMBIL DATA DARI DATABASE) -->
                 <div>
                     <div class="inspeksi-section-title"><i class="fas fa-cloud-arrow-up"></i> Preview Berkas Digital
-                        </div>
+                    </div>
 
                     <!-- Berkas Grid - ID link diubah agar dapat disuntik URL Database melalui JS -->
                     <div class="berkas-grid">
@@ -2508,12 +2524,20 @@
                             </div>
                             <span class="berkas-link" id="link-foto">LIHAT</span>
                         </div>
-                        <div class="berkas-card" style="grid-column: span 2;">
+                        <div class="berkas-card" id="card-baptis" style="grid-column: span 2;">
                             <div class="berkas-info">
-                                <div class="berkas-icon"><i class="fas fa-check"></i></div>
-                                <span class="berkas-name">Surat Baptis</span>
+                                <div class="berkas-icon">
+                                    <i class="fas fa-check"></i>
+                                </div>
+
+                                <span class="berkas-name">
+                                    Surat Baptis
+                                </span>
                             </div>
-                            <span class="berkas-link" id="link-baptis">LIHAT</span>
+
+                            <span class="berkas-link" id="link-baptis">
+                                LIHAT
+                            </span>
                         </div>
                     </div>
 
@@ -2562,7 +2586,8 @@
                                     Pas Foto
                                 </label>
 
-                                <label style="display:block; color:white; font-size:13px; margin-bottom:6px;">
+                                <label id="reject-baptis-option"
+                                    style="display:block; color:white; font-size:13px; margin-bottom:6px;">
                                     <input type="checkbox" class="berkas-invalid" value="Surat Baptis">
                                     Surat Baptis
                                 </label>
@@ -2706,19 +2731,20 @@
                             <div id="batch-card-{{ $item->uid }}" class="batch-row" onclick="editBatchFromCard(this)"
                                 data-uid="{{ $item->uid }}" data-nama="{{ $item->nama_batch }}"
                                 data-tanggal-buka="{{ $item->tanggal_buka }}" data-tanggal-tutup="{{ $item->tanggal_tutup }}"
-                                data-kuota="{{ $item->kuota }}" data-active="{{ $item->is_active }}" style="
-                                                                display:flex;
-                                                                justify-content:space-between;
-                                                                align-items:center;
-                                                                padding:12px 14px;
-                                                                border:1px solid #e2e8f0;
-                                                                border-radius:12px;
-                                                                margin-bottom:8px;
-                                                                background:#f8fafc;
-                                                                gap:12px;
-                                                                cursor:pointer;
-                                                                transition:0.2s;
-                                                            ">
+                                data-kuota="{{ $item->kuota }}" data-active="{{ $item->is_active }}"
+                                style="
+                                                                                                                                                                                                                                                        display:flex;
+                                                                                                                                                                                                                                                        justify-content:space-between;
+                                                                                                                                                                                                                                                        align-items:center;
+                                                                                                                                                                                                                                                        padding:12px 14px;
+                                                                                                                                                                                                                                                        border:1px solid #e2e8f0;
+                                                                                                                                                                                                                                                        border-radius:12px;
+                                                                                                                                                                                                                                                        margin-bottom:8px;
+                                                                                                                                                                                                                                                        background:#f8fafc;
+                                                                                                                                                                                                                                                        gap:12px;
+                                                                                                                                                                                                                                                        cursor:pointer;
+                                                                                                                                                                                                                                                        transition:0.2s;
+                                                                                                                                                                                                                                                    ">
                                 <div>
                                     <div class="batch-title" style="font-weight:800; color:#1e293b;">
                                         {{ $item->nama_batch }}
@@ -2743,27 +2769,29 @@
                                     @if((int) $item->total_pendaftar === 0)
                                         <button type="button" onclick="event.stopPropagation(); deleteBatch('{{ $item->uid }}')"
                                             style="
-                                                                                                        border:none;
-                                                                                                        background:#fee2e2;
-                                                                                                        color:#dc2626;
-                                                                                                        width:34px;
-                                                                                                        height:34px;
-                                                                                                        border-radius:10px;
-                                                                                                        cursor:pointer;
-                                                                                                        font-weight:800;
-                                                                                                    " title="Hapus batch">
+                                                                                                                                                                                                                                                                                                                                                                                            border:none;
+                                                                                                                                                                                                                                                                                                                                                                                            background:#fee2e2;
+                                                                                                                                                                                                                                                                                                                                                                                            color:#dc2626;
+                                                                                                                                                                                                                                                                                                                                                                                            width:34px;
+                                                                                                                                                                                                                                                                                                                                                                                            height:34px;
+                                                                                                                                                                                                                                                                                                                                                                                            border-radius:10px;
+                                                                                                                                                                                                                                                                                                                                                                                            cursor:pointer;
+                                                                                                                                                                                                                                                                                                                                                                                            font-weight:800;
+                                                                                                                                                                                                                                                                                                                                                                                        "
+                                            title="Hapus batch">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     @else
-                                        <button type="button" disabled style="
-                                                                                                        border:none;
-                                                                                                        background:#e5e7eb;
-                                                                                                        color:#9ca3af;
-                                                                                                        width:34px;
-                                                                                                        height:34px;
-                                                                                                        border-radius:10px;
-                                                                                                        cursor:not-allowed;
-                                                                                                    "
+                                        <button type="button" disabled
+                                            style="
+                                                                                                                                                                                                                                                                                                                                                                                            border:none;
+                                                                                                                                                                                                                                                                                                                                                                                            background:#e5e7eb;
+                                                                                                                                                                                                                                                                                                                                                                                            color:#9ca3af;
+                                                                                                                                                                                                                                                                                                                                                                                            width:34px;
+                                                                                                                                                                                                                                                                                                                                                                                            height:34px;
+                                                                                                                                                                                                                                                                                                                                                                                            border-radius:10px;
+                                                                                                                                                                                                                                                                                                                                                                                            cursor:not-allowed;
+                                                                                                                                                                                                                                                                                                                                                                                        "
                                             title="Tidak bisa dihapus karena sudah ada pendaftar">
                                             <i class="fas fa-lock"></i>
                                         </button>
@@ -2800,7 +2828,8 @@
                         <p id="riwayat-detail-subtitle">RANGKUMAN AKTIVITAS ADMIN</p>
                     </div>
                 </div>
-                <button class="modal-close" onclick="closeModal('modal-riwayat-detail')"><i class="fas fa-times"></i></button>
+                <button class="modal-close" onclick="closeModal('modal-riwayat-detail')"><i
+                        class="fas fa-times"></i></button>
             </div>
 
             <div class="modal-body">
@@ -2854,7 +2883,8 @@
 
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeModal('modal-riwayat-detail')">Tutup</button>
-                <button class="btn btn-primary" id="rd-invoice-btn" onclick="openRiwayatInvoice()" style="display:none;">
+                <button class="btn btn-primary" id="rd-invoice-btn" onclick="openRiwayatInvoice()"
+                    style="display:none;">
                     <i class="fas fa-file-invoice"></i> Buka Invoice
                 </button>
             </div>
@@ -3210,11 +3240,59 @@
 
 
             // MENGHUBUNGKAN LINK PREVIEW SECARA DINAMIS SESUAI BERKAS DATABASE SISWA YANG DIPILIH
-            document.getElementById('link-kk').onclick = () => openFilePreview('Kartu Keluarga', siswa.berkas.kartu_keluarga);
-            document.getElementById('link-akte').onclick = () => openFilePreview('Akte Kelahiran', siswa.berkas.akte_kelahiran);
-            document.getElementById('link-ktp').onclick = () => openFilePreview('E-KTP Orang Tua', siswa.berkas.ktp_orang_tua);
-            document.getElementById('link-foto').onclick = () => openFilePreview('Pas Foto (3x4)', siswa.berkas.pas_foto);
-            document.getElementById('link-baptis').onclick = () => openFilePreview('Surat Baptis', siswa.berkas.surat_baptis);
+            // Mengatur berkas sesuai agama calon siswa.
+            const isKatolik = String(siswa.agama || '')
+                .trim()
+                .toLowerCase() === 'katolik';
+
+            const cardBaptis = document.getElementById('card-baptis');
+            const linkBaptis = document.getElementById('link-baptis');
+            const rejectBaptisOption = document.getElementById(
+                'reject-baptis-option'
+            );
+
+            if (cardBaptis) {
+                cardBaptis.style.display = isKatolik ? '' : 'none';
+            }
+
+            if (rejectBaptisOption) {
+                rejectBaptisOption.style.display = isKatolik
+                    ? 'block'
+                    : 'none';
+            }
+
+            document.getElementById('link-kk').onclick = () =>
+                openFilePreview(
+                    'Kartu Keluarga',
+                    siswa.berkas.kartu_keluarga
+                );
+
+            document.getElementById('link-akte').onclick = () =>
+                openFilePreview(
+                    'Akte Kelahiran',
+                    siswa.berkas.akte_kelahiran
+                );
+
+            document.getElementById('link-ktp').onclick = () =>
+                openFilePreview(
+                    'E-KTP Orang Tua',
+                    siswa.berkas.ktp_orang_tua
+                );
+
+            document.getElementById('link-foto').onclick = () =>
+                openFilePreview(
+                    'Pas Foto (3x4)',
+                    siswa.berkas.pas_foto
+                );
+
+            if (linkBaptis) {
+                linkBaptis.onclick = isKatolik
+                    ? () => openFilePreview(
+                        'Surat Baptis',
+                        siswa.berkas.surat_baptis
+                    )
+                    : null;
+            }
 
             const controlPanel = document.querySelector('.control-panel');
 
@@ -3275,8 +3353,15 @@
                     Pas Foto
                 </label>
 
-                <label style="display:block; color:white; font-size:13px; margin-bottom:6px;">
-                    <input type="checkbox" class="berkas-invalid" value="Surat Baptis">
+                <label
+                    id="reject-baptis-option"
+                    style="display:${isKatolik ? 'block' : 'none'}; color:white; font-size:13px; margin-bottom:6px;"
+                >
+                    <input
+                        type="checkbox"
+                        class="berkas-invalid"
+                        value="Surat Baptis"
+                    >
                     Surat Baptis
                 </label>
             </div>
@@ -3487,203 +3572,203 @@
 
 
 
-            /* ===== PREVIEW & DOWNLOAD HANDLER POPUP ===== */
-            function openFilePreview(fileName, fileUrl) {
-                if (!fileUrl) {
-                    showToast('Berkas belum tersedia.', 'error');
-                    return;
-                }
-
-                activeDownloadUrl = fileUrl;
-                activeDownloadName = fileName.replace(/\s+/g, '_').toLowerCase();
-
-                document.getElementById('preview-file-title').innerHTML =
-                    `<i class="fas fa-file-image" style="color:var(--blue); margin-right:8px;"></i>Pratinjau ${fileName}`;
-
-                const container = document.querySelector('#modal-file-preview .preview-container');
-                container.innerHTML = '';
-
-                const lowerUrl = fileUrl.toLowerCase();
-
-                if (lowerUrl.includes('.pdf')) {
-                    const iframe = document.createElement('iframe');
-                    iframe.src = fileUrl;
-                    iframe.style.width = '100%';
-                    iframe.style.height = '520px';
-                    iframe.style.border = 'none';
-                    container.appendChild(iframe);
-                } else {
-                    const img = document.createElement('img');
-                    img.src = fileUrl;
-                    img.className = 'preview-image-element';
-                    img.alt = fileName;
-                    container.appendChild(img);
-                }
-
-                document.getElementById('modal-file-preview').classList.add('open');
+        /* ===== PREVIEW & DOWNLOAD HANDLER POPUP ===== */
+        function openFilePreview(fileName, fileUrl) {
+            if (!fileUrl) {
+                showToast('Berkas belum tersedia.', 'error');
+                return;
             }
 
-            function closeFilePreview() { document.getElementById('modal-file-preview').classList.remove('open'); }
+            activeDownloadUrl = fileUrl;
+            activeDownloadName = fileName.replace(/\s+/g, '_').toLowerCase();
 
-            function downloadFileToComputer() {
-                if (!activeDownloadUrl) return;
-                const virtualAnchor = document.createElement('a');
-                virtualAnchor.href = activeDownloadUrl;
-                virtualAnchor.download = `dokumen_${activeDownloadName}_${selectedSiswaId}.jpg`;
-                virtualAnchor.target = '_blank';
-                document.body.appendChild(virtualAnchor);
-                virtualAnchor.click();
-                document.body.removeChild(virtualAnchor);
+            document.getElementById('preview-file-title').innerHTML =
+                `<i class="fas fa-file-image" style="color:var(--blue); margin-right:8px;"></i>Pratinjau ${fileName}`;
 
-                showToast("Berkas berhasil disimpan ke komputer.", "success");
+            const container = document.querySelector('#modal-file-preview .preview-container');
+            container.innerHTML = '';
+
+            const lowerUrl = fileUrl.toLowerCase();
+
+            if (lowerUrl.includes('.pdf')) {
+                const iframe = document.createElement('iframe');
+                iframe.src = fileUrl;
+                iframe.style.width = '100%';
+                iframe.style.height = '520px';
+                iframe.style.border = 'none';
+                container.appendChild(iframe);
+            } else {
+                const img = document.createElement('img');
+                img.src = fileUrl;
+                img.className = 'preview-image-element';
+                img.alt = fileName;
+                container.appendChild(img);
             }
-            function saveBatch() {
-                const batchId = document.getElementById('batch-id')?.value || '';
-                const batchName = document.getElementById('batch-name')?.value || '';
-                const batchOpen = document.getElementById('batch-open')?.value || '';
-                const batchClose = document.getElementById('batch-close')?.value || '';
-                const batchQuota = parseInt(document.getElementById('batch-quota')?.value || '0', 10);
-                const batchStatus = document.getElementById('batch-status')?.value || '1';
 
-                if (!batchName.trim()) {
-                    return showToast('Nama batch wajib diisi.', 'error');
-                }
+            document.getElementById('modal-file-preview').classList.add('open');
+        }
 
-                if (!batchOpen || !batchClose) {
-                    return showToast('Tanggal buka dan tanggal tutup wajib diisi.', 'error');
-                }
+        function closeFilePreview() { document.getElementById('modal-file-preview').classList.remove('open'); }
 
-                if (!Number.isFinite(batchQuota) || batchQuota < 0) {
-                    return showToast('Kuota tidak valid.', 'error');
-                }
+        function downloadFileToComputer() {
+            if (!activeDownloadUrl) return;
+            const virtualAnchor = document.createElement('a');
+            virtualAnchor.href = activeDownloadUrl;
+            virtualAnchor.download = `dokumen_${activeDownloadName}_${selectedSiswaId}.jpg`;
+            virtualAnchor.target = '_blank';
+            document.body.appendChild(virtualAnchor);
+            virtualAnchor.click();
+            document.body.removeChild(virtualAnchor);
 
-                fetch("{{ route('admin.batch.save') }}", {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        uid: batchId || null,
-                        nama_batch: batchName,
-                        tanggal_buka: batchOpen,
-                        tanggal_tutup: batchClose,
-                        kuota: batchQuota,
-                        is_active: batchStatus
-                    })
+            showToast("Berkas berhasil disimpan ke komputer.", "success");
+        }
+        function saveBatch() {
+            const batchId = document.getElementById('batch-id')?.value || '';
+            const batchName = document.getElementById('batch-name')?.value || '';
+            const batchOpen = document.getElementById('batch-open')?.value || '';
+            const batchClose = document.getElementById('batch-close')?.value || '';
+            const batchQuota = parseInt(document.getElementById('batch-quota')?.value || '0', 10);
+            const batchStatus = document.getElementById('batch-status')?.value || '1';
+
+            if (!batchName.trim()) {
+                return showToast('Nama batch wajib diisi.', 'error');
+            }
+
+            if (!batchOpen || !batchClose) {
+                return showToast('Tanggal buka dan tanggal tutup wajib diisi.', 'error');
+            }
+
+            if (!Number.isFinite(batchQuota) || batchQuota < 0) {
+                return showToast('Kuota tidak valid.', 'error');
+            }
+
+            fetch("{{ route('admin.batch.save') }}", {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    uid: batchId || null,
+                    nama_batch: batchName,
+                    tanggal_buka: batchOpen,
+                    tanggal_tutup: batchClose,
+                    kuota: batchQuota,
+                    is_active: batchStatus
                 })
-                    .then(async response => {
-                        const data = await response.json();
+            })
+                .then(async response => {
+                    const data = await response.json();
 
-                        if (!response.ok || !data.success) {
-                            throw new Error(data.message || 'Gagal menyimpan batch.');
-                        }
-
-                        const batch = data.batch;
-                        const card = document.getElementById(`batch-card-${batch.uid}`);
-
-                        if (card) {
-                            card.dataset.nama = batch.nama_batch;
-                            card.dataset.tanggalBuka = batch.tanggal_buka;
-                            card.dataset.tanggalTutup = batch.tanggal_tutup;
-                            card.dataset.kuota = batch.kuota;
-                            card.dataset.active = batch.is_active;
-
-                            const title = card.querySelector('.batch-title');
-                            const date = card.querySelector('.batch-date');
-                            const quota = card.querySelector('.batch-quota');
-                            const sisa = card.querySelector('.batch-sisa');
-
-                            if (title) title.innerText = batch.nama_batch;
-                            if (date) date.innerText = `${batch.tanggal_buka} s/d ${batch.tanggal_tutup}`;
-                            if (quota) quota.innerText = `${batch.total_pendaftar} / ${batch.kuota}`;
-                            if (sisa) sisa.innerText = `Sisa: ${batch.sisa_kuota}`;
-                        }
-
-                        showToast(data.message || 'Batch berhasil disimpan.', 'success');
-                    })
-                    .catch(error => {
-                        showToast(error.message, 'error');
-                    });
-            }
-            function editBatchFromCard(card) {
-                document.getElementById('batch-id').value = card.dataset.uid || '';
-                document.getElementById('batch-name').value = card.dataset.nama || '';
-                document.getElementById('batch-open').value = card.dataset.tanggalBuka || '';
-                document.getElementById('batch-close').value = card.dataset.tanggalTutup || '';
-                document.getElementById('batch-quota').value = card.dataset.kuota || 0;
-                document.getElementById('batch-status').value = card.dataset.active || '0';
-
-                document.querySelectorAll('.batch-row').forEach(row => {
-                    row.style.borderColor = '#e2e8f0';
-                    row.style.background = '#f8fafc';
-                });
-
-                card.style.borderColor = '#0f2a5e';
-                card.style.background = '#eef6ff';
-
-                showToast('Data batch dimuat ke form. Edit lalu klik Simpan.', 'success');
-            }
-            function deleteBatch(uid) {
-                if (!confirm('Yakin ingin menghapus batch ini?')) {
-                    return;
-                }
-
-                fetch(`/admin/batch/${uid}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        'Accept': 'application/json'
+                    if (!response.ok || !data.success) {
+                        throw new Error(data.message || 'Gagal menyimpan batch.');
                     }
+
+                    const batch = data.batch;
+                    const card = document.getElementById(`batch-card-${batch.uid}`);
+
+                    if (card) {
+                        card.dataset.nama = batch.nama_batch;
+                        card.dataset.tanggalBuka = batch.tanggal_buka;
+                        card.dataset.tanggalTutup = batch.tanggal_tutup;
+                        card.dataset.kuota = batch.kuota;
+                        card.dataset.active = batch.is_active;
+
+                        const title = card.querySelector('.batch-title');
+                        const date = card.querySelector('.batch-date');
+                        const quota = card.querySelector('.batch-quota');
+                        const sisa = card.querySelector('.batch-sisa');
+
+                        if (title) title.innerText = batch.nama_batch;
+                        if (date) date.innerText = `${batch.tanggal_buka} s/d ${batch.tanggal_tutup}`;
+                        if (quota) quota.innerText = `${batch.total_pendaftar} / ${batch.kuota}`;
+                        if (sisa) sisa.innerText = `Sisa: ${batch.sisa_kuota}`;
+                    }
+
+                    showToast(data.message || 'Batch berhasil disimpan.', 'success');
                 })
-                    .then(async response => {
-                        const data = await response.json();
-
-                        if (!response.ok || !data.success) {
-                            throw new Error(data.message || 'Gagal menghapus batch.');
-                        }
-
-                        const card = document.getElementById(`batch-card-${uid}`);
-
-                        if (card) {
-                            card.remove();
-                        }
-
-                        if (document.getElementById('batch-id')?.value == uid) {
-                            document.getElementById('batch-id').value = '';
-                            document.getElementById('batch-name').value = '';
-                            document.getElementById('batch-open').value = '';
-                            document.getElementById('batch-close').value = '';
-                            document.getElementById('batch-quota').value = 0;
-                            document.getElementById('batch-status').value = '0';
-                        }
-
-                        showToast('Batch berhasil dihapus.', 'success');
-                    })
-                    .catch(error => {
-                        showToast(error.message, 'error');
-                    });
-            }
-
-
-            function prepareCreateBatch() {
-                document.getElementById('batch-id').value = '';
-                document.getElementById('batch-name').value = '';
-                document.getElementById('batch-open').value = '';
-                document.getElementById('batch-close').value = '';
-                document.getElementById('batch-quota').value = 0;
-                document.getElementById('batch-status').value = '1';
-
-                document.querySelectorAll('.batch-row').forEach(row => {
-                    row.style.borderColor = '#e2e8f0';
-                    row.style.background = '#f8fafc';
+                .catch(error => {
+                    showToast(error.message, 'error');
                 });
+        }
+        function editBatchFromCard(card) {
+            document.getElementById('batch-id').value = card.dataset.uid || '';
+            document.getElementById('batch-name').value = card.dataset.nama || '';
+            document.getElementById('batch-open').value = card.dataset.tanggalBuka || '';
+            document.getElementById('batch-close').value = card.dataset.tanggalTutup || '';
+            document.getElementById('batch-quota').value = card.dataset.kuota || 0;
+            document.getElementById('batch-status').value = card.dataset.active || '0';
 
-                document.getElementById('batch-name').focus();
+            document.querySelectorAll('.batch-row').forEach(row => {
+                row.style.borderColor = '#e2e8f0';
+                row.style.background = '#f8fafc';
+            });
 
-                showToast('Mode tambah gelombang baru. Isi data lalu klik Simpan.', 'success');
+            card.style.borderColor = '#0f2a5e';
+            card.style.background = '#eef6ff';
+
+            showToast('Data batch dimuat ke form. Edit lalu klik Simpan.', 'success');
+        }
+        function deleteBatch(uid) {
+            if (!confirm('Yakin ingin menghapus batch ini?')) {
+                return;
             }
+
+            fetch(`/admin/batch/${uid}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json'
+                }
+            })
+                .then(async response => {
+                    const data = await response.json();
+
+                    if (!response.ok || !data.success) {
+                        throw new Error(data.message || 'Gagal menghapus batch.');
+                    }
+
+                    const card = document.getElementById(`batch-card-${uid}`);
+
+                    if (card) {
+                        card.remove();
+                    }
+
+                    if (document.getElementById('batch-id')?.value == uid) {
+                        document.getElementById('batch-id').value = '';
+                        document.getElementById('batch-name').value = '';
+                        document.getElementById('batch-open').value = '';
+                        document.getElementById('batch-close').value = '';
+                        document.getElementById('batch-quota').value = 0;
+                        document.getElementById('batch-status').value = '0';
+                    }
+
+                    showToast('Batch berhasil dihapus.', 'success');
+                })
+                .catch(error => {
+                    showToast(error.message, 'error');
+                });
+        }
+
+
+        function prepareCreateBatch() {
+            document.getElementById('batch-id').value = '';
+            document.getElementById('batch-name').value = '';
+            document.getElementById('batch-open').value = '';
+            document.getElementById('batch-close').value = '';
+            document.getElementById('batch-quota').value = 0;
+            document.getElementById('batch-status').value = '1';
+
+            document.querySelectorAll('.batch-row').forEach(row => {
+                row.style.borderColor = '#e2e8f0';
+                row.style.background = '#f8fafc';
+            });
+
+            document.getElementById('batch-name').focus();
+
+            showToast('Mode tambah gelombang baru. Isi data lalu klik Simpan.', 'success');
+        }
     </script>
 </body>
 

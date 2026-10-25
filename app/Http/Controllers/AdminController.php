@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
@@ -80,7 +79,10 @@ class AdminController extends Controller
             ];
 
             foreach ($berkasSiswa as $item) {
-                $url = asset('storage/' . $item->file_url);
+                $url = route('admin.berkas.show', [
+                    'uid' => $item->uid,
+                    'filename' => basename((string) $item->file_url),
+                ]);
 
                 if ($item->jenis_berkas === 'Kartu Keluarga') {
                     $berkasMap['kartu_keluarga'] = $url;
@@ -531,7 +533,7 @@ class AdminController extends Controller
 
         if ($tagihan) {
             $invoiceFinal = in_array(strtolower((string) $tagihan->status_tagihan), ['valid', 'terbit', 'approved'], true)
-                && (! Schema::hasColumn('tagihan', 'disetujui_oleh') || ! empty($tagihan->disetujui_oleh));
+                && (!Schema::hasColumn('tagihan', 'disetujui_oleh') || !empty($tagihan->disetujui_oleh));
 
             $komponenTagihan = DB::table('komponen_tagihan')
                 ->where('uid_tagihan', $tagihan->uid)
@@ -734,7 +736,10 @@ class AdminController extends Controller
         ];
 
         foreach ($berkasSiswa as $item) {
-            $url = asset('storage/' . $item->file_url);
+            $url = route('admin.berkas.show', [
+                'uid' => $item->uid,
+                'filename' => basename((string) $item->file_url),
+            ]);
 
             if ($item->jenis_berkas === 'Kartu Keluarga') {
                 $berkasMap['kartu_keluarga'] = $url;

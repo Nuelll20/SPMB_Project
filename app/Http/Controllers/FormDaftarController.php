@@ -317,7 +317,7 @@ class FormDaftarController extends Controller
                 array_unique($uploadedPaths)
                 as $uploadedPath
             ) {
-                Storage::disk('public')->delete(
+                Storage::disk('local')->delete(
                     $uploadedPath
                 );
             }
@@ -482,7 +482,7 @@ class FormDaftarController extends Controller
             $path = $file->storeAs(
                 $folder,
                 $fileName,
-                'public'
+                'local'
             );
 
             if (!$path) {
@@ -512,7 +512,7 @@ class FormDaftarController extends Controller
         if ($oldPaths !== []) {
             DB::afterCommit(function () use ($oldPaths) {
                 foreach ($oldPaths as $oldPath) {
-                    Storage::disk('public')->delete($oldPath);
+                    Storage::disk('local')->delete($oldPath);
                 }
             });
         }
