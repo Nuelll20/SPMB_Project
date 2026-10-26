@@ -3,22 +3,26 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Services\OrangTuaResolver;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 
 class FormOrtuController extends Controller
 {
+    public function __construct(
+        private readonly OrangTuaResolver $orangTuaResolver
+    ) {
+    }
+
     public function index()
     {
-        $orangTua = $this->findOrangTua();
+        $orangTua = $this->orangTuaResolver->current();
 
-        if ($orangTua) {
-            session(['uid_orangtua' => $orangTua->uid]);
-        }
-
-        return view('dashboard_user.form_profilOrtu', compact('orangTua'));
+        return view(
+            'dashboard_user.form_profilOrtu',
+            compact('orangTua')
+        );
     }
 
     public function store(Request $request)
@@ -55,77 +59,39 @@ class FormOrtuController extends Controller
             'unit_sekolah' => $validated['unit_sekolah'],
         ];
 
-        if (Schema::hasColumn('orang_tua', 'updated_at')) {
-            $data['updated_at'] = now();
-        }
+        $uidOrangTua = DB::transaction(
+            function () use ($user, $data): int {
+                $orangTua = DB::table('orang_tua')
+                    ->where('user_id', $user->id)
+                    ->orderByDesc('uid')
+                    ->lockForUpdate()
+                    ->first();
 
-        if (Schema::hasColumn('orang_tua', 'user_id')) {
-            $orangTua = DB::table('orang_tua')
-                ->where('user_id', $user->id)
-                ->first();
+                if ($orangTua) {
+                    DB::table('orang_tua')
+                        ->where('uid', $orangTua->uid)
+                        ->update($data);
 
-            if ($orangTua) {
-                DB::table('orang_tua')
-                    ->where('uid', $orangTua->uid)
-                    ->update($data);
-
-                session(['uid_orangtua' => $orangTua->uid]);
-            } else {
-                $data['user_id'] = $user->id;
-
-                if (Schema::hasColumn('orang_tua', 'created_at')) {
-                    $data['created_at'] = now();
+                    return (int) $orangTua->uid;
                 }
 
-                $uidOrangTua = DB::table('orang_tua')->insertGetId($data);
-
-                session(['uid_orangtua' => $uidOrangTua]);
+                return (int) DB::table('orang_tua')->insertGetId(
+                    array_merge([
+                        'user_id' => $user->id,
+                    ], $data)
+                );
             }
-        } else {
-            $orangTua = DB::table('orang_tua')
-                ->where('nama', $user->name)
-                ->first();
+        );
 
-            if ($orangTua) {
-                DB::table('orang_tua')
-                    ->where('uid', $orangTua->uid)
-                    ->update($data);
+        session([
+            'uid_orangtua' => $uidOrangTua,
+        ]);
 
-                session(['uid_orangtua' => $orangTua->uid]);
-            } else {
-                if (Schema::hasColumn('orang_tua', 'created_at')) {
-                    $data['created_at'] = now();
-                }
-
-                $uidOrangTua = DB::table('orang_tua')->insertGetId($data);
-
-                session(['uid_orangtua' => $uidOrangTua]);
-            }
-        }
-
-        return redirect()->route('form.daftar')
-            ->with('success', 'Profil orang tua berhasil disimpan. Silakan lanjut mengisi data anak.');
-    }
-
-    private function findOrangTua()
-    {
-        $user = Auth::user();
-
-        if (!$user) {
-            return null;
-        }
-
-        if (session()->has('uid_orangtua')) {
-            $bySession = DB::table('orang_tua')->where('uid', session('uid_orangtua'))->first();
-            if ($bySession) {
-                return $bySession;
-            }
-        }
-
-        if (Schema::hasColumn('orang_tua', 'user_id')) {
-            return DB::table('orang_tua')->where('user_id', $user->id)->first();
-        }
-
-        return DB::table('orang_tua')->where('nama', $user->name)->first();
+        return redirect()
+            ->route('form.daftar')
+            ->with(
+                'success',
+                'Profil orang tua berhasil disimpan. Silakan lanjut mengisi data anak.'
+            );
     }
 }
