@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -39,22 +40,38 @@ class LoginController extends Controller
             'password' => 'required|string',
         ]);
 
-        /*
-        |--------------------------------------------------------------------------
-        | 1. Cek akun staff: admin / kepsek
-        |--------------------------------------------------------------------------
-        | Tabel: user
-        | Kolom: email, hash_password, role
-        */
+        $email = Str::lower(trim($validated['email']));
+
         $staff = DB::table('user')
-            ->where('email', $validated['email'])
+            ->where('email', $email)
             ->first();
 
-        if ($staff && Hash::check($validated['password'], $staff->hash_password)) {
+        if (
+            $staff
+            && Hash::check(
+                $validated['password'],
+                $staff->hash_password
+            )
+        ) {
             $role = strtolower(trim((string) $staff->role));
-            $role = in_array($role, ['kepsek', 'kepala_sekolah', 'kepala sekolah'], true) ? 'kepsek' : $role;
 
-            session([
+            $role = in_array(
+                $role,
+                ['kepsek', 'kepala_sekolah', 'kepala sekolah'],
+                true
+            ) ? 'kepsek' : $role;
+
+            if (!in_array($role, ['admin', 'kepsek'], true)) {
+                return back()
+                    ->withErrors([
+                        'email' => 'Role akun tidak dikenali.',
+                    ])
+                    ->withInput($request->only('email'));
+            }
+
+            $request->session()->regenerate();
+
+            $request->session()->put([
                 'staff_login' => true,
                 'login_id' => $staff->uid,
                 'uid_user' => $staff->uid_user,
@@ -66,30 +83,23 @@ class LoginController extends Controller
                 return redirect()->route('admin.dashboard');
             }
 
-            if ($role === 'kepsek') {
-                return redirect()->route('kepsek.dashboard');
-            }
-
-            return redirect()->route('login')->withErrors([
-                'email' => 'Role tidak dikenali.',
-            ]);
+            return redirect()->route('kepsek.dashboard');
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | 2. Cek akun orang tua / user biasa
-        |--------------------------------------------------------------------------
-        | Tabel: users
-        | Kolom: email, password
-        */
-        $user = User::where('email', $validated['email'])->first();
+        $user = User::where('email', $email)->first();
 
-        if ($user && Hash::check($validated['password'], $user->password)) {
+        if (
+            $user
+            && Hash::check(
+                $validated['password'],
+                $user->password
+            )
+        ) {
             Auth::login($user);
 
             $request->session()->regenerate();
 
-            session([
+            $request->session()->put([
                 'role' => 'user',
                 'email' => $user->email,
             ]);

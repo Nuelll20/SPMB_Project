@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Closure;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
@@ -33,40 +35,79 @@ class KepsekController extends Controller
     public function storeStaff(Request $request)
     {
         $validated = $request->validate([
-            'nama' => ['required', 'string', 'max:255'],
+            'nama' => [
+                'required',
+                'string',
+                'max:255',
+            ],
             'email' => [
                 'required',
                 'email',
                 'max:255',
                 Rule::unique('user', 'email'),
+                function (string $attribute, mixed $value, Closure $fail): void {
+                    $email = Str::lower(
+                        trim((string) $value)
+                    );
+
+                    if (
+                        DB::table('users')
+                            ->where('email', $email)
+                            ->exists()
+                    ) {
+                        $fail(
+                            'Email tersebut sudah digunakan oleh akun orang tua.'
+                        );
+                    }
+                },
             ],
-            'password' => ['required', 'string', 'min:6', 'max:100'],
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'max:100',
+                'confirmed',
+            ],
         ], [
-            'email.unique' => 'Email akses staf tersebut sudah terdaftar.',
+            'email.unique'
+            => 'Email akses staf tersebut sudah terdaftar.',
+            'password.confirmed'
+            => 'Konfirmasi password tidak sesuai.',
         ]);
 
-        DB::transaction(function () use ($validated) {
+        $email = Str::lower(
+            trim($validated['email'])
+        );
+
+        DB::transaction(function () use ($validated, $email) {
             $stafId = null;
 
             if (Schema::hasTable('staf_spmb')) {
-                $stafId = DB::table('staf_spmb')->insertGetId([
-                    'nama' => $validated['nama'],
-                    'jabatan' => 'admin',
-                ]);
+                $stafId = DB::table('staf_spmb')
+                    ->insertGetId([
+                        'nama' => $validated['nama'],
+                        'jabatan' => 'admin',
+                    ]);
             }
 
             DB::table('user')->insert([
                 'uid_user' => $stafId ?? 0,
-                'email' => $validated['email'],
-                'hash_password' => Hash::make($validated['password']),
+                'email' => $email,
+                'hash_password'
+                => Hash::make($validated['password']),
                 'role' => 'admin',
                 'create_at' => now()->toDateString(),
             ]);
         });
 
         return redirect()
-            ->route('kepsek.dashboard', ['tab' => 'staf'])
-            ->with('success', 'Akses admin SPMB baru berhasil diterbitkan.');
+            ->route('kepsek.dashboard', [
+                'tab' => 'staf',
+            ])
+            ->with(
+                'success',
+                'Akses admin SPMB baru berhasil diterbitkan.'
+            );
     }
 
     public function approveInvoice(Request $request, int $uid)
