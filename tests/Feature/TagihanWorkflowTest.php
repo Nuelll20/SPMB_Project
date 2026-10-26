@@ -381,6 +381,66 @@ class TagihanWorkflowTest extends TestCase
         ]);
     }
 
+    public function test_database_prevents_duplicate_invoice_for_same_registration(): void
+    {
+        $registrationId = $this->createRegistration(
+            'approved'
+        );
+
+        $response = $this
+            ->withSession($this->adminSession())
+            ->postJson(
+                route(
+                    'admin.pendaftaran.tagihan.save',
+                    $registrationId
+                ),
+                $this->invoicePayload()
+            );
+
+        $response->assertOk();
+
+        try {
+            DB::table('tagihan')->insert([
+                'uid_pendaftaran' => $registrationId,
+                'nomor_tagihan'
+                => 'INV-DUPLICATE-' . $registrationId,
+                'subtotal_tagihan' => 100000,
+                'diskon_tagihan' => 0,
+                'total_tagihan' => 100000,
+                'status_tagihan' => 'pending',
+                'tanggal_tagihan' => now(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            $this->fail(
+                'Database seharusnya menolak tagihan ganda.'
+            );
+        } catch (
+            \Illuminate\Database\QueryException $exception
+        ) {
+            $this->assertSame(
+                '23000',
+                (string) $exception->getCode()
+            );
+
+            $this->assertStringContainsString(
+                'tagihan_uid_pendaftaran_unique',
+                $exception->getMessage()
+            );
+        }
+
+        $this->assertSame(
+            1,
+            DB::table('tagihan')
+                ->where(
+                    'uid_pendaftaran',
+                    $registrationId
+                )
+                ->count()
+        );
+    }
+
     private function createRegistration(string $status): int
     {
         $user = User::factory()->create([
