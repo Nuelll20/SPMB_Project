@@ -35,13 +35,33 @@ class BerkasController extends Controller
         );
     }
 
-    public function validasi($id, $status)
+    public function validasi(int $id, int $status)
     {
-        DB::table('berkas')
-            ->where('uid', $id)
-            ->update([
-                'is_valid' => $status,
-            ]);
+        abort_unless(
+            in_array($status, [0, 1], true),
+            404
+        );
+
+        DB::transaction(function () use ($id, $status) {
+            $berkas = DB::table('berkas')
+                ->where('uid', $id)
+                ->lockForUpdate()
+                ->first();
+
+            abort_unless(
+                $berkas,
+                404,
+                'Berkas tidak ditemukan.'
+            );
+
+            if ((int) $berkas->is_valid !== $status) {
+                DB::table('berkas')
+                    ->where('uid', $id)
+                    ->update([
+                        'is_valid' => $status,
+                    ]);
+            }
+        });
 
         return back()->with(
             'success',

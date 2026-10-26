@@ -233,6 +233,53 @@ class AdminVerifikasiTest extends TestCase
      *     document_ids: array<int, int>
      * }
      */
+
+    public function test_unknown_document_cannot_be_validated(): void
+    {
+        $response = $this
+            ->withSession($this->adminSession())
+            ->postJson(
+                route('admin.berkas.validasi', [
+                    'id' => 999999,
+                    'status' => 1,
+                ])
+            );
+
+        $response->assertNotFound();
+    }
+
+    public function test_existing_document_with_same_status_is_still_found(): void
+    {
+        $registration = $this->createPendingRegistration();
+        $documentId = $registration['document_ids'][0];
+
+        $this->assertDatabaseHas('berkas', [
+            'uid' => $documentId,
+            'is_valid' => 0,
+        ]);
+
+        $response = $this
+            ->withSession($this->adminSession())
+            ->from(route('admin.dashboard'))
+            ->post(
+                route('admin.berkas.validasi', [
+                    'id' => $documentId,
+                    'status' => 0,
+                ])
+            );
+
+        $response->assertRedirect(route('admin.dashboard'));
+        $response->assertSessionHas(
+            'success',
+            'Status berkas berhasil diupdate!'
+        );
+
+        $this->assertDatabaseHas('berkas', [
+            'uid' => $documentId,
+            'is_valid' => 0,
+        ]);
+    }
+
     private function createPendingRegistration(): array
     {
         $user = User::factory()->create([
