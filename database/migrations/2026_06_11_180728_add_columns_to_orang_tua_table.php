@@ -4,29 +4,41 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
-    /**
-     * Run the migrations.
-     */
+return new class extends Migration {
     public function up(): void
     {
-        Schema::table('orang_tua', function (Blueprint $table) {
-            //
-            $table->string('pendidikan')->nullable()->after('gaji');
-            $table->string('unit_sekolah')->nullable()->after('pendidikan');
-            $table->integer('jumlah_anak')->nullable()->after('unit_sekolah');
-        });
+        if (!Schema::hasTable('orang_tua')) {
+            return;
+        }
+
+        if (!Schema::hasColumn('orang_tua', 'pendidikan')) {
+            Schema::table('orang_tua', function (Blueprint $table) {
+                $table->string('pendidikan')
+                    ->nullable()
+                    ->after('gaji');
+            });
+        }
+
+        if (!Schema::hasColumn('orang_tua', 'unit_sekolah')) {
+            Schema::table('orang_tua', function (Blueprint $table) {
+                $table->string('unit_sekolah')
+                    ->nullable()
+                    ->after('pendidikan');
+            });
+        }
+
+        if (!Schema::hasColumn('orang_tua', 'jumlah_anak')) {
+            Schema::table('orang_tua', function (Blueprint $table) {
+                $table->integer('jumlah_anak')
+                    ->nullable()
+                    ->after('unit_sekolah');
+            });
+        }
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::table('orang_tua', function (Blueprint $table) {
-            //
-            $table->dropColumn(['pendidikan', 'unit_sekolah', 'jumlah_anak']);
-        });
+        // Kolom-kolom ini dapat berasal dari database lama yang diimpor.
+        // Tidak dihapus otomatis untuk mencegah kehilangan data saat rollback.
     }
 };

@@ -859,7 +859,7 @@
                     <div class="ai-card">
                         <div class="small-label">Prediksi Keterisian (AI Engine)</div>
                         <div class="seat-number">
-                            <strong>{{ $metrics['total'] ?? 0 }}</strong>
+                            <strong>{{ $metrics['active_batch_total'] ?? 0 }}</strong>
                             <span>/ {{ $metrics['quota'] ?: 0 }} Kursi</span>
                         </div>
                         <div class="progress-line"><div style="width: {{ $metrics['percentage'] ?? 0 }}%"></div></div>
@@ -988,9 +988,13 @@
                             @error('email')<small>{{ $message }}</small>@enderror
                         </div>
                         <div class="field">
-                            <label>Password Default</label>
-                            <input type="text" name="password" value="{{ old('password', 'Admin12345') }}" placeholder="Password default">
+                            <label>Password</label>
+                            <input type="password" name="password" placeholder="Minimal 8 karakter" autocomplete="new-password">
                             @error('password')<small>{{ $message }}</small>@enderror
+                        </div>
+                        <div class="field">
+                            <label>Konfirmasi Password</label>
+                            <input type="password" name="password_confirmation" placeholder="Ulangi password" autocomplete="new-password">
                         </div>
 
                         <button class="btn-main" type="submit" style="width:100%; margin-top:4px;"><i class="fa-solid fa-bolt"></i> Terbitkan Akses</button>

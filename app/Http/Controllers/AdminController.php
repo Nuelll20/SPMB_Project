@@ -5,15 +5,47 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
-    private function checkAdmin()
+
+    private const BERKAS_KEY_BY_TYPE = [
+        'Kartu Keluarga' => 'kartu_keluarga',
+        'Akte Kelahiran' => 'akte_kelahiran',
+        'E-KTP Orang Tua' => 'ktp_orang_tua',
+        'Pas Foto' => 'pas_foto',
+        'Surat Baptis' => 'surat_baptis',
+    ];
+    private function checkAdmin(): void
     {
         if (session('role') !== 'admin') {
             abort(403, 'Akses ditolak.');
         }
+    }
+
+    private function mapBerkas(
+        iterable $berkasSiswa,
+        ?string $defaultValue = null
+    ): array {
+        $berkasMap = array_fill_keys(
+            array_values(self::BERKAS_KEY_BY_TYPE),
+            $defaultValue
+        );
+
+        foreach ($berkasSiswa as $item) {
+            $key = self::BERKAS_KEY_BY_TYPE[$item->jenis_berkas] ?? null;
+
+            if ($key === null) {
+                continue;
+            }
+
+            $berkasMap[$key] = route('admin.berkas.show', [
+                'uid' => $item->uid,
+                'filename' => basename((string) $item->file_url),
+            ]);
+        }
+
+        return $berkasMap;
     }
 
     public function index()
@@ -71,37 +103,7 @@ class AdminController extends Controller
 
             $berkasSiswa = $berkas->get($row->pendaftaran_uid, collect());
 
-            $berkasMap = [
-                'kartu_keluarga' => '',
-                'akte_kelahiran' => '',
-                'ktp_orang_tua' => '',
-                'pas_foto' => '',
-                'surat_baptis' => '',
-            ];
-
-            foreach ($berkasSiswa as $item) {
-                $url = asset('storage/' . $item->file_url);
-
-                if ($item->jenis_berkas === 'Kartu Keluarga') {
-                    $berkasMap['kartu_keluarga'] = $url;
-                }
-
-                if ($item->jenis_berkas === 'Akte Kelahiran') {
-                    $berkasMap['akte_kelahiran'] = $url;
-                }
-
-                if ($item->jenis_berkas === 'E-KTP Orang Tua') {
-                    $berkasMap['ktp_orang_tua'] = $url;
-                }
-
-                if ($item->jenis_berkas === 'Pas Foto') {
-                    $berkasMap['pas_foto'] = $url;
-                }
-
-                if ($item->jenis_berkas === 'Surat Baptis') {
-                    $berkasMap['surat_baptis'] = $url;
-                }
-            }
+            $berkasMap = $this->mapBerkas($berkasSiswa, '');
 
             return [
                 'pendaftaran_uid' => $row->pendaftaran_uid,
@@ -255,143 +257,58 @@ class AdminController extends Controller
             ->values();
     }
 
-    public function saveBatch(Request $request)
-    {
-        $this->checkAdmin();
-
-        $validated = $request->validate([
-            'uid' => 'nullable|integer',
-            'nama_batch' => 'required|string|max:255',
-            'tanggal_buka' => 'required|date',
-            'tanggal_tutup' => 'required|date|after_or_equal:tanggal_buka',
-            'kuota' => 'required|integer|min:0',
-            'is_active' => 'required|in:0,1',
-        ]);
-
-        $isActive = (int) $validated['is_active'];
-        $batchId = $validated['uid'] ?? null;
-
-        // Kalau batch ini aktif, batch lain otomatis nonaktif
-        if ($isActive === 1) {
-            $query = DB::table('batch_pendaftaran');
-
-            if ($batchId) {
-                $query->where('uid', '!=', $batchId);
-            }
-
-            $query->update([
-                'is_active' => 0,
-            ]);
-        }
-
-        $data = [
-            'nama_batch' => $validated['nama_batch'],
-            'tanggal_buka' => $validated['tanggal_buka'],
-            'tanggal_tutup' => $validated['tanggal_tutup'],
-            'kuota' => $validated['kuota'],
-            'is_active' => $isActive,
-            'dibuat_oleh' => session('email') ?? 'Admin',
-        ];
-
-        if ($batchId) {
-            DB::table('batch_pendaftaran')
-                ->where('uid', $batchId)
-                ->update($data);
-
-            $message = 'Batch berhasil diperbarui.';
-        } else {
-            $data['cabang'] = 'Cabang Global';
-            $data['created_at'] = now();
-
-            $batchId = DB::table('batch_pendaftaran')->insertGetId($data);
-
-            $message = 'Batch baru berhasil ditambahkan.';
-        }
-
-        $totalPendaftar = DB::table('pendaftaran')
-            ->where('id_batch_pendaftaran', $batchId)
-            ->count();
-
-        $sisaKuota = max(0, (int) $validated['kuota'] - $totalPendaftar);
-
-        return response()->json([
-            'success' => true,
-            'message' => $message,
-            'batch' => [
-                'uid' => $batchId,
-                'nama_batch' => $validated['nama_batch'],
-                'tanggal_buka' => $validated['tanggal_buka'],
-                'tanggal_tutup' => $validated['tanggal_tutup'],
-                'kuota' => (int) $validated['kuota'],
-                'is_active' => $isActive,
-                'total_pendaftar' => $totalPendaftar,
-                'sisa_kuota' => $sisaKuota,
-            ],
-        ]);
-    }
-
-    public function deleteBatch($uid)
-    {
-        $this->checkAdmin();
-
-        $batch = DB::table('batch_pendaftaran')
-            ->where('uid', $uid)
-            ->first();
-
-        if (!$batch) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Batch tidak ditemukan.',
-            ], 404);
-        }
-
-        $jumlahPendaftar = DB::table('pendaftaran')
-            ->where('id_batch_pendaftaran', $uid)
-            ->count();
-
-        if ($jumlahPendaftar > 0) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Batch tidak bisa dihapus karena sudah memiliki pendaftar.',
-            ], 422);
-        }
-
-        DB::table('batch_pendaftaran')
-            ->where('uid', $uid)
-            ->delete();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Batch berhasil dihapus.',
-        ]);
-    }
     public function approve($uid)
     {
         $this->checkAdmin();
 
-        $pendaftaran = DB::table('pendaftaran')
-            ->where('uid', $uid)
-            ->first();
+        $result = DB::transaction(function () use ($uid): array {
+            $pendaftaran = DB::table('pendaftaran')
+                ->where('uid', $uid)
+                ->lockForUpdate()
+                ->first();
 
-        if (!$pendaftaran) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Data pendaftaran tidak ditemukan.',
-            ], 404);
-        }
+            if (!$pendaftaran) {
+                return [
+                    'status' => 404,
+                    'payload' => [
+                        'success' => false,
+                        'message' => 'Data pendaftaran tidak ditemukan.',
+                    ],
+                ];
+            }
 
-        $verifiedAt = now();
-        $verifiedBy = session('email') ?? 'Admin';
+            if (
+                strtolower(
+                    trim((string) $pendaftaran->status_pendaftaran)
+                ) !== 'pending'
+            ) {
+                return [
+                    'status' => 422,
+                    'payload' => [
+                        'success' => false,
+                        'message' => 'Pendaftaran hanya dapat disetujui ketika masih berstatus pending.',
+                    ],
+                ];
+            }
 
-        DB::transaction(function () use ($pendaftaran, $uid, $verifiedAt, $verifiedBy) {
+            $verifiedAt = now();
+            $verifiedBy = session('email') ?? 'Admin';
+
             $pendaftaranUpdate = [
                 'status_pendaftaran' => 'approved',
+                'jenis_penolakan' => null,
                 'alasan_penolakan' => null,
                 'diverifikasi_oleh' => $verifiedBy,
             ];
 
-            if (Schema::hasColumn('pendaftaran', 'tanggal_verifikasi')) {
-                $pendaftaranUpdate['tanggal_verifikasi'] = $verifiedAt;
+            if (
+                Schema::hasColumn(
+                    'pendaftaran',
+                    'tanggal_verifikasi'
+                )
+            ) {
+                $pendaftaranUpdate['tanggal_verifikasi']
+                    = $verifiedAt;
             }
 
             DB::table('pendaftaran')
@@ -409,86 +326,149 @@ class AdminController extends Controller
                 ->update([
                     'is_valid' => 1,
                 ]);
+
+            return [
+                'status' => 200,
+                'payload' => [
+                    'success' => true,
+                    'message' => 'Pendaftar berhasil diloloskan.',
+                    'invoice_url' => route(
+                        'admin.pendaftaran.invoice',
+                        $uid
+                    ),
+                    'tanggal_verifikasi'
+                    => $verifiedAt->toDateTimeString(),
+                    'diverifikasi_oleh' => $verifiedBy,
+                ],
+            ];
         });
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Pendaftar berhasil diloloskan.',
-            'invoice_url' => route('admin.pendaftaran.invoice', $uid),
-            'tanggal_verifikasi' => $verifiedAt->toDateTimeString(),
-            'diverifikasi_oleh' => $verifiedBy,
-        ]);
+        return response()->json(
+            $result['payload'],
+            $result['status']
+        );
     }
 
     public function reject(Request $request, $uid)
     {
         $this->checkAdmin();
 
-        $request->validate([
+        $validated = $request->validate([
             'alasan' => 'required|string|min:5|max:255',
+            'jenis_penolakan' => 'nullable|in:berkas',
             'invalid_berkas' => 'nullable|array',
             'invalid_berkas.*' => 'string',
         ]);
 
-        $pendaftaran = DB::table('pendaftaran')
-            ->where('uid', $uid)
-            ->first();
+        $result = DB::transaction(
+            function () use ($validated, $uid): array {
+                $pendaftaran = DB::table('pendaftaran')
+                    ->where('uid', $uid)
+                    ->lockForUpdate()
+                    ->first();
 
-        if (!$pendaftaran) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Data pendaftaran tidak ditemukan.',
-            ], 404);
-        }
+                if (!$pendaftaran) {
+                    return [
+                        'status' => 404,
+                        'payload' => [
+                            'success' => false,
+                            'message'
+                            => 'Data pendaftaran tidak ditemukan.',
+                        ],
+                    ];
+                }
 
-        $invalidBerkas = $request->invalid_berkas ?? [];
-        $verifiedAt = now();
-        $verifiedBy = session('email') ?? 'Admin';
+                if (
+                    strtolower(
+                        trim(
+                            (string) $pendaftaran
+                                ->status_pendaftaran
+                        )
+                    ) !== 'pending'
+                ) {
+                    return [
+                        'status' => 422,
+                        'payload' => [
+                            'success' => false,
+                            'message' => 'Pendaftaran hanya dapat ditolak ketika masih berstatus pending.',
+                        ],
+                    ];
+                }
 
-        DB::transaction(function () use ($request, $pendaftaran, $uid, $invalidBerkas, $verifiedAt, $verifiedBy) {
-            $pendaftaranUpdate = [
-                'status_pendaftaran' => 'rejected',
-                'jenis_penolakan' => $request->jenis_penolakan ?? 'berkas',
-                'alasan_penolakan' => $request->alasan,
-                'diverifikasi_oleh' => $verifiedBy,
-            ];
+                $invalidBerkas
+                    = $validated['invalid_berkas'] ?? [];
 
-            if (Schema::hasColumn('pendaftaran', 'tanggal_verifikasi')) {
-                $pendaftaranUpdate['tanggal_verifikasi'] = $verifiedAt;
-            }
+                $verifiedAt = now();
+                $verifiedBy = session('email') ?? 'Admin';
 
-            DB::table('pendaftaran')
-                ->where('uid', $uid)
-                ->update($pendaftaranUpdate);
+                $pendaftaranUpdate = [
+                    'status_pendaftaran' => 'rejected',
+                    'jenis_penolakan'
+                    => $validated['jenis_penolakan']
+                        ?? 'berkas',
+                    'alasan_penolakan' => $validated['alasan'],
+                    'diverifikasi_oleh' => $verifiedBy,
+                ];
 
-            DB::table('calon_siswa')
-                ->where('uid', $pendaftaran->calon_siswa_id)
-                ->update([
-                    'status' => 'rejected',
-                ]);
+                if (
+                    Schema::hasColumn(
+                        'pendaftaran',
+                        'tanggal_verifikasi'
+                    )
+                ) {
+                    $pendaftaranUpdate['tanggal_verifikasi']
+                        = $verifiedAt;
+                }
 
-            DB::table('berkas')
-                ->where('id_pendaftar', $uid)
-                ->update([
-                    'is_valid' => 1,
-                ]);
+                DB::table('pendaftaran')
+                    ->where('uid', $uid)
+                    ->update($pendaftaranUpdate);
 
-            if (!empty($invalidBerkas)) {
+                DB::table('calon_siswa')
+                    ->where(
+                        'uid',
+                        $pendaftaran->calon_siswa_id
+                    )
+                    ->update([
+                        'status' => 'rejected',
+                    ]);
+
                 DB::table('berkas')
                     ->where('id_pendaftar', $uid)
-                    ->whereIn('jenis_berkas', $invalidBerkas)
                     ->update([
-                        'is_valid' => 0,
+                        'is_valid' => 1,
                     ]);
-            }
-        });
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Pendaftar berhasil ditolak.',
-            'tanggal_verifikasi' => $verifiedAt->toDateTimeString(),
-            'diverifikasi_oleh' => $verifiedBy,
-        ]);
+                if ($invalidBerkas !== []) {
+                    DB::table('berkas')
+                        ->where('id_pendaftar', $uid)
+                        ->whereIn(
+                            'jenis_berkas',
+                            $invalidBerkas
+                        )
+                        ->update([
+                            'is_valid' => 0,
+                        ]);
+                }
+
+                return [
+                    'status' => 200,
+                    'payload' => [
+                        'success' => true,
+                        'message'
+                        => 'Pendaftar berhasil ditolak.',
+                        'tanggal_verifikasi'
+                        => $verifiedAt->toDateTimeString(),
+                        'diverifikasi_oleh' => $verifiedBy,
+                    ],
+                ];
+            }
+        );
+
+        return response()->json(
+            $result['payload'],
+            $result['status']
+        );
     }
 
     public function invoice($uid)
@@ -531,7 +511,7 @@ class AdminController extends Controller
 
         if ($tagihan) {
             $invoiceFinal = in_array(strtolower((string) $tagihan->status_tagihan), ['valid', 'terbit', 'approved'], true)
-                && (! Schema::hasColumn('tagihan', 'disetujui_oleh') || ! empty($tagihan->disetujui_oleh));
+                && (!Schema::hasColumn('tagihan', 'disetujui_oleh') || !empty($tagihan->disetujui_oleh));
 
             $komponenTagihan = DB::table('komponen_tagihan')
                 ->where('uid_tagihan', $tagihan->uid)
@@ -553,57 +533,14 @@ class AdminController extends Controller
 
         $validated = $request->validate([
             'diskon' => 'nullable|numeric|min:0',
-            'admin_pembuat' => 'required|string|max:255',
+            'admin_pembuat' => 'nullable|string|max:255',
             'status_tagihan' => 'nullable|in:pending',
             'items' => 'required|array|min:1',
-            'items.*.nama_komponen' => 'required|string|max:255',
+            'items.*.nama_komponen'
+            => 'required|string|max:255',
             'items.*.qty' => 'required|numeric|min:1',
             'items.*.nominal' => 'required|numeric|min:0',
         ]);
-
-        $pendaftaran = DB::table('pendaftaran')
-            ->join('calon_siswa', 'calon_siswa.uid', '=', 'pendaftaran.calon_siswa_id')
-            ->where('pendaftaran.uid', $uid)
-            ->select(
-                'pendaftaran.uid',
-                'pendaftaran.no_pendaftaran',
-                'pendaftaran.status_pendaftaran',
-                'calon_siswa.uid as calon_siswa_uid',
-                'calon_siswa.nama as nama_siswa'
-            )
-            ->first();
-
-        if (!$pendaftaran) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Data pendaftaran tidak ditemukan.',
-            ], 404);
-        }
-
-        if ($pendaftaran->status_pendaftaran !== 'approved') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Tagihan hanya bisa dibuat untuk pendaftar yang sudah approved.',
-            ], 403);
-        }
-
-        $existingFinalTagihanQuery = DB::table('tagihan')
-            ->where('uid_pendaftaran', $uid)
-            ->whereIn('status_tagihan', ['valid', 'terbit', 'approved']);
-
-        if (Schema::hasColumn('tagihan', 'disetujui_oleh')) {
-            $existingFinalTagihanQuery->whereNotNull('disetujui_oleh')
-                ->where('disetujui_oleh', '<>', '');
-        }
-
-        $existingFinalTagihan = $existingFinalTagihanQuery->first();
-
-        if ($existingFinalTagihan) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Invoice sudah menjadi final approval kepala sekolah. Admin SPMB tidak dapat mengubah invoice ini lagi.',
-            ], 403);
-        }
 
         $subtotalTagihan = 0;
 
@@ -615,72 +552,168 @@ class AdminController extends Controller
         }
 
         $diskon = (float) ($validated['diskon'] ?? 0);
-        $totalTagihan = max(0, $subtotalTagihan - $diskon);
+        $totalTagihan = max(
+            0,
+            $subtotalTagihan - $diskon
+        );
 
-        $tagihanId = DB::transaction(function () use ($uid, $validated, $subtotalTagihan, $diskon, $totalTagihan) {
-            $existingTagihan = DB::table('tagihan')
-                ->where('uid_pendaftaran', $uid)
-                ->first();
+        $adminPembuat = session('email') ?? 'Admin';
 
-            $nomorTagihan = 'INV-' . now()->format('Ymd') . '-' . str_pad($uid, 5, '0', STR_PAD_LEFT);
+        $result = DB::transaction(
+            function () use ($uid, $validated, $subtotalTagihan, $diskon, $totalTagihan, $adminPembuat): array {
+                $pendaftaran = DB::table('pendaftaran')
+                    ->where('uid', $uid)
+                    ->lockForUpdate()
+                    ->first();
 
-            $dataTagihan = [
-                'uid_pendaftaran' => $uid,
-                'nomor_tagihan' => $nomorTagihan,
-                'subtotal_tagihan' => $subtotalTagihan,
-                'diskon_tagihan' => $diskon,
-                'total_tagihan' => $totalTagihan,
-                // Admin hanya boleh mengirim draft invoice ke antrian kepala sekolah.
-                // Status final/terbit hanya boleh ditetapkan dari dashboard kepala sekolah.
-                'status_tagihan' => 'pending',
-                'tanggal_tagihan' => now(),
-                'dibuat_oleh' => $validated['admin_pembuat'],
-                'updated_at' => now(),
-            ];
+                if (!$pendaftaran) {
+                    return [
+                        'status' => 404,
+                        'payload' => [
+                            'success' => false,
+                            'message'
+                            => 'Data pendaftaran tidak ditemukan.',
+                        ],
+                    ];
+                }
 
-            if ($existingTagihan) {
-                DB::table('tagihan')
-                    ->where('uid', $existingTagihan->uid)
-                    ->update($dataTagihan);
+                if (
+                    strtolower(
+                        trim(
+                            (string) $pendaftaran
+                                ->status_pendaftaran
+                        )
+                    ) !== 'approved'
+                ) {
+                    return [
+                        'status' => 403,
+                        'payload' => [
+                            'success' => false,
+                            'message' => 'Tagihan hanya bisa dibuat untuk pendaftar yang sudah approved.',
+                        ],
+                    ];
+                }
 
-                $tagihanId = $existingTagihan->uid;
+                $existingTagihan = DB::table('tagihan')
+                    ->where('uid_pendaftaran', $uid)
+                    ->lockForUpdate()
+                    ->first();
 
-                DB::table('komponen_tagihan')
-                    ->where('uid_tagihan', $tagihanId)
-                    ->delete();
-            } else {
-                $dataTagihan['created_at'] = now();
+                if (
+                    $existingTagihan
+                    && in_array(
+                        strtolower(
+                            trim(
+                                (string) $existingTagihan
+                                    ->status_tagihan
+                            )
+                        ),
+                        ['valid', 'terbit', 'approved'],
+                        true
+                    )
+                ) {
+                    return [
+                        'status' => 403,
+                        'payload' => [
+                            'success' => false,
+                            'message' => 'Invoice sudah menjadi final approval kepala sekolah. Admin SPMB tidak dapat mengubah invoice ini lagi.',
+                        ],
+                    ];
+                }
 
-                $tagihanId = DB::table('tagihan')
-                    ->insertGetId($dataTagihan);
-            }
+                $nomorTagihan = 'INV-'
+                    . now()->format('Ymd')
+                    . '-'
+                    . str_pad(
+                        (string) $uid,
+                        5,
+                        '0',
+                        STR_PAD_LEFT
+                    );
 
-            foreach ($validated['items'] as $index => $item) {
-                $qty = (float) $item['qty'];
-                $nominal = (float) $item['nominal'];
-                $subtotal = $qty * $nominal;
-
-                DB::table('komponen_tagihan')->insert([
-                    'uid_tagihan' => $tagihanId,
-                    'nama_komponen' => $item['nama_komponen'],
-                    'qty' => $qty,
-                    'nominal' => $nominal,
-                    'subtotal' => $subtotal,
-                    'urutan' => $index + 1,
-                    'created_at' => now(),
+                $dataTagihan = [
+                    'uid_pendaftaran' => $uid,
+                    'nomor_tagihan' => $nomorTagihan,
+                    'subtotal_tagihan' => $subtotalTagihan,
+                    'diskon_tagihan' => $diskon,
+                    'total_tagihan' => $totalTagihan,
+                    'status_tagihan' => 'pending',
+                    'tanggal_tagihan' => now(),
+                    'dibuat_oleh' => $adminPembuat,
                     'updated_at' => now(),
-                ]);
+                ];
+
+                if (
+                    Schema::hasColumn(
+                        'tagihan',
+                        'catatan_kepsek'
+                    )
+                ) {
+                    $dataTagihan['catatan_kepsek'] = null;
+                }
+
+                if (
+                    Schema::hasColumn(
+                        'tagihan',
+                        'disetujui_oleh'
+                    )
+                ) {
+                    $dataTagihan['disetujui_oleh'] = null;
+                }
+
+                if ($existingTagihan) {
+                    DB::table('tagihan')
+                        ->where('uid', $existingTagihan->uid)
+                        ->update($dataTagihan);
+
+                    $tagihanId = (int) $existingTagihan->uid;
+
+                    DB::table('komponen_tagihan')
+                        ->where('uid_tagihan', $tagihanId)
+                        ->delete();
+                } else {
+                    $dataTagihan['created_at'] = now();
+
+                    $tagihanId = DB::table('tagihan')
+                        ->insertGetId($dataTagihan);
+                }
+
+                foreach (
+                    $validated['items']
+                    as $index => $item
+                ) {
+                    $qty = (float) $item['qty'];
+                    $nominal = (float) $item['nominal'];
+
+                    DB::table('komponen_tagihan')->insert([
+                        'uid_tagihan' => $tagihanId,
+                        'nama_komponen'
+                        => $item['nama_komponen'],
+                        'qty' => $qty,
+                        'nominal' => $nominal,
+                        'subtotal' => $qty * $nominal,
+                        'urutan' => $index + 1,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
+
+                return [
+                    'status' => 200,
+                    'payload' => [
+                        'success' => true,
+                        'message'
+                        => 'Tagihan berhasil disimpan ke database.',
+                        'tagihan_id' => $tagihanId,
+                    ],
+                ];
             }
+        );
 
-            return $tagihanId;
-        });
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Tagihan berhasil disimpan ke database.',
-            'tagihan_id' => $tagihanId,
-        ]);
-
+        return response()->json(
+            $result['payload'],
+            $result['status']
+        );
     }
 
     public function showVerifikasi($uid)
@@ -725,37 +758,7 @@ class AdminController extends Controller
             ->where('id_pendaftar', $uid)
             ->get();
 
-        $berkasMap = [
-            'kartu_keluarga' => null,
-            'akte_kelahiran' => null,
-            'ktp_orang_tua' => null,
-            'pas_foto' => null,
-            'surat_baptis' => null,
-        ];
-
-        foreach ($berkasSiswa as $item) {
-            $url = asset('storage/' . $item->file_url);
-
-            if ($item->jenis_berkas === 'Kartu Keluarga') {
-                $berkasMap['kartu_keluarga'] = $url;
-            }
-
-            if ($item->jenis_berkas === 'Akte Kelahiran') {
-                $berkasMap['akte_kelahiran'] = $url;
-            }
-
-            if ($item->jenis_berkas === 'E-KTP Orang Tua') {
-                $berkasMap['ktp_orang_tua'] = $url;
-            }
-
-            if ($item->jenis_berkas === 'Pas Foto') {
-                $berkasMap['pas_foto'] = $url;
-            }
-
-            if ($item->jenis_berkas === 'Surat Baptis') {
-                $berkasMap['surat_baptis'] = $url;
-            }
-        }
+        $berkasMap = $this->mapBerkas($berkasSiswa);
 
         return response()->json([
             'success' => true,
