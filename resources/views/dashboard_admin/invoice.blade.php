@@ -256,7 +256,9 @@
             line-height: 1.55;
         }
 
-        .final-lock-banner i { margin-right: 8px; }
+        .final-lock-banner i {
+            margin-right: 8px;
+        }
 
         /* Divider Penanda Preview */
         .preview-title-divider {
@@ -738,12 +740,14 @@
             @if($invoiceFinal ?? false)
                 <div class="final-lock-banner">
                     <i class="fa-solid fa-lock"></i>
-                    Invoice ini sudah menjadi <b>final approval kepala sekolah</b>. Admin SPMB hanya bisa melihat/mencetak, tidak bisa mengubah komponen atau nominal invoice lagi.
+                    Invoice ini sudah menjadi <b>final approval kepala sekolah</b>. Admin SPMB hanya bisa melihat/mencetak,
+                    tidak bisa mengubah komponen atau nominal invoice lagi.
                 </div>
             @else
                 <div class="final-lock-banner" style="background:#fff8e4;border-color:#ffe2a3;color:#9d6500;">
                     <i class="fa-solid fa-hourglass-half"></i>
-                    Invoice yang disimpan admin akan masuk ke antrian kepala sekolah. Status terbit baru aktif setelah kepala sekolah melakukan final approval.
+                    Invoice yang disimpan admin akan masuk ke antrian kepala sekolah. Status terbit baru aktif setelah
+                    kepala sekolah melakukan final approval.
                 </div>
             @endif
 
@@ -756,7 +760,8 @@
                 <div class="form-group">
                     <label>Nomor Registrasi / No. Nota</label>
                     <input type="text" id="inNoReg" class="admin-input"
-                        value="{{ $tagihan->nomor_tagihan ?? $pendaftaran->no_pendaftaran ?? '-' }}" oninput="executeMirroringLoop()" disabled>
+                        value="{{ $tagihan->nomor_tagihan ?? $pendaftaran->no_pendaftaran ?? '-' }}"
+                        oninput="executeMirroringLoop()" disabled>
                 </div>
                 <div class="form-group">
                     <label>Nama Orang Tua / Wali</label>
@@ -797,19 +802,16 @@
                     @foreach ($items as $item)
                         <tr class="admin-item-row">
                             <td>
-                                <input type="text" class="admin-input in-item-nama"
-                                    value="{{ $item->nama_komponen }}"
+                                <input type="text" class="admin-input in-item-nama" value="{{ $item->nama_komponen }}"
                                     oninput="executeMirroringLoop()">
                             </td>
                             <td>
                                 <input type="number" class="admin-input text-center-input in-item-qty"
-                                    value="{{ $item->qty }}"
-                                    oninput="executeMirroringLoop()">
+                                    value="{{ $item->qty }}" oninput="executeMirroringLoop()">
                             </td>
                             <td>
                                 <input type="number" class="admin-input text-right-input in-item-harga"
-                                    value="{{ $item->nominal }}"
-                                    oninput="executeMirroringLoop()">
+                                    value="{{ $item->nominal }}" oninput="executeMirroringLoop()">
                             </td>
                             <td style="text-align: center;">
                                 <button type="button" class="btn-delete-row-action" onclick="deleteAdminRow(this)">
@@ -828,18 +830,19 @@
             <div class="meta-input-grid" style="margin-top: 8px;">
                 <div class="form-group">
                     <label>Potongan / Diskon Tambahan (Rp)</label>
-                    <input type="number" id="inDiskon" class="admin-input"
-                        value="{{ $tagihan->diskon_tagihan ?? 0 }}" oninput="executeMirroringLoop()">
+                    <input type="number" id="inDiskon" class="admin-input" value="{{ $tagihan->diskon_tagihan ?? 0 }}"
+                        oninput="executeMirroringLoop()">
                 </div>
                 <div class="form-group">
                     <label>Petugas Admin Verifikator</label>
                     <input type="text" id="inAdminPembuat" class="admin-input"
                         value="{{ $tagihan->dibuat_oleh ?? $pendaftaran->diverifikasi_oleh ?? session('email') ?? 'Admin JOG-WRO' }}"
-                        oninput="executeMirroringLoop()">
+                        readonly aria-readonly="true">
                 </div>
                 <div class="form-group">
                     <label>Validasi Status Pembayaran</label>
-                    <select id="inStatus" class="admin-input" onchange="executeMirroringLoop()" style="cursor: pointer;">
+                    <select id="inStatus" class="admin-input" onchange="executeMirroringLoop()"
+                        style="cursor: pointer;">
                         @if($invoiceFinal ?? false)
                             <option value="valid" selected>FINAL KEPSEK / TERBIT</option>
                         @else
@@ -858,7 +861,8 @@
                         <i class="fa-solid fa-arrow-left"></i> Kembali
                     </button>
                     <button type="button" class="btn-action-save" onclick="simulateSaveAndPrint()"><i
-                            class="fa-solid fa-print"></i> {{ ($invoiceFinal ?? false) ? 'Cetak PDF Dokumen' : 'Simpan Draft & Cetak PDF' }}</button>
+                            class="fa-solid fa-print"></i>
+                        {{ ($invoiceFinal ?? false) ? 'Cetak PDF Dokumen' : 'Simpan Draft & Cetak PDF' }}</button>
                 </div>
             </div>
         </div>

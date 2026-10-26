@@ -72,36 +72,30 @@ class KepsekController extends Controller
     public function approveInvoice(Request $request, int $uid)
     {
         $validated = $request->validate([
-            'catatan_kepsek' => ['nullable', 'string', 'max:255'],
+            'catatan_kepsek'
+            => ['nullable', 'string', 'max:255'],
             'diskon' => ['nullable', 'numeric', 'min:0'],
             'items' => ['required', 'array', 'min:1'],
-            'items.*.nama_komponen' => ['required', 'string', 'max:255'],
-            'items.*.qty' => ['required', 'numeric', 'min:1'],
-            'items.*.nominal' => ['required', 'numeric', 'min:0'],
+            'items.*.nama_komponen'
+            => ['required', 'string', 'max:255'],
+            'items.*.qty'
+            => ['required', 'numeric', 'min:1'],
+            'items.*.nominal'
+            => ['required', 'numeric', 'min:0'],
         ]);
 
-        $tagihan = Schema::hasTable('tagihan')
-            ? DB::table('tagihan')->where('uid', $uid)->first()
-            : null;
-
-        if (! $tagihan) {
+        if (!Schema::hasTable('tagihan')) {
             return response()->json([
                 'success' => false,
                 'message' => 'Invoice tidak ditemukan.',
             ], 404);
         }
 
-        if (in_array(strtolower((string) $tagihan->status_tagihan), ['valid', 'terbit', 'approved'], true)) {
+        if (!Schema::hasTable('komponen_tagihan')) {
             return response()->json([
                 'success' => false,
-                'message' => 'Invoice ini sudah final dan tidak bisa diubah lagi.',
-            ], 409);
-        }
-
-        if (! Schema::hasTable('komponen_tagihan')) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Tabel komponen_tagihan belum tersedia.',
+                'message'
+                => 'Tabel komponen_tagihan belum tersedia.',
             ], 500);
         }
 
@@ -110,60 +104,144 @@ class KepsekController extends Controller
         foreach ($validated['items'] as $item) {
             $qty = (float) $item['qty'];
             $nominal = (float) $item['nominal'];
+
             $subtotalTagihan += $qty * $nominal;
         }
 
         $diskon = (float) ($validated['diskon'] ?? 0);
-        $totalTagihan = max(0, $subtotalTagihan - $diskon);
+        $totalTagihan = max(
+            0,
+            $subtotalTagihan - $diskon
+        );
 
-        DB::transaction(function () use ($uid, $validated, $subtotalTagihan, $diskon, $totalTagihan) {
-            $update = [
-                'subtotal_tagihan' => $subtotalTagihan,
-                'diskon_tagihan' => $diskon,
-                'total_tagihan' => $totalTagihan,
-                'status_tagihan' => 'valid',
-                'tanggal_tagihan' => now(),
-            ];
+        $result = DB::transaction(
+            function () use ($uid, $validated, $subtotalTagihan, $diskon, $totalTagihan): array {
+                $tagihan = DB::table('tagihan')
+                    ->where('uid', $uid)
+                    ->lockForUpdate()
+                    ->first();
 
-            if (Schema::hasColumn('tagihan', 'catatan_kepsek')) {
-                $update['catatan_kepsek'] = $validated['catatan_kepsek'] ?? null;
+                if (!$tagihan) {
+                    return [
+                        'status' => 404,
+                        'payload' => [
+                            'success' => false,
+                            'message' => 'Invoice tidak ditemukan.',
+                        ],
+                    ];
+                }
+
+                $statusTagihan = strtolower(
+                    trim((string) $tagihan->status_tagihan)
+                );
+
+                if (
+                    in_array(
+                        $statusTagihan,
+                        ['valid', 'terbit', 'approved'],
+                        true
+                    )
+                ) {
+                    return [
+                        'status' => 409,
+                        'payload' => [
+                            'success' => false,
+                            'message' => 'Invoice ini sudah final dan tidak bisa diubah lagi.',
+                        ],
+                    ];
+                }
+
+                if ($statusTagihan !== 'pending') {
+                    return [
+                        'status' => 422,
+                        'payload' => [
+                            'success' => false,
+                            'message' => 'Invoice hanya dapat disetujui ketika masih berstatus pending.',
+                        ],
+                    ];
+                }
+
+                $update = [
+                    'subtotal_tagihan' => $subtotalTagihan,
+                    'diskon_tagihan' => $diskon,
+                    'total_tagihan' => $totalTagihan,
+                    'status_tagihan' => 'valid',
+                    'tanggal_tagihan' => now(),
+                ];
+
+                if (
+                    Schema::hasColumn(
+                        'tagihan',
+                        'catatan_kepsek'
+                    )
+                ) {
+                    $update['catatan_kepsek']
+                        = $validated['catatan_kepsek']
+                        ?? null;
+                }
+
+                if (
+                    Schema::hasColumn(
+                        'tagihan',
+                        'disetujui_oleh'
+                    )
+                ) {
+                    $update['disetujui_oleh']
+                        = session('email')
+                        ?? 'Kepala Sekolah';
+                }
+
+                if (
+                    Schema::hasColumn(
+                        'tagihan',
+                        'updated_at'
+                    )
+                ) {
+                    $update['updated_at'] = now();
+                }
+
+                DB::table('tagihan')
+                    ->where('uid', $uid)
+                    ->update($update);
+
+                DB::table('komponen_tagihan')
+                    ->where('uid_tagihan', $uid)
+                    ->delete();
+
+                foreach (
+                    $validated['items']
+                    as $index => $item
+                ) {
+                    $qty = (float) $item['qty'];
+                    $nominal = (float) $item['nominal'];
+
+                    DB::table('komponen_tagihan')->insert([
+                        'uid_tagihan' => $uid,
+                        'nama_komponen'
+                        => $item['nama_komponen'],
+                        'qty' => $qty,
+                        'nominal' => $nominal,
+                        'subtotal' => $qty * $nominal,
+                        'urutan' => $index + 1,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
+
+                return [
+                    'status' => 200,
+                    'payload' => [
+                        'success' => true,
+                        'message' => 'Invoice final berhasil disetujui kepala sekolah. Orang tua akan otomatis melihat invoice terbaru.',
+                    ],
+                ];
             }
+        );
 
-            if (Schema::hasColumn('tagihan', 'disetujui_oleh')) {
-                $update['disetujui_oleh'] = session('email') ?? 'Kepala Sekolah';
-            }
-
-            if (Schema::hasColumn('tagihan', 'updated_at')) {
-                $update['updated_at'] = now();
-            }
-
-            DB::table('tagihan')->where('uid', $uid)->update($update);
-
-            DB::table('komponen_tagihan')
-                ->where('uid_tagihan', $uid)
-                ->delete();
-
-            foreach ($validated['items'] as $index => $item) {
-                $qty = (float) $item['qty'];
-                $nominal = (float) $item['nominal'];
-
-                DB::table('komponen_tagihan')->insert([
-                    'uid_tagihan' => $uid,
-                    'nama_komponen' => $item['nama_komponen'],
-                    'qty' => $qty,
-                    'nominal' => $nominal,
-                    'subtotal' => $qty * $nominal,
-                    'urutan' => $index + 1,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
-            }
-        });
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Invoice final berhasil disetujui kepala sekolah. Orang tua akan otomatis melihat invoice terbaru.',
-        ]);
+        return response()->json(
+            $result['payload'],
+            $result['status']
+        );
     }
 
     public function printStudentReport()
@@ -204,7 +282,7 @@ class KepsekController extends Controller
                 ->orderByDesc('uid')
                 ->first();
 
-            if (! $activeBatch) {
+            if (!$activeBatch) {
                 $activeBatch = DB::table('batch_pendaftaran')
                     ->orderByDesc('tanggal_buka')
                     ->orderByDesc('uid')
@@ -292,7 +370,7 @@ class KepsekController extends Controller
 
     private function getStaffList()
     {
-        if (! Schema::hasTable('user')) {
+        if (!Schema::hasTable('user')) {
             return collect();
         }
 
@@ -324,7 +402,7 @@ class KepsekController extends Controller
 
     private function getInvoices(string $status)
     {
-        if (! Schema::hasTable('tagihan')) {
+        if (!Schema::hasTable('tagihan')) {
             return collect();
         }
 
@@ -384,7 +462,7 @@ class KepsekController extends Controller
 
         $invoices = $query->orderByDesc('tagihan.uid')->get();
 
-        if ($invoices->isEmpty() || ! Schema::hasTable('komponen_tagihan')) {
+        if ($invoices->isEmpty() || !Schema::hasTable('komponen_tagihan')) {
             return $invoices->map(function ($invoice) {
                 $invoice->komponen_tagihan = collect();
                 return $invoice;
@@ -405,7 +483,7 @@ class KepsekController extends Controller
 
     private function getStudentReportRows()
     {
-        if (! Schema::hasTable('pendaftaran')) {
+        if (!Schema::hasTable('pendaftaran')) {
             return collect();
         }
 

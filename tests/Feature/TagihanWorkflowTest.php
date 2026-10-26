@@ -350,6 +350,37 @@ class TagihanWorkflowTest extends TestCase
         ]);
     }
 
+    public function test_invoice_creator_uses_authenticated_admin_identity(): void
+    {
+        $registrationId = $this->createRegistration('approved');
+
+        $payload = $this->invoicePayload();
+        $payload['admin_pembuat'] = 'identitas.palsu@example.com';
+
+        $response = $this
+            ->withSession($this->adminSession())
+            ->postJson(
+                route(
+                    'admin.pendaftaran.tagihan.save',
+                    $registrationId
+                ),
+                $payload
+            );
+
+        $response->assertOk();
+
+        $this->assertDatabaseHas('tagihan', [
+            'uid' => (int) $response->json('tagihan_id'),
+            'uid_pendaftaran' => $registrationId,
+            'dibuat_oleh' => 'admin.testing@example.com',
+        ]);
+
+        $this->assertDatabaseMissing('tagihan', [
+            'uid_pendaftaran' => $registrationId,
+            'dibuat_oleh' => 'identitas.palsu@example.com',
+        ]);
+    }
+
     private function createRegistration(string $status): int
     {
         $user = User::factory()->create([

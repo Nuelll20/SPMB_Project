@@ -533,57 +533,14 @@ class AdminController extends Controller
 
         $validated = $request->validate([
             'diskon' => 'nullable|numeric|min:0',
-            'admin_pembuat' => 'required|string|max:255',
+            'admin_pembuat' => 'nullable|string|max:255',
             'status_tagihan' => 'nullable|in:pending',
             'items' => 'required|array|min:1',
-            'items.*.nama_komponen' => 'required|string|max:255',
+            'items.*.nama_komponen'
+            => 'required|string|max:255',
             'items.*.qty' => 'required|numeric|min:1',
             'items.*.nominal' => 'required|numeric|min:0',
         ]);
-
-        $pendaftaran = DB::table('pendaftaran')
-            ->join('calon_siswa', 'calon_siswa.uid', '=', 'pendaftaran.calon_siswa_id')
-            ->where('pendaftaran.uid', $uid)
-            ->select(
-                'pendaftaran.uid',
-                'pendaftaran.no_pendaftaran',
-                'pendaftaran.status_pendaftaran',
-                'calon_siswa.uid as calon_siswa_uid',
-                'calon_siswa.nama as nama_siswa'
-            )
-            ->first();
-
-        if (!$pendaftaran) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Data pendaftaran tidak ditemukan.',
-            ], 404);
-        }
-
-        if ($pendaftaran->status_pendaftaran !== 'approved') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Tagihan hanya bisa dibuat untuk pendaftar yang sudah approved.',
-            ], 403);
-        }
-
-        $existingFinalTagihanQuery = DB::table('tagihan')
-            ->where('uid_pendaftaran', $uid)
-            ->whereIn('status_tagihan', ['valid', 'terbit', 'approved']);
-
-        if (Schema::hasColumn('tagihan', 'disetujui_oleh')) {
-            $existingFinalTagihanQuery->whereNotNull('disetujui_oleh')
-                ->where('disetujui_oleh', '<>', '');
-        }
-
-        $existingFinalTagihan = $existingFinalTagihanQuery->first();
-
-        if ($existingFinalTagihan) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Invoice sudah menjadi final approval kepala sekolah. Admin SPMB tidak dapat mengubah invoice ini lagi.',
-            ], 403);
-        }
 
         $subtotalTagihan = 0;
 
@@ -595,72 +552,168 @@ class AdminController extends Controller
         }
 
         $diskon = (float) ($validated['diskon'] ?? 0);
-        $totalTagihan = max(0, $subtotalTagihan - $diskon);
+        $totalTagihan = max(
+            0,
+            $subtotalTagihan - $diskon
+        );
 
-        $tagihanId = DB::transaction(function () use ($uid, $validated, $subtotalTagihan, $diskon, $totalTagihan) {
-            $existingTagihan = DB::table('tagihan')
-                ->where('uid_pendaftaran', $uid)
-                ->first();
+        $adminPembuat = session('email') ?? 'Admin';
 
-            $nomorTagihan = 'INV-' . now()->format('Ymd') . '-' . str_pad($uid, 5, '0', STR_PAD_LEFT);
+        $result = DB::transaction(
+            function () use ($uid, $validated, $subtotalTagihan, $diskon, $totalTagihan, $adminPembuat): array {
+                $pendaftaran = DB::table('pendaftaran')
+                    ->where('uid', $uid)
+                    ->lockForUpdate()
+                    ->first();
 
-            $dataTagihan = [
-                'uid_pendaftaran' => $uid,
-                'nomor_tagihan' => $nomorTagihan,
-                'subtotal_tagihan' => $subtotalTagihan,
-                'diskon_tagihan' => $diskon,
-                'total_tagihan' => $totalTagihan,
-                // Admin hanya boleh mengirim draft invoice ke antrian kepala sekolah.
-                // Status final/terbit hanya boleh ditetapkan dari dashboard kepala sekolah.
-                'status_tagihan' => 'pending',
-                'tanggal_tagihan' => now(),
-                'dibuat_oleh' => $validated['admin_pembuat'],
-                'updated_at' => now(),
-            ];
+                if (!$pendaftaran) {
+                    return [
+                        'status' => 404,
+                        'payload' => [
+                            'success' => false,
+                            'message'
+                            => 'Data pendaftaran tidak ditemukan.',
+                        ],
+                    ];
+                }
 
-            if ($existingTagihan) {
-                DB::table('tagihan')
-                    ->where('uid', $existingTagihan->uid)
-                    ->update($dataTagihan);
+                if (
+                    strtolower(
+                        trim(
+                            (string) $pendaftaran
+                                ->status_pendaftaran
+                        )
+                    ) !== 'approved'
+                ) {
+                    return [
+                        'status' => 403,
+                        'payload' => [
+                            'success' => false,
+                            'message' => 'Tagihan hanya bisa dibuat untuk pendaftar yang sudah approved.',
+                        ],
+                    ];
+                }
 
-                $tagihanId = $existingTagihan->uid;
+                $existingTagihan = DB::table('tagihan')
+                    ->where('uid_pendaftaran', $uid)
+                    ->lockForUpdate()
+                    ->first();
 
-                DB::table('komponen_tagihan')
-                    ->where('uid_tagihan', $tagihanId)
-                    ->delete();
-            } else {
-                $dataTagihan['created_at'] = now();
+                if (
+                    $existingTagihan
+                    && in_array(
+                        strtolower(
+                            trim(
+                                (string) $existingTagihan
+                                    ->status_tagihan
+                            )
+                        ),
+                        ['valid', 'terbit', 'approved'],
+                        true
+                    )
+                ) {
+                    return [
+                        'status' => 403,
+                        'payload' => [
+                            'success' => false,
+                            'message' => 'Invoice sudah menjadi final approval kepala sekolah. Admin SPMB tidak dapat mengubah invoice ini lagi.',
+                        ],
+                    ];
+                }
 
-                $tagihanId = DB::table('tagihan')
-                    ->insertGetId($dataTagihan);
-            }
+                $nomorTagihan = 'INV-'
+                    . now()->format('Ymd')
+                    . '-'
+                    . str_pad(
+                        (string) $uid,
+                        5,
+                        '0',
+                        STR_PAD_LEFT
+                    );
 
-            foreach ($validated['items'] as $index => $item) {
-                $qty = (float) $item['qty'];
-                $nominal = (float) $item['nominal'];
-                $subtotal = $qty * $nominal;
-
-                DB::table('komponen_tagihan')->insert([
-                    'uid_tagihan' => $tagihanId,
-                    'nama_komponen' => $item['nama_komponen'],
-                    'qty' => $qty,
-                    'nominal' => $nominal,
-                    'subtotal' => $subtotal,
-                    'urutan' => $index + 1,
-                    'created_at' => now(),
+                $dataTagihan = [
+                    'uid_pendaftaran' => $uid,
+                    'nomor_tagihan' => $nomorTagihan,
+                    'subtotal_tagihan' => $subtotalTagihan,
+                    'diskon_tagihan' => $diskon,
+                    'total_tagihan' => $totalTagihan,
+                    'status_tagihan' => 'pending',
+                    'tanggal_tagihan' => now(),
+                    'dibuat_oleh' => $adminPembuat,
                     'updated_at' => now(),
-                ]);
+                ];
+
+                if (
+                    Schema::hasColumn(
+                        'tagihan',
+                        'catatan_kepsek'
+                    )
+                ) {
+                    $dataTagihan['catatan_kepsek'] = null;
+                }
+
+                if (
+                    Schema::hasColumn(
+                        'tagihan',
+                        'disetujui_oleh'
+                    )
+                ) {
+                    $dataTagihan['disetujui_oleh'] = null;
+                }
+
+                if ($existingTagihan) {
+                    DB::table('tagihan')
+                        ->where('uid', $existingTagihan->uid)
+                        ->update($dataTagihan);
+
+                    $tagihanId = (int) $existingTagihan->uid;
+
+                    DB::table('komponen_tagihan')
+                        ->where('uid_tagihan', $tagihanId)
+                        ->delete();
+                } else {
+                    $dataTagihan['created_at'] = now();
+
+                    $tagihanId = DB::table('tagihan')
+                        ->insertGetId($dataTagihan);
+                }
+
+                foreach (
+                    $validated['items']
+                    as $index => $item
+                ) {
+                    $qty = (float) $item['qty'];
+                    $nominal = (float) $item['nominal'];
+
+                    DB::table('komponen_tagihan')->insert([
+                        'uid_tagihan' => $tagihanId,
+                        'nama_komponen'
+                        => $item['nama_komponen'],
+                        'qty' => $qty,
+                        'nominal' => $nominal,
+                        'subtotal' => $qty * $nominal,
+                        'urutan' => $index + 1,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                }
+
+                return [
+                    'status' => 200,
+                    'payload' => [
+                        'success' => true,
+                        'message'
+                        => 'Tagihan berhasil disimpan ke database.',
+                        'tagihan_id' => $tagihanId,
+                    ],
+                ];
             }
+        );
 
-            return $tagihanId;
-        });
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Tagihan berhasil disimpan ke database.',
-            'tagihan_id' => $tagihanId,
-        ]);
-
+        return response()->json(
+            $result['payload'],
+            $result['status']
+        );
     }
 
     public function showVerifikasi($uid)
