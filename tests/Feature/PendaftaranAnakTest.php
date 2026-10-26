@@ -166,6 +166,169 @@ class PendaftaranAnakTest extends TestCase
         }
     }
 
+    public function test_registration_is_rejected_when_active_batch_is_full(): void
+    {
+        $user = $this->createUserWithParentProfile();
+        $batchId = $this->createActiveBatch(1);
+
+        $parentId = (int) DB::table('orang_tua')
+            ->where('user_id', $user->id)
+            ->value('uid');
+
+        $existingStudentId = DB::table('calon_siswa')
+            ->insertGetId([
+                'tempat_lahir' => 'Jakarta',
+                'nama' => 'Anak Pendaftar Sebelumnya',
+                'tanggal_lahir' => '2018-01-01',
+                'nik' => '3174010101010040',
+                'alamat' => 'Alamat anak sebelumnya',
+                'agama' => 'kristen',
+                'golongan_darah' => 'A',
+                'uid_orangtua' => $parentId,
+                'status' => 'pending',
+                'nomor_registrasi' => 'REG-TEST-00001',
+            ]);
+
+        DB::table('pendaftaran')->insert([
+            'no_pendaftaran' => 'REG-TEST-00001',
+            'id_batch_pendaftaran' => $batchId,
+            'status_pendaftaran' => 'pending',
+            'tanggal_daftar' => now()->toDateString(),
+            'calon_siswa_id' => $existingStudentId,
+        ]);
+
+        $response = $this
+            ->actingAs($user)
+            ->post(
+                route('form.daftar.store'),
+                $this->registrationData(
+                    'kristen',
+                    '3174010101010041',
+                    false
+                )
+            );
+
+        $response->assertRedirect(route('dashboard'));
+        $response->assertSessionHas('success');
+
+        $student = DB::table('calon_siswa')
+            ->where('nik', '3174010101010041')
+            ->first();
+
+        $this->assertNotNull($student);
+        $this->assertSame('rejected', $student->status);
+
+        $registration = DB::table('pendaftaran')
+            ->where('calon_siswa_id', $student->uid)
+            ->first();
+
+        $this->assertNotNull($registration);
+        $this->assertSame(
+            'rejected',
+            $registration->status_pendaftaran
+        );
+        $this->assertSame(
+            'batch_penuh',
+            $registration->jenis_penolakan
+        );
+        $this->assertSame(
+            'Mohon maaf, batch pendaftaran sudah penuh.',
+            $registration->alasan_penolakan
+        );
+
+        $files = DB::table('berkas')
+            ->where('id_pendaftar', $registration->uid)
+            ->get();
+
+        $this->assertCount(4, $files);
+
+        foreach ($files as $file) {
+            Storage::disk('local')
+                ->assertExists($file->file_url);
+        }
+    }
+
+    public function test_submitted_registration_cannot_be_submitted_again(): void
+    {
+        $user = $this->createUserWithParentProfile();
+        $this->createActiveBatch();
+
+        $firstResponse = $this
+            ->actingAs($user)
+            ->post(
+                route('form.daftar.store'),
+                $this->registrationData(
+                    'kristen',
+                    '3174010101010050',
+                    false
+                )
+            );
+
+        $firstResponse->assertRedirect(route('dashboard'));
+        $firstResponse->assertSessionHas('success');
+
+        $student = DB::table('calon_siswa')
+            ->where('nik', '3174010101010050')
+            ->first();
+
+        $this->assertNotNull($student);
+
+        $registration = DB::table('pendaftaran')
+            ->where('calon_siswa_id', $student->uid)
+            ->first();
+
+        $this->assertNotNull($registration);
+
+        $pathsBefore = DB::table('berkas')
+            ->where('id_pendaftar', $registration->uid)
+            ->orderBy('uid')
+            ->pluck('file_url')
+            ->all();
+
+        $this->assertCount(4, $pathsBefore);
+
+        $secondResponse = $this
+            ->actingAs($user)
+            ->from(route('form.daftar'))
+            ->post(
+                route('form.daftar.store'),
+                $this->registrationData(
+                    'kristen',
+                    '3174010101010050',
+                    false
+                )
+            );
+
+        $secondResponse->assertRedirect(route('form.daftar'));
+        $secondResponse->assertSessionHasErrors('nik');
+
+        $this->assertSame(
+            1,
+            DB::table('calon_siswa')
+                ->where('nik', '3174010101010050')
+                ->count()
+        );
+
+        $this->assertSame(
+            1,
+            DB::table('pendaftaran')
+                ->where('calon_siswa_id', $student->uid)
+                ->count()
+        );
+
+        $pathsAfter = DB::table('berkas')
+            ->where('id_pendaftar', $registration->uid)
+            ->orderBy('uid')
+            ->pluck('file_url')
+            ->all();
+
+        $this->assertSame($pathsBefore, $pathsAfter);
+        $this->assertCount(
+            4,
+            Storage::disk('local')->allFiles()
+        );
+    }
+
     private function createUserWithParentProfile(): User
     {
         $user = User::factory()->create([
@@ -187,7 +350,7 @@ class PendaftaranAnakTest extends TestCase
         return $user;
     }
 
-    private function createActiveBatch(): int
+    private function createActiveBatch(int $quota = 10): int
     {
         return DB::table('batch_pendaftaran')
             ->insertGetId([
@@ -195,7 +358,7 @@ class PendaftaranAnakTest extends TestCase
                 'nama_batch' => 'Batch Pengujian',
                 'tanggal_buka' => now()->subDay()->toDateString(),
                 'tanggal_tutup' => now()->addDay()->toDateString(),
-                'kuota' => 10,
+                'kuota' => $quota,
                 'is_active' => 1,
                 'created_at' => now()->toDateString(),
                 'dibuat_oleh' => 'PHPUnit',
