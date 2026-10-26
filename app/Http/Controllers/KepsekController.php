@@ -300,6 +300,7 @@ class KepsekController extends Controller
         $rejected = 0;
         $pending = 0;
         $quota = 0;
+        $activeBatchTotal = 0;
         $activeBatch = null;
         $pendingInvoices = 0;
         $issuedInvoices = 0;
@@ -323,14 +324,19 @@ class KepsekController extends Controller
                 ->orderByDesc('uid')
                 ->first();
 
-            if (!$activeBatch) {
-                $activeBatch = DB::table('batch_pendaftaran')
-                    ->orderByDesc('tanggal_buka')
-                    ->orderByDesc('uid')
-                    ->first();
-            }
-
             $quota = (int) ($activeBatch->kuota ?? 0);
+
+            if (
+                $activeBatch
+                && Schema::hasTable('pendaftaran')
+            ) {
+                $activeBatchTotal = DB::table('pendaftaran')
+                    ->where(
+                        'id_batch_pendaftaran',
+                        $activeBatch->uid
+                    )
+                    ->count();
+            }
         }
 
         if (Schema::hasTable('tagihan')) {
@@ -360,8 +366,19 @@ class KepsekController extends Controller
             $issuedInvoices = $issuedInvoiceQuery->count();
         }
 
-        $percentage = $quota > 0 ? min(100, round(($total / $quota) * 100, 1)) : 0;
-        $remainingQuota = $quota > 0 ? max(0, $quota - $total) : 0;
+        $percentage = $quota > 0
+            ? min(
+                100,
+                round(
+                    ($activeBatchTotal / $quota) * 100,
+                    1
+                )
+            )
+            : 0;
+
+        $remainingQuota = $quota > 0
+            ? max(0, $quota - $activeBatchTotal)
+            : 0;
 
         return [
             'total' => $total,
@@ -369,6 +386,7 @@ class KepsekController extends Controller
             'rejected' => $rejected,
             'pending' => $pending,
             'quota' => $quota,
+            'active_batch_total' => $activeBatchTotal,
             'remaining_quota' => $remainingQuota,
             'percentage' => $percentage,
             'active_batch' => $activeBatch,

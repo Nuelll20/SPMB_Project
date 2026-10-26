@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Services\OrangTuaResolver;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -11,30 +10,6 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class BerkasController extends Controller
 {
-    public function upload(Request $request)
-    {
-        $request->validate([
-            'id_pendaftar' => 'required|integer',
-            'jenis_berkas' => 'required|string',
-            'file' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
-        ]);
-
-        $file = $request->file('file');
-        $path = $file->store('berkas', 'local');
-
-        DB::table('berkas')->insert([
-            'id_pendaftar' => $request->id_pendaftar,
-            'jenis_berkas' => $request->jenis_berkas,
-            'file_url' => $path,
-            'is_valid' => 0,
-        ]);
-
-        return back()->with(
-            'success',
-            'Berkas berhasil diupload!'
-        );
-    }
-
     public function validasi(int $id, int $status)
     {
         abort_unless(
@@ -66,18 +41,6 @@ class BerkasController extends Controller
         return back()->with(
             'success',
             'Status berkas berhasil diupdate!'
-        );
-    }
-
-    public function index($idPendaftar)
-    {
-        $berkas = DB::table('berkas')
-            ->where('id_pendaftar', $idPendaftar)
-            ->get();
-
-        return view(
-            'berkas.index',
-            compact('berkas')
         );
     }
 

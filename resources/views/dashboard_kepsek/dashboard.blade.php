@@ -859,7 +859,7 @@
                     <div class="ai-card">
                         <div class="small-label">Prediksi Keterisian (AI Engine)</div>
                         <div class="seat-number">
-                            <strong>{{ $metrics['total'] ?? 0 }}</strong>
+                            <strong>{{ $metrics['active_batch_total'] ?? 0 }}</strong>
                             <span>/ {{ $metrics['quota'] ?: 0 }} Kursi</span>
                         </div>
                         <div class="progress-line"><div style="width: {{ $metrics['percentage'] ?? 0 }}%"></div></div>
