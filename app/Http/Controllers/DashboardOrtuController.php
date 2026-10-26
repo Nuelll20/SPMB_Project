@@ -2,22 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
+use App\Services\OrangTuaResolver;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class DashboardOrtuController extends Controller
 {
+    public function __construct(
+        private readonly OrangTuaResolver $orangTuaResolver
+    ) {
+    }
+
     public function index()
     {
-        $orangTua = $this->getOrangTua();
+        $orangTua = $this->orangTuaResolver->current();
 
-        if (! $orangTua) {
+        if (!$orangTua) {
             return redirect()->route('profil.ortu')
                 ->with('warning', 'Lengkapi profil orang tua terlebih dahulu.');
         }
 
-        session(['uid_orangtua' => $orangTua->uid]);
 
         $hasTagihan = Schema::hasTable('tagihan');
         $hasKomponenTagihan = Schema::hasTable('komponen_tagihan');
@@ -116,7 +120,9 @@ class DashboardOrtuController extends Controller
         $batchAktif = false;
 
         if ($batch) {
-            $jumlahPendaftar = DB::table('pendaftaran')->count();
+            $jumlahPendaftar = DB::table('pendaftaran')
+                ->where('id_batch_pendaftaran', $batch->uid)
+                ->count();
 
             $sisaKuota = max(0, (int) $batch->kuota - $jumlahPendaftar);
             $batchAktif = $sisaKuota > 0;
@@ -129,27 +135,5 @@ class DashboardOrtuController extends Controller
             'sisaKuota',
             'batchAktif'
         ));
-    }
-
-    private function getOrangTua()
-    {
-        $user = Auth::user();
-
-        if (! $user) {
-            return null;
-        }
-
-        if (session()->has('uid_orangtua')) {
-            $orangTua = DB::table('orang_tua')->where('uid', session('uid_orangtua'))->first();
-            if ($orangTua) {
-                return $orangTua;
-            }
-        }
-
-        if (Schema::hasColumn('orang_tua', 'user_id')) {
-            return DB::table('orang_tua')->where('user_id', $user->id)->first();
-        }
-
-        return DB::table('orang_tua')->where('nama', $user->name)->first();
     }
 }

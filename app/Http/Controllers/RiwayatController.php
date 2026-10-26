@@ -3,15 +3,21 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Services\OrangTuaResolver;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class RiwayatController extends Controller
 {
+
+    public function __construct(
+        private readonly OrangTuaResolver $orangTuaResolver
+    ) {
+    }
+
     public function index(Request $request)
     {
-        $orangTua = $this->getOrangTua();
+        $orangTua = $this->orangTuaResolver->current();
 
         if (!$orangTua) {
             return redirect()->route('profil.ortu')
@@ -156,7 +162,7 @@ class RiwayatController extends Controller
             'total' => $dataSiswa->count(),
             'approved' => $dataSiswa->where('status_norm', 'approved')->count(),
             'rejected' => $dataSiswa->where('status_norm', 'rejected')->count(),
-            'proses' => $dataSiswa->filter(fn ($item) => in_array($item->status_norm, ['pending', 'proses']))->count(),
+            'proses' => $dataSiswa->filter(fn($item) => in_array($item->status_norm, ['pending', 'proses']))->count(),
             'total_tagihan' => $dataSiswa->where('status_norm', 'approved')->sum('total_tagihan_final'),
         ];
 
@@ -168,34 +174,5 @@ class RiwayatController extends Controller
             : collect();
 
         return view('dashboard_user.riwayat', compact('dataSiswa', 'summary', 'batchList'));
-    }
-
-    private function getOrangTua()
-    {
-        $user = Auth::user();
-
-        if (!$user) {
-            return null;
-        }
-
-        if (session()->has('uid_orangtua')) {
-            $orangTua = DB::table('orang_tua')
-                ->where('uid', session('uid_orangtua'))
-                ->first();
-
-            if ($orangTua) {
-                return $orangTua;
-            }
-        }
-
-        if (Schema::hasColumn('orang_tua', 'user_id')) {
-            return DB::table('orang_tua')
-                ->where('user_id', $user->id)
-                ->first();
-        }
-
-        return DB::table('orang_tua')
-            ->where('nama', $user->name)
-            ->first();
     }
 }
