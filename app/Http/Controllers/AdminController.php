@@ -261,29 +261,54 @@ class AdminController extends Controller
     {
         $this->checkAdmin();
 
-        $pendaftaran = DB::table('pendaftaran')
-            ->where('uid', $uid)
-            ->first();
+        $result = DB::transaction(function () use ($uid): array {
+            $pendaftaran = DB::table('pendaftaran')
+                ->where('uid', $uid)
+                ->lockForUpdate()
+                ->first();
 
-        if (!$pendaftaran) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Data pendaftaran tidak ditemukan.',
-            ], 404);
-        }
+            if (!$pendaftaran) {
+                return [
+                    'status' => 404,
+                    'payload' => [
+                        'success' => false,
+                        'message' => 'Data pendaftaran tidak ditemukan.',
+                    ],
+                ];
+            }
 
-        $verifiedAt = now();
-        $verifiedBy = session('email') ?? 'Admin';
+            if (
+                strtolower(
+                    trim((string) $pendaftaran->status_pendaftaran)
+                ) !== 'pending'
+            ) {
+                return [
+                    'status' => 422,
+                    'payload' => [
+                        'success' => false,
+                        'message' => 'Pendaftaran hanya dapat disetujui ketika masih berstatus pending.',
+                    ],
+                ];
+            }
 
-        DB::transaction(function () use ($pendaftaran, $uid, $verifiedAt, $verifiedBy) {
+            $verifiedAt = now();
+            $verifiedBy = session('email') ?? 'Admin';
+
             $pendaftaranUpdate = [
                 'status_pendaftaran' => 'approved',
+                'jenis_penolakan' => null,
                 'alasan_penolakan' => null,
                 'diverifikasi_oleh' => $verifiedBy,
             ];
 
-            if (Schema::hasColumn('pendaftaran', 'tanggal_verifikasi')) {
-                $pendaftaranUpdate['tanggal_verifikasi'] = $verifiedAt;
+            if (
+                Schema::hasColumn(
+                    'pendaftaran',
+                    'tanggal_verifikasi'
+                )
+            ) {
+                $pendaftaranUpdate['tanggal_verifikasi']
+                    = $verifiedAt;
             }
 
             DB::table('pendaftaran')
@@ -301,86 +326,149 @@ class AdminController extends Controller
                 ->update([
                     'is_valid' => 1,
                 ]);
+
+            return [
+                'status' => 200,
+                'payload' => [
+                    'success' => true,
+                    'message' => 'Pendaftar berhasil diloloskan.',
+                    'invoice_url' => route(
+                        'admin.pendaftaran.invoice',
+                        $uid
+                    ),
+                    'tanggal_verifikasi'
+                    => $verifiedAt->toDateTimeString(),
+                    'diverifikasi_oleh' => $verifiedBy,
+                ],
+            ];
         });
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Pendaftar berhasil diloloskan.',
-            'invoice_url' => route('admin.pendaftaran.invoice', $uid),
-            'tanggal_verifikasi' => $verifiedAt->toDateTimeString(),
-            'diverifikasi_oleh' => $verifiedBy,
-        ]);
+        return response()->json(
+            $result['payload'],
+            $result['status']
+        );
     }
 
     public function reject(Request $request, $uid)
     {
         $this->checkAdmin();
 
-        $request->validate([
+        $validated = $request->validate([
             'alasan' => 'required|string|min:5|max:255',
+            'jenis_penolakan' => 'nullable|in:berkas',
             'invalid_berkas' => 'nullable|array',
             'invalid_berkas.*' => 'string',
         ]);
 
-        $pendaftaran = DB::table('pendaftaran')
-            ->where('uid', $uid)
-            ->first();
+        $result = DB::transaction(
+            function () use ($validated, $uid): array {
+                $pendaftaran = DB::table('pendaftaran')
+                    ->where('uid', $uid)
+                    ->lockForUpdate()
+                    ->first();
 
-        if (!$pendaftaran) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Data pendaftaran tidak ditemukan.',
-            ], 404);
-        }
+                if (!$pendaftaran) {
+                    return [
+                        'status' => 404,
+                        'payload' => [
+                            'success' => false,
+                            'message'
+                            => 'Data pendaftaran tidak ditemukan.',
+                        ],
+                    ];
+                }
 
-        $invalidBerkas = $request->invalid_berkas ?? [];
-        $verifiedAt = now();
-        $verifiedBy = session('email') ?? 'Admin';
+                if (
+                    strtolower(
+                        trim(
+                            (string) $pendaftaran
+                                ->status_pendaftaran
+                        )
+                    ) !== 'pending'
+                ) {
+                    return [
+                        'status' => 422,
+                        'payload' => [
+                            'success' => false,
+                            'message' => 'Pendaftaran hanya dapat ditolak ketika masih berstatus pending.',
+                        ],
+                    ];
+                }
 
-        DB::transaction(function () use ($request, $pendaftaran, $uid, $invalidBerkas, $verifiedAt, $verifiedBy) {
-            $pendaftaranUpdate = [
-                'status_pendaftaran' => 'rejected',
-                'jenis_penolakan' => $request->jenis_penolakan ?? 'berkas',
-                'alasan_penolakan' => $request->alasan,
-                'diverifikasi_oleh' => $verifiedBy,
-            ];
+                $invalidBerkas
+                    = $validated['invalid_berkas'] ?? [];
 
-            if (Schema::hasColumn('pendaftaran', 'tanggal_verifikasi')) {
-                $pendaftaranUpdate['tanggal_verifikasi'] = $verifiedAt;
-            }
+                $verifiedAt = now();
+                $verifiedBy = session('email') ?? 'Admin';
 
-            DB::table('pendaftaran')
-                ->where('uid', $uid)
-                ->update($pendaftaranUpdate);
+                $pendaftaranUpdate = [
+                    'status_pendaftaran' => 'rejected',
+                    'jenis_penolakan'
+                    => $validated['jenis_penolakan']
+                        ?? 'berkas',
+                    'alasan_penolakan' => $validated['alasan'],
+                    'diverifikasi_oleh' => $verifiedBy,
+                ];
 
-            DB::table('calon_siswa')
-                ->where('uid', $pendaftaran->calon_siswa_id)
-                ->update([
-                    'status' => 'rejected',
-                ]);
+                if (
+                    Schema::hasColumn(
+                        'pendaftaran',
+                        'tanggal_verifikasi'
+                    )
+                ) {
+                    $pendaftaranUpdate['tanggal_verifikasi']
+                        = $verifiedAt;
+                }
 
-            DB::table('berkas')
-                ->where('id_pendaftar', $uid)
-                ->update([
-                    'is_valid' => 1,
-                ]);
+                DB::table('pendaftaran')
+                    ->where('uid', $uid)
+                    ->update($pendaftaranUpdate);
 
-            if (!empty($invalidBerkas)) {
+                DB::table('calon_siswa')
+                    ->where(
+                        'uid',
+                        $pendaftaran->calon_siswa_id
+                    )
+                    ->update([
+                        'status' => 'rejected',
+                    ]);
+
                 DB::table('berkas')
                     ->where('id_pendaftar', $uid)
-                    ->whereIn('jenis_berkas', $invalidBerkas)
                     ->update([
-                        'is_valid' => 0,
+                        'is_valid' => 1,
                     ]);
-            }
-        });
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Pendaftar berhasil ditolak.',
-            'tanggal_verifikasi' => $verifiedAt->toDateTimeString(),
-            'diverifikasi_oleh' => $verifiedBy,
-        ]);
+                if ($invalidBerkas !== []) {
+                    DB::table('berkas')
+                        ->where('id_pendaftar', $uid)
+                        ->whereIn(
+                            'jenis_berkas',
+                            $invalidBerkas
+                        )
+                        ->update([
+                            'is_valid' => 0,
+                        ]);
+                }
+
+                return [
+                    'status' => 200,
+                    'payload' => [
+                        'success' => true,
+                        'message'
+                        => 'Pendaftar berhasil ditolak.',
+                        'tanggal_verifikasi'
+                        => $verifiedAt->toDateTimeString(),
+                        'diverifikasi_oleh' => $verifiedBy,
+                    ],
+                ];
+            }
+        );
+
+        return response()->json(
+            $result['payload'],
+            $result['status']
+        );
     }
 
     public function invoice($uid)

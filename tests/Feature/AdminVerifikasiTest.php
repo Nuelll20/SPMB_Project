@@ -280,6 +280,121 @@ class AdminVerifikasiTest extends TestCase
         ]);
     }
 
+    public function test_approved_registration_cannot_be_rejected(): void
+    {
+        $registration = $this->createPendingRegistration();
+
+        $approveResponse = $this
+            ->withSession($this->adminSession())
+            ->postJson(
+                route(
+                    'admin.pendaftaran.approve',
+                    $registration['registration_id']
+                )
+            );
+
+        $approveResponse->assertOk();
+
+        $rejectResponse = $this
+            ->withSession($this->adminSession())
+            ->postJson(
+                route(
+                    'admin.pendaftaran.reject',
+                    $registration['registration_id']
+                ),
+                [
+                    'alasan' => 'Mencoba mengubah keputusan.',
+                    'jenis_penolakan' => 'berkas',
+                    'invalid_berkas' => ['Akte Kelahiran'],
+                ]
+            );
+
+        $rejectResponse
+            ->assertUnprocessable()
+            ->assertJson([
+                'success' => false,
+                'message' => 'Pendaftaran hanya dapat ditolak ketika masih berstatus pending.',
+            ]);
+
+        $this->assertDatabaseHas('pendaftaran', [
+            'uid' => $registration['registration_id'],
+            'status_pendaftaran' => 'approved',
+            'alasan_penolakan' => null,
+            'diverifikasi_oleh' => 'admin.testing@example.com',
+        ]);
+
+        $this->assertDatabaseHas('calon_siswa', [
+            'uid' => $registration['student_id'],
+            'status' => 'approved',
+        ]);
+
+        $this->assertSame(
+            3,
+            DB::table('berkas')
+                ->where(
+                    'id_pendaftar',
+                    $registration['registration_id']
+                )
+                ->where('is_valid', 1)
+                ->count()
+        );
+    }
+
+    public function test_rejected_registration_cannot_be_approved(): void
+    {
+        $registration = $this->createPendingRegistration();
+
+        $rejectResponse = $this
+            ->withSession($this->adminSession())
+            ->postJson(
+                route(
+                    'admin.pendaftaran.reject',
+                    $registration['registration_id']
+                ),
+                [
+                    'alasan' => 'Akte kelahiran tidak terbaca.',
+                    'jenis_penolakan' => 'berkas',
+                    'invalid_berkas' => ['Akte Kelahiran'],
+                ]
+            );
+
+        $rejectResponse->assertOk();
+
+        $approveResponse = $this
+            ->withSession($this->adminSession())
+            ->postJson(
+                route(
+                    'admin.pendaftaran.approve',
+                    $registration['registration_id']
+                )
+            );
+
+        $approveResponse
+            ->assertUnprocessable()
+            ->assertJson([
+                'success' => false,
+                'message' => 'Pendaftaran hanya dapat disetujui ketika masih berstatus pending.',
+            ]);
+
+        $this->assertDatabaseHas('pendaftaran', [
+            'uid' => $registration['registration_id'],
+            'status_pendaftaran' => 'rejected',
+            'jenis_penolakan' => 'berkas',
+            'alasan_penolakan' => 'Akte kelahiran tidak terbaca.',
+        ]);
+
+        $this->assertDatabaseHas('calon_siswa', [
+            'uid' => $registration['student_id'],
+            'status' => 'rejected',
+        ]);
+
+        $this->assertDatabaseHas('berkas', [
+            'id_pendaftar' => $registration['registration_id'],
+            'jenis_berkas' => 'Akte Kelahiran',
+            'is_valid' => 0,
+        ]);
+    }
+
     private function createPendingRegistration(): array
     {
         $user = User::factory()->create([
