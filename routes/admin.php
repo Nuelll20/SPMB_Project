@@ -3,7 +3,6 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BatchPendaftaranController;
 use App\Http\Controllers\BerkasController;
-use App\Http\Controllers\KomponenTagihanController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('admin.session')->group(function () {
@@ -37,32 +36,6 @@ Route::middleware('admin.session')->group(function () {
     )
         ->whereNumber('uid')
         ->name('admin.pendaftaran.tagihan.save');
-
-    Route::get(
-        '/admin/komponen-tagihan/{uid_tagihan}',
-        [KomponenTagihanController::class, 'index']
-    )
-        ->whereNumber('uid_tagihan')
-        ->name('admin.komponen.index');
-
-    Route::post(
-        '/admin/komponen-tagihan',
-        [KomponenTagihanController::class, 'store']
-    )->name('admin.komponen.store');
-
-    Route::put(
-        '/admin/komponen-tagihan/{id}',
-        [KomponenTagihanController::class, 'update']
-    )
-        ->whereNumber('id')
-        ->name('admin.komponen.update');
-
-    Route::delete(
-        '/admin/komponen-tagihan/{id}',
-        [KomponenTagihanController::class, 'destroy']
-    )
-        ->whereNumber('id')
-        ->name('admin.komponen.destroy');
 
     Route::get(
         '/admin/berkas/{uid}/lihat/{filename?}',
